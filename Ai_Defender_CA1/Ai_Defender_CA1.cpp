@@ -1,8 +1,11 @@
-#include <SFML/Graphics.hpp>
+#pragma once
+#include "Game.h"
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(1200, 800), "AI Defender Project");
+	sf::RenderWindow window(sf::VideoMode(800, 600), "AI Defender Project");
+
+	Game game;
 
 	while (window.isOpen())
 	{
@@ -11,11 +14,12 @@ int main()
 		{
 			if (event.type == sf::Event::Closed)
 				window.close();
+			else if (event.KeyPressed == sf::Keyboard::Escape) 
+				window.close();
 		}
 
-		window.clear();
-
-		window.display();
+		game.update();
+		game.render(window);
 	}
 
 	return 0;
