@@ -1,5 +1,6 @@
 #include "Game.h"
 
+
 Game::Game()
 {
 
@@ -12,8 +13,7 @@ Game::~Game()
 
 void Game::update()
 {
-	sf::Event event;
-
+	//sf::Event event; // For Keyboard Controls
 }
 
 void Game::render(sf::RenderWindow &renderer)
