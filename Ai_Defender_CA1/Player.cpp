@@ -53,7 +53,7 @@ void Player::processInputs(sf::Event *evt)
 
 sf::Vector2f Player::getPosition() const
 {
-	return sf::Vector2f(m_boundingBox.getPosition());
+	return m_boundingBox.getPosition();
 }
 
 void Player::setPosition(sf::Vector2f pos)
@@ -133,8 +133,6 @@ void Player::update(sf::Time deltaTime)
 		{
 			m_velocity.y += m_speed.y * deltaTime.asSeconds();
 		}
-
-
 	}
 
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
