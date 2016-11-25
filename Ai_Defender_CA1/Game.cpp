@@ -1,33 +1,36 @@
 #include "Game.h"
 #include <iostream>
 
-Game::Game() : m_isGameRunning(true)
+Game::Game() : m_isGameRunning(true), numOfScreens(5)
 {
 
 }
 
-Game::Game(sf::RenderWindow & window) : m_isGameRunning(true)
+Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), numOfScreens(9)
 {
+	srand(time(NULL));
 	m_windowScreen = &window;
-	m_worldSize = sf::Vector2f(m_windowScreen->getSize().x * 9, m_windowScreen->getSize().y);
-	viewport = new sf::View(sf::FloatRect(0, 0, m_windowScreen->getSize().x, m_windowScreen->getSize().y));
-	
-	
-	for (size_t i = 0; i < 10; i++)
+	m_worldSize = sf::Vector2f(m_windowScreen->getSize().x * numOfScreens, m_windowScreen->getSize().y);
+
+	m_camera = new Camera(sf::Vector2f(0, 0), static_cast<sf::Vector2f>(m_windowScreen->getSize()), false, true);
+
+	m_playerShip.setPosition(m_camera->getView().getCenter());
+	m_camera->setTargetPlayer(&m_playerShip);
+	sizeX = (m_windowScreen->getSize().x * numOfScreens / m_windowScreen->getSize().x);
+
+	for (size_t i = 0; i < sizeX; i++)
 	{
-		for (size_t j = 0; j < 10; j++)
-		{
-			sf::RectangleShape temp(sf::Vector2f(i * 50, j * 50));
-			if (j % 2 == 0)
+			sf::RectangleShape temp(sf::Vector2f(m_windowScreen->getSize()));
+			temp.setPosition(-m_worldSize.x / 2 + (i * temp.getSize().x), m_windowScreen->getSize().y  - 50);
+			
+			if (i == 0 || i == sizeX - 1)//furthest right and furthest left must be the same Value or screen warping looks sloppy
 			{
-				temp.setFillColor(sf::Color::Green);
+				temp.setFillColor(sf::Color(255, 0, 0));
 			}
-			else
-			{
-				temp.setFillColor(sf::Color::Red);
-			}
-			m_testBackground.push_back(temp);
-		}		
+			else 
+				temp.setFillColor(sf::Color(0, rand() % 235 + 10, rand() % 235 + 10));
+
+			m_testBackground.push_back(temp);	
 	}
 }
 
@@ -35,6 +38,8 @@ Game::~Game()
 {
 
 }
+
+
 
 bool Game::isGameRunning() const
 {
@@ -61,22 +66,35 @@ void Game::getInput()
 	}
 }
 
+void Game::cameraWorldWrapping()
+{
+	if ((m_camera->getView().getCenter().x - m_camera->getView().getSize().x / 2) < -m_worldSize.x / 2) // if camera can't move more left warp everything on screen to right side of world
+	{
+		std::cout << "Warp to Right" << std::endl;
+		m_playerShip.setPosition(sf::Vector2f((m_worldSize.x / 2) - m_camera->getView().getSize().x / 2, m_playerShip.getPosition().y));
+	}
+	else if ((m_camera->getView().getCenter().x + m_camera->getView().getSize().x / 2) > m_worldSize.x / 2) // if camera can't move more right warp everything on screen to left side of world
+	{
+		std::cout << "Warp to Left" << std::endl;
+		m_playerShip.setPosition(sf::Vector2f((-m_worldSize.x / 2) + m_camera->getView().getSize().x / 2, m_playerShip.getPosition().y));
+	}
+}
+
 void Game::update()
 {
 	sf::Time elapsedTime = m_clock.restart();
 	getInput();
-	//viewport->setCenter(m_playerShip.getPosition());
-	m_windowScreen->setView(*viewport);
-	m_playerShip.boundaryResponse(m_windowScreen);
+	cameraWorldWrapping();
+	m_camera->Update(m_worldSize);
+	m_playerShip.boundaryResponse(m_worldSize);
 	m_playerShip.update(elapsedTime);
-
 }
 
 void Game::render(sf::RenderWindow &renderer)
 {
 	renderer.clear(sf::Color(0, 0, 0, 255));
-	
-	for (size_t i = 0; i < (10 * 10); i++)
+	renderer.setView(m_camera->getView());
+	for (size_t i = 0; i < sizeX; i++)
 	{
 		renderer.draw(m_testBackground[i]);
 	}

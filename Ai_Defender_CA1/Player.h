@@ -21,7 +21,7 @@ public:
 	sf::Vector2f getPosition() const;
 	void setPosition(sf::Vector2f pos);
 
-	void boundaryResponse(sf::RenderWindow* winSize);
+	void boundaryResponse(sf::Vector2f worldSize);
 	void update(sf::Time deltaTime);
 	void render(sf::RenderWindow &renderer);
 };

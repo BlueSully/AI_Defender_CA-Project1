@@ -61,18 +61,9 @@ void Player::setPosition(sf::Vector2f pos)
 	m_boundingBox.setPosition(pos);
 }
 
-void Player::boundaryResponse(sf::RenderWindow* winSize)
+void Player::boundaryResponse(sf::Vector2f worldSize)
 {
-	sf::Vector2f vect = sf::Vector2f(winSize->getSize().x, winSize->getSize().y);
-
-	if (getPosition().x < 0)
-	{
-		setPosition(sf::Vector2f(vect.x, getPosition().y));
-	}
-	else if (getPosition().x > vect.x)
-	{
-		setPosition(sf::Vector2f(0, getPosition().y));
-	}
+	sf::Vector2f vect = sf::Vector2f(worldSize.x, worldSize.y);
 
 	if(getPosition().y + m_size.y < m_size.y)
 	{
