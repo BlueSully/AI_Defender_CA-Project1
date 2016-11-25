@@ -25,6 +25,11 @@ void Camera::setTargetPlayer(Player * player)
 	m_targetPlayer = player;
 }
 
+void Camera::setViewport(sf::FloatRect viewport)
+{
+	m_view.setViewport(viewport);
+}
+
 void Camera::xAxisLock(bool value) 
 {
 	m_xAxisLocked = value;

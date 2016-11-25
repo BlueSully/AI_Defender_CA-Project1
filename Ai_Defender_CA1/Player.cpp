@@ -133,3 +133,10 @@ void Player::render(sf::RenderWindow & renderer)
 {
 	renderer.draw(m_boundingBox);
 }
+
+void Player::render(sf::RenderWindow &renderer, float scale)
+{
+	sf::RectangleShape drawRect = m_boundingBox;
+	drawRect.setScale(sf::Vector2f(scale, scale));
+	renderer.draw(drawRect);
+}

@@ -24,5 +24,6 @@ public:
 	void boundaryResponse(sf::Vector2f worldSize);
 	void update(sf::Time deltaTime);
 	void render(sf::RenderWindow &renderer);
+	void render(sf::RenderWindow &renderer, float scale);
 };
 

@@ -8,6 +8,8 @@ private:
 	Player m_playerShip;
 	sf::RenderWindow * m_windowScreen;
 	Camera * m_camera;
+	sf::View m_minimapView;
+
 	sf::Event m_event;
 	bool m_isGameRunning;
 	int numOfScreens;

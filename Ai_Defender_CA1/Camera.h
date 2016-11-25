@@ -15,6 +15,7 @@ public:
 	~Camera();
 
 	void setTargetPlayer(Player * player);
+	void setViewport(sf::FloatRect viewport);
 	void xAxisLock(bool value);
 	void yAxisLock(bool value);
 	void Update(sf::Vector2f worldbounds);
