@@ -15,6 +15,7 @@ Player::Player()
 	m_speed = sf::Vector2f(m_MAXHORIZONTALACCLERATION / 2, m_MAXVERTICALACCLERATION / 2);
 	srand(time(NULL));
 	m_jumpReady = true;
+	m_smartBombReady = true;
 }
 
 Player::~Player()
@@ -53,11 +54,16 @@ void Player::processInputs(sf::Event *evt)
 	{
 		std::cout << "Fire Laser" << std::endl;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && m_jumpReady)
 	{
-
-
-		m_playerState = PlayerStates::HYPERJUMP;
+		int worldX = -(m_worldSize.x / 2);
+		int worldY = m_worldSize.y;
+		setPosition(sf::Vector2f(rand() % ((int)m_worldSize.x + 1) + (worldX), rand() % (worldY - 50) + 50));
+		m_jumpReady = false;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && m_smartBombReady)
+	{
+		activateSmartBomb();
 	}
 }
 
@@ -85,6 +91,11 @@ void Player::boundaryResponse(sf::Vector2f worldSize)
 		setPosition(sf::Vector2f(getPosition().x, m_worldSize.y - m_size.y));
 		m_velocity.y = 0;
 	}
+}
+void Player::activateSmartBomb()
+{
+	m_smartBombReady = false;
+	std::cout << "smrtBmb" << std::endl;
 }
 
 void Player::update(sf::Time deltaTime)
@@ -133,13 +144,8 @@ void Player::update(sf::Time deltaTime)
 			m_velocity.y += m_speed.y * deltaTime.asSeconds();
 		}
 	}
-	if (m_playerState == PlayerStates::HYPERJUMP && m_jumpReady ==true)
-	{
-		int worldX = -(m_worldSize.x / 2);
-		int worldY = m_worldSize.y;
-		setPosition(sf::Vector2f(rand() % ((int)m_worldSize.x+1) +(worldX), rand() % (worldY-50) +50));
-		m_jumpReady = false;
-	}
+
+
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
 }
 

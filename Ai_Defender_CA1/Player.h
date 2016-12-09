@@ -27,6 +27,7 @@ public:
 	void setPosition(sf::Vector2f pos);
 
 	void boundaryResponse(sf::Vector2f worldSize);
+	void activateSmartBomb();
 	void update(sf::Time deltaTime);
 	void render(sf::RenderWindow &renderer);
 	void render(sf::RenderWindow &renderer, float scale);
