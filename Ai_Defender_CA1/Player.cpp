@@ -53,7 +53,7 @@ void Player::processInputs(sf::Event *evt)
 
 sf::Vector2f Player::getPosition() const
 {
-	return sf::Vector2f(m_boundingBox.getPosition());
+	return m_boundingBox.getPosition();
 }
 
 void Player::setPosition(sf::Vector2f pos)
@@ -61,18 +61,9 @@ void Player::setPosition(sf::Vector2f pos)
 	m_boundingBox.setPosition(pos);
 }
 
-void Player::boundaryResponse(sf::RenderWindow* winSize)
+void Player::boundaryResponse(sf::Vector2f worldSize)
 {
-	sf::Vector2f vect = sf::Vector2f(winSize->getSize().x, winSize->getSize().y);
-
-	if (getPosition().x < 0)
-	{
-		setPosition(sf::Vector2f(vect.x, getPosition().y));
-	}
-	else if (getPosition().x > vect.x)
-	{
-		setPosition(sf::Vector2f(0, getPosition().y));
-	}
+	sf::Vector2f vect = sf::Vector2f(worldSize.x, worldSize.y);
 
 	if(getPosition().y + m_size.y < m_size.y)
 	{
@@ -133,8 +124,6 @@ void Player::update(sf::Time deltaTime)
 		{
 			m_velocity.y += m_speed.y * deltaTime.asSeconds();
 		}
-
-
 	}
 
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
@@ -143,4 +132,11 @@ void Player::update(sf::Time deltaTime)
 void Player::render(sf::RenderWindow & renderer)
 {
 	renderer.draw(m_boundingBox);
+}
+
+void Player::render(sf::RenderWindow &renderer, float scale)
+{
+	sf::RectangleShape drawRect = m_boundingBox;
+	drawRect.setScale(sf::Vector2f(scale, scale));
+	renderer.draw(drawRect);
 }
