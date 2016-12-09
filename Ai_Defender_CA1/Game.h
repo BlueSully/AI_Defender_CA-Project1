@@ -1,16 +1,19 @@
 #pragma once
 #include "Player.h"
+#include "Astronaut.h"
 #include "Camera.h"
 
 class Game
 {
 private:
+	Astronaut m_astronaut;
 	Player m_playerShip;
 	sf::RenderWindow * m_windowScreen;
 	Camera * m_camera;
 	sf::View m_minimapView;
 
 	sf::Event m_event;
+	float debugTime;
 	bool m_isGameRunning;
 	int numOfScreens;
 	int sizeX;

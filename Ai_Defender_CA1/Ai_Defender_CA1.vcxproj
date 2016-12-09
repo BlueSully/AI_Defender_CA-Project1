@@ -200,6 +200,7 @@ xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-2.dll $(Targe
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Astronaut.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Player.cpp">
@@ -208,8 +209,10 @@ xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-2.dll $(Targe
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Astronaut.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="MathFunction.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerState.h" />
   </ItemGroup>

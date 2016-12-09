@@ -15,25 +15,28 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), numOfScreens(9)
 
 	m_camera = new Camera(sf::Vector2f(0, 0), static_cast<sf::Vector2f>(m_windowScreen->getSize()), false, true);
 
+	m_astronaut.init(sf::Vector2f(200, (m_windowScreen->getSize().y - m_astronaut.getSize().y) - 300), sf::Vector2f(rand() % 100 - 100, rand() % 100 - 100));
+
 	m_playerShip.setPosition(m_camera->getView().getCenter());
 	m_camera->setTargetPlayer(&m_playerShip);
 
-	sizeX = (m_windowScreen->getSize().x * numOfScreens / m_windowScreen->getSize().x);
+	sizeX = (m_windowScreen->getSize().x * numOfScreens / (m_windowScreen->getSize().x));//gets the size of each of the screens
 
 	for (size_t i = 0; i < sizeX; i++)
 	{
-		sf::RectangleShape temp(sf::Vector2f(m_windowScreen->getSize()));
-		temp.setPosition(static_cast<float>(-m_worldSize.x / 2 + (i * temp.getSize().x)), static_cast<float>(m_windowScreen->getSize().y - 50));
+		sf::RectangleShape temp(sf::Vector2f(m_windowScreen->getSize().x, rand() % 100 + 50));
 
-		if (i == 0 || i == sizeX - 1)//furthest right and furthest left must be the same Value or screen warping looks sloppy
+		if (i == 0 || i == (sizeX - 1))//furthest right and furthest left must be the same Value or screen warping looks sloppy
 		{
 			temp.setFillColor(sf::Color(255, 0, 0));
+			temp.setSize(sf::Vector2f(temp.getSize().x, 200));
 		}
 		else
 		{
-			temp.setFillColor(sf::Color(0, rand() % 235 + 10, rand() % 235 + 10));
+			temp.setFillColor(sf::Color(rand() % 235 + 10, rand() % 235 + 10, rand() % 235 + 10));
 		}
 
+		temp.setPosition(static_cast<float>((-m_worldSize.x / 2) + (i * temp.getSize().x)), (m_windowScreen->getSize().y - temp.getSize().y));
 		m_testBackground.push_back(temp);
 	}
 }
@@ -70,17 +73,18 @@ void Game::getInput()
 	}
 }
 
+//used to create a seamless transition from side to side as the player travels
 void Game::cameraWorldWrapping()
 {
-	if ((m_camera->getView().getCenter().x - m_camera->getView().getSize().x / 2) < -m_worldSize.x / 2) // if camera can't move more left warp everything on screen to right side of world
+	if ((m_camera->getView().getCenter().x - m_camera->getView().getSize().x / 2) < (m_testBackground.front().getPosition().x)) // if camera can't move more left warp everything on screen to right side of world
 	{
 		std::cout << "Warp to Right" << std::endl;
-		m_playerShip.setPosition(sf::Vector2f((m_worldSize.x / 2) - m_camera->getView().getSize().x / 2, m_playerShip.getPosition().y));
+		m_playerShip.setPosition(sf::Vector2f(m_testBackground.back().getPosition().x + m_testBackground.back().getSize().x - m_camera->getView().getSize().x / 2, m_playerShip.getPosition().y));//Move player to center of screen on right side of the world
 	}
-	else if ((m_camera->getView().getCenter().x + m_camera->getView().getSize().x / 2) > m_worldSize.x / 2) // if camera can't move more right warp everything on screen to left side of world
+	else if ((m_camera->getView().getCenter().x + m_camera->getView().getSize().x / 2) > (m_testBackground.back().getPosition().x + m_testBackground.back().getSize().x)) // if camera can't move more right warp everything on screen to left side of world
 	{
 		std::cout << "Warp to Left" << std::endl;
-		m_playerShip.setPosition(sf::Vector2f((-m_worldSize.x / 2) + m_camera->getView().getSize().x / 2, m_playerShip.getPosition().y));
+		m_playerShip.setPosition(sf::Vector2f((m_testBackground.front().getPosition().x + m_camera->getView().getSize().x / 2), m_playerShip.getPosition().y));
 	}
 }
 
@@ -91,8 +95,17 @@ void Game::update()
 	
 	cameraWorldWrapping();
 	m_camera->Update(m_worldSize);
+
 	m_playerShip.boundaryResponse(m_worldSize);
 	m_playerShip.update(elapsedTime);
+	debugTime += elapsedTime.asSeconds();
+
+	m_astronaut.boundaryResponse(m_worldSize);
+	//if (debugTime > 1) 
+	//{
+		m_astronaut.update(elapsedTime);
+		//debugTime = 0;
+	//}
 }
 
 void Game::render(sf::RenderWindow &renderer)
@@ -105,6 +118,7 @@ void Game::render(sf::RenderWindow &renderer)
 	{
 		renderer.draw(m_testBackground[i]);
 	}
+	m_astronaut.render(renderer);
 	m_playerShip.render(renderer);
 
 	renderer.display();

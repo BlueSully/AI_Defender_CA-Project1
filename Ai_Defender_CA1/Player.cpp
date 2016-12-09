@@ -1,5 +1,6 @@
 #include "Player.h"
 #include <iostream>
+
 Player::Player()
 : m_velocity(sf::Vector2f(0, 0)),
   m_size(sf::Vector2f(50, 30)),
