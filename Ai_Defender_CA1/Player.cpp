@@ -16,6 +16,7 @@ Player::Player()
 	srand(time(NULL));
 	m_jumpReady = true;
 	m_smartBombReady = true;
+	m_smartBombNum = 3;
 }
 
 Player::~Player()
@@ -61,7 +62,7 @@ void Player::processInputs(sf::Event *evt)
 		setPosition(sf::Vector2f(rand() % ((int)m_worldSize.x + 1) + (worldX), rand() % (worldY - 50) + 50));
 		m_jumpReady = false;
 	}
-	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && m_smartBombReady)
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && m_smartBombReady && m_smartBombNum > 0)
 	{
 		activateSmartBomb();
 	}
@@ -96,10 +97,13 @@ void Player::activateSmartBomb()
 {
 	m_smartBombReady = false;
 	std::cout << "smrtBmb" << std::endl;
+	m_smartBombNum--;
+	//add kill all once Enemies added
 }
 
 void Player::update(sf::Time deltaTime)
 {
+#pragma region moveStates
 	if (m_playerState == PlayerStates::MOVING_RIGHT && m_velocity.x < m_MAXHORIZONTALACCLERATION)
 	{
 		m_velocity.x += m_speed.x * deltaTime.asSeconds();
@@ -144,8 +148,19 @@ void Player::update(sf::Time deltaTime)
 			m_velocity.y += m_speed.y * deltaTime.asSeconds();
 		}
 	}
+#pragma endregion
 
+	if (m_smartBombReady == false)
+	{
+		timer += deltaTime.asSeconds();
+		std::cout << "time : " << timer << std::endl;
+		if (timer >= 6)
+		{
+			timer = 0;
+			m_smartBombReady = true;
+		}
 
+	}
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
 }
 

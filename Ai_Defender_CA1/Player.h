@@ -14,6 +14,7 @@ private:
 	const float m_MAXVERTICALACCLERATION;
 	bool m_smartBombReady;
 	bool m_jumpReady;
+	int m_smartBombNum;
 	float timer;
 
 	sf::RectangleShape m_boundingBox;
