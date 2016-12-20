@@ -17,6 +17,7 @@ Player::Player()
 	m_jumpReady = true;
 	m_smartBombReady = true;
 	m_smartBombNum = 3;
+	m_resetTime = 60;
 }
 
 Player::~Player()
@@ -154,7 +155,7 @@ void Player::update(sf::Time deltaTime)
 	{
 		timer += deltaTime.asSeconds();
 		std::cout << "time : " << timer << std::endl;
-		if (timer >= 6)
+		if (timer >= m_resetTime)
 		{
 			timer = 0;
 			m_smartBombReady = true;

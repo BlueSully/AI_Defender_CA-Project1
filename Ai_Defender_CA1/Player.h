@@ -15,6 +15,7 @@ private:
 	bool m_smartBombReady;
 	bool m_jumpReady;
 	int m_smartBombNum;
+	int m_resetTime;
 	float timer;
 
 	sf::RectangleShape m_boundingBox;
