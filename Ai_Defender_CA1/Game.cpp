@@ -15,7 +15,7 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), numOfScreens(9)
 
 	m_camera = new Camera(sf::Vector2f(0, 0), static_cast<sf::Vector2f>(m_windowScreen->getSize()), false, true);
 
-	m_astronaut.init(sf::Vector2f(200, (m_windowScreen->getSize().y - m_astronaut.getSize().y) - 300), sf::Vector2f(rand() % 100 - 100, rand() % 100 - 100));
+	m_astronaut.init(sf::Vector2f(200, (m_windowScreen->getSize().y - m_astronaut.getSize().y) - 300), sf::Vector2f(0, 0));
 
 	m_playerShip.setPosition(m_camera->getView().getCenter());
 	m_camera->setTargetPlayer(&m_playerShip);
@@ -24,7 +24,7 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), numOfScreens(9)
 
 	for (size_t i = 0; i < sizeX; i++)
 	{
-		sf::RectangleShape temp(sf::Vector2f(m_windowScreen->getSize().x, rand() % 100 + 50));
+		sf::RectangleShape temp(sf::Vector2f(static_cast<float>(m_windowScreen->getSize().x), static_cast<float>(rand() % 100 + 50)));
 
 		if (i == 0 || i == (sizeX - 1))//furthest right and furthest left must be the same Value or screen warping looks sloppy
 		{
@@ -101,11 +101,7 @@ void Game::update()
 	debugTime += elapsedTime.asSeconds();
 
 	m_astronaut.boundaryResponse(m_worldSize);
-	//if (debugTime > 1) 
-	//{
-		m_astronaut.update(elapsedTime);
-		//debugTime = 0;
-	//}
+	m_astronaut.update(elapsedTime);
 }
 
 void Game::render(sf::RenderWindow &renderer)
