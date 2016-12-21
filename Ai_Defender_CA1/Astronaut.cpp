@@ -6,7 +6,10 @@ Astronaut::Astronaut() : m_wander(true), m_flee(false)
 	m_boundingBox.setFillColor(sf::Color::White);
 	m_boundingBox.setSize(sf::Vector2f(32, 32));
 	m_velocity = sf::Vector2f(0, 0);
-
+	m_fleeCircle.setFillColor(sf::Color(255, 175, 0, 75));
+	m_fleeCircle.setRadius(240);
+	m_fleeCircle.setOrigin(sf::Vector2f(m_fleeCircle.getRadius(), m_fleeCircle.getRadius()));
+	state = AiState::WANDER;
 	m_wanderAngle = 0;
 
 }
@@ -37,8 +40,6 @@ void Astronaut::init(sf::Vector2f position, sf::Vector2f veclocity)
 	m_boundingBox.setPosition(position);
 	m_velocity = veclocity;
 
-	m_wanderDebugCircle.setFillColor(sf::Color::Yellow);
-	m_wanderDebugCircle.setRadius(CIRCLE_RADIUS);
 
 }
 
@@ -48,14 +49,13 @@ sf::Vector2f Astronaut::wander()
 	sf::Vector2f wanderForce, circleCenter, displacement;
 
 	circleCenter = m_velocity;	
+
 	if (circleCenter.x != 0 || circleCenter.y != 0) 
 	{
 		circleCenter = VectorHelper::normalise(circleCenter);
 	}
 
 	circleCenter = VectorHelper::scaleBy(circleCenter, CIRCLEDISTANCE);
-
-	m_wanderDebugCircle.setPosition(circleCenter + getPosition());
 
 	displacement = sf::Vector2f(0, -1);
 	displacement = VectorHelper::scaleBy(displacement, CIRCLE_RADIUS);
@@ -69,86 +69,77 @@ sf::Vector2f Astronaut::wander()
 	return wanderForce;
 }
 
-void Astronaut::flee()
+sf::Vector2f Astronaut::flee()
 {
-
-}
-
-void Astronaut::align(sf::Vector2f target)
-{
-	float angletoTarget = VectorHelper::angleBetween(target, getPosition());
-	float angleToMove = m_orientation - angletoTarget;
-
-	while (m_orientation != angletoTarget )
-	{
-		if (angleToMove > 0)
-		{
-			m_orientation -= 0.1f;
-		}
-		else if (angleToMove < 0)
-		{
-			m_orientation += 0.1f;
-		}
-		angleToMove = m_orientation - angletoTarget;
-	}
-	//m_orientation = angletoTarget;
-}
-
-void Astronaut::face(sf::Vector2f target)
-{
-	sf::Vector2f direction = target - getPosition();
-
-	if (VectorHelper::magnitude(direction) != 0) 
-	{
-		float newOrientation = atan2(-direction.x, direction.y);
-
-		align(target);
-	}
-}
-
-float Astronaut::getNewOrientation(float currentOrientation, sf::Vector2f velocity)
-{	
-	if (VectorHelper::magnitude(velocity) > 0)
-	{
-		return std::atan2(m_boundingBox.getPosition().y - (m_boundingBox.getPosition().y + velocity.y), 
-						  m_boundingBox.getPosition().x - (m_boundingBox.getPosition().x + velocity.x));
-	}
-	else
-	{
-		return currentOrientation;
-	}
+	sf::Vector2f desired_velocity = VectorHelper::normalise(m_fleeFromPos - getPosition()) * 100.0f;
+	return (desired_velocity - m_velocity);
 }
 
 void Astronaut::update(sf::Time elapsedTime)
 {
-	/*if (m_wanderAngle > 360) 
-	{
-		m_wanderAngle = 0;
-	}
-	else if (m_wanderAngle < 0)
-	{
-		m_wanderAngle = 360;
-	}*/
 
 	m_wanderDelayTimer += elapsedTime.asMilliseconds();
-	if (m_wander)
+	switch (state)
 	{
-		if (m_wanderDelayTimer > 100)//0.1 of a second delay 
+	case WANDER:
+		if (m_wanderDelayTimer > 10)//0.1 of a second delay 
 		{
 			m_steering = wander();
 			m_steering = VectorHelper::truncate(m_steering, MAX_FORCE);
 			m_wanderDelayTimer = 0;
 		}
+		break;
+	case FLEE:
+		m_steering = -flee();
+		break;
+	default:
+		break;
 	}
 
-	m_orientation = getNewOrientation(m_orientation, m_velocity);
-	double degreeort = m_orientation * 180 / M_PI;
+	setState("Wander");
 
 	m_velocity = VectorHelper::truncate(m_velocity + m_steering, MAX_VELOCITY);
-
-	std::cout << "pos: " << getPosition().x << "," << getPosition().x << std::endl;
-
 	m_boundingBox.move(m_velocity * elapsedTime.asSeconds());
+	
+	
+	m_fleeCircle.setPosition(m_boundingBox.getPosition() + sf::Vector2f((m_boundingBox.getSize().x / 2), (m_boundingBox.getSize().y / 2)));
+}
+
+void Astronaut::setFleeingTarget(sf::Vector2f value)
+{
+	m_fleeFromPos = value;
+}
+
+void Astronaut::setState(std::string str)
+{
+	if (str == "Wander")
+	{
+		state = AiState::WANDER;
+	}
+	else if (str == "Flee") 
+	{
+		state = AiState::FLEE;
+	}	
+}
+
+void Astronaut::fleeCollisionCheck(sf::Vector2f value)
+{
+	targetCircle.setPosition(value);
+	targetCircle.setRadius(32);
+	targetCircle.setOrigin(sf::Vector2f(targetCircle.getRadius(), targetCircle.getRadius()));
+
+	float a = m_fleeCircle.getPosition().x - targetCircle.getPosition().x;
+	float b = m_fleeCircle.getPosition().y - targetCircle.getPosition().y;
+
+	float distance = sqrt((a * a) + (b * b));
+
+	float totalRadius = m_fleeCircle.getRadius() + targetCircle.getRadius();
+
+	if (distance < totalRadius) //Check if value is inside of wander radius;
+	{
+		setState("Flee");
+		setFleeingTarget(value);
+	}
 }
 
 void Astronaut::boundaryResponse(sf::Vector2f worldSize)
@@ -169,6 +160,8 @@ void Astronaut::boundaryResponse(sf::Vector2f worldSize)
 
 void Astronaut::render(sf::RenderWindow & renderer)
 {
+	renderer.draw(m_fleeCircle);
+	renderer.draw(targetCircle);
 	renderer.draw(m_boundingBox);
-	renderer.draw(m_wanderDebugCircle);
+	
 }

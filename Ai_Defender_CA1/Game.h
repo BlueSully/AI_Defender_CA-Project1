@@ -23,11 +23,11 @@ private:
 	sf::Time m_deltatime;
 	sf::View *viewport;
 	sf::Vector2f m_worldSize;
-	std::vector<sf::RectangleShape> m_testBackground;
+	std::vector<sf::RectangleShape> m_worldBackground;
 
 public:
 	Game();
-	Game(sf::RenderWindow &window);
+	Game(sf::RenderWindow &window, int numbScreens);
 	~Game();
 
 	//Get Methods and Set methods

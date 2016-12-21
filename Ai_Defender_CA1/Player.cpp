@@ -139,14 +139,7 @@ void Player::update(sf::Time deltaTime)
 			m_velocity.y += m_speed.y * deltaTime.asSeconds();
 		}
 	}
-	else 
-	{
-		m_orientation = getNewOrientation(m_orientation, m_velocity);
-	}
-	
-	double degreeort = (m_orientation * 180) / M_PI;
 
-	//std::cout << "Debugdegree: " << degreeort << " vX: " << m_velocity.x << " vY: " << m_velocity.y  << std::endl;
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
 }
 
