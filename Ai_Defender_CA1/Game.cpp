@@ -14,7 +14,7 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), numOfScreens(9)
 	m_worldSize = sf::Vector2f(static_cast<float>(m_windowScreen->getSize().x * numOfScreens), static_cast<float>(m_windowScreen->getSize().y));
 
 	m_camera = new Camera(sf::Vector2f(0, 0), static_cast<sf::Vector2f>(m_windowScreen->getSize()), false, true);
-
+	abductor1.setPosition(sf::Vector2f(0, 300));
 	m_playerShip.setPosition(m_camera->getView().getCenter());
 	m_camera->setTargetPlayer(&m_playerShip);
 
@@ -106,6 +106,6 @@ void Game::render(sf::RenderWindow &renderer)
 		renderer.draw(m_testBackground[i]);
 	}
 	m_playerShip.render(renderer);
-
+	abductor1.render(renderer);
 	renderer.display();
 }

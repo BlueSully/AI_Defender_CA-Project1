@@ -1,11 +1,14 @@
 #pragma once
 #include "Player.h"
 #include "Camera.h"
+#include "Abductor.h"
+#include <SFML\Graphics.hpp>
 
 class Game
 {
 private:
 	Player m_playerShip;
+	Abductor abductor1;
 	sf::RenderWindow * m_windowScreen;
 	Camera * m_camera;
 	sf::View m_minimapView;
