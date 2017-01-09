@@ -20,6 +20,7 @@ public:
 	void processInputs(sf::Event *evt);
 	sf::Vector2f getPosition() const;
 	void setPosition(sf::Vector2f pos);
+	sf::RectangleShape getBoundingBox() const;
 
 	void boundaryResponse(sf::Vector2f worldSize);
 	void update(sf::Time deltaTime);

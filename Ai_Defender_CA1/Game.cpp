@@ -13,29 +13,35 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), numOfScreens(9)
 
 	m_worldSize = sf::Vector2f(static_cast<float>(m_windowScreen->getSize().x * numOfScreens), static_cast<float>(m_windowScreen->getSize().y));
 
-	m_camera = new Camera(sf::Vector2f(0, 0), static_cast<sf::Vector2f>(m_windowScreen->getSize()), false, true);
-	abductor1.setPosition(sf::Vector2f(0, 300));
-	m_playerShip.setPosition(m_camera->getView().getCenter());
-	m_camera->setTargetPlayer(&m_playerShip);
-
 	sizeX = (m_windowScreen->getSize().x * numOfScreens / m_windowScreen->getSize().x);
 
 	for (size_t i = 0; i < sizeX; i++)
 	{
-		sf::RectangleShape temp(sf::Vector2f(m_windowScreen->getSize()));
-		temp.setPosition(static_cast<float>(-m_worldSize.x / 2 + (i * temp.getSize().x)), static_cast<float>(m_windowScreen->getSize().y - 50));
+		sf::RectangleShape screenBackground(sf::Vector2f(m_windowScreen->getSize()));
+		screenBackground.setPosition(static_cast<float>(-m_worldSize.x / 2 + (i * screenBackground.getSize().x)), static_cast<float>(m_windowScreen->getSize().y - 50));
 
 		if (i == 0 || i == sizeX - 1)//furthest right and furthest left must be the same Value or screen warping looks sloppy
 		{
-			temp.setFillColor(sf::Color(255, 0, 0));
+			screenBackground.setFillColor(sf::Color(255, 0, 0));
 		}
 		else
 		{
-			temp.setFillColor(sf::Color(0, rand() % 235 + 10, rand() % 235 + 10));
+			screenBackground.setFillColor(sf::Color(0, rand() % 235 + 10, rand() % 235 + 10));
 		}
 
-		m_testBackground.push_back(temp);
+		m_worldBackground.push_back(screenBackground);
 	}
+
+	m_camera = new Camera(sf::Vector2f(0, 0), static_cast<sf::Vector2f>(m_windowScreen->getSize()), false, true);
+
+	abductor = new Abductor(sf::Vector2f(0, 300), sf::Vector2f(m_windowScreen->getSize()));
+	abductor->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
+
+	m_playerShip.setPosition(m_camera->getView().getCenter());
+
+	m_camera->setTargetPlayer(&m_playerShip);
+
+
 }
 
 Game::~Game()
@@ -93,19 +99,28 @@ void Game::update()
 	m_camera->Update(m_worldSize);
 	m_playerShip.boundaryResponse(m_worldSize);
 	m_playerShip.update(elapsedTime);
+
+	abductor->update(elapsedTime, m_playerShip.getBoundingBox());
 }
 
 void Game::render(sf::RenderWindow &renderer)
 {
 	renderer.clear(sf::Color(0, 0, 0, 255));
+	
+
+	
 
 	//render Scene
 	renderer.setView(m_camera->getView());
-	for (size_t i = 0; i < sizeX; i++)
+
+	for (size_t i = 0; i < m_worldBackground.size(); i++)
 	{
-		renderer.draw(m_testBackground[i]);
+		renderer.draw(m_worldBackground[i]);
 	}
+
 	m_playerShip.render(renderer);
-	abductor1.render(renderer);
+
+	abductor->render(renderer);
+	 
 	renderer.display();
 }
