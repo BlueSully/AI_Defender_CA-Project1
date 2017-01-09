@@ -30,7 +30,7 @@
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Anthony O%27Sullivan\Desktop\Ai_Defender_Abductor\Ai_Defender_CA1\Abductor.cpp">
+    <ClCompile Include="Abductor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,10 +47,10 @@
     <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Anthony O%27Sullivan\Desktop\Ai_Defender_Abductor\Ai_Defender_CA1\Abductor.h">
+    <ClInclude Include="Abductor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Anthony O%27Sullivan\Desktop\Ai_Defender_Abductor\Ai_Defender_CA1\AiStates.h">
+    <ClInclude Include="AiStates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -195,7 +195,7 @@ xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-2.dll $(Targe
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Anthony O%27Sullivan\Desktop\Ai_Defender_Abductor\Ai_Defender_CA1\Abductor.cpp" />
+    <ClCompile Include="Abductor.cpp" />
     <ClCompile Include="Ai_Defender_CA1.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -209,8 +209,8 @@ xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-2.dll $(Targe
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Anthony O%27Sullivan\Desktop\Ai_Defender_Abductor\Ai_Defender_CA1\Abductor.h" />
-    <ClInclude Include="..\..\..\..\Anthony O%27Sullivan\Desktop\Ai_Defender_Abductor\Ai_Defender_CA1\AiStates.h" />
+    <ClInclude Include="Abductor.h" />
+    <ClInclude Include="AiStates.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Player.h" />

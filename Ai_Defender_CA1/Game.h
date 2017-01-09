@@ -8,16 +8,16 @@ class Game
 {
 private:
 	Player m_playerShip;
-	Abductor * abductor;
+	Abductor * m_abductor1;
+	Abductor * m_abductor2;
 	sf::RenderWindow * m_windowScreen;
 	Camera * m_camera;
 	sf::View m_minimapView;
 
 	sf::Event m_event;
 	bool m_isGameRunning;
-	int numOfScreens;
-	int sizeX;
-	int sizeY;
+	int m_numOfScreens;
+	int m_screenWidth;
 
 	sf::Clock m_clock;
 	sf::Time m_deltatime;

@@ -1,26 +1,26 @@
 #include "Game.h"
 #include <iostream>
 
-Game::Game() : m_isGameRunning(true), numOfScreens(5)
+Game::Game() : m_isGameRunning(true), m_numOfScreens(5)
 {
 
 }
 
-Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), numOfScreens(9)
+Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 {
 	srand(static_cast<unsigned int>(time(NULL)));
 	m_windowScreen = &window;
 
-	m_worldSize = sf::Vector2f(static_cast<float>(m_windowScreen->getSize().x * numOfScreens), static_cast<float>(m_windowScreen->getSize().y));
+	m_worldSize = sf::Vector2f(static_cast<float>(m_windowScreen->getSize().x * m_numOfScreens), static_cast<float>(m_windowScreen->getSize().y));
 
-	sizeX = (m_windowScreen->getSize().x * numOfScreens / m_windowScreen->getSize().x);
+	m_screenWidth = (m_windowScreen->getSize().x * m_numOfScreens / m_windowScreen->getSize().x);
 
-	for (size_t i = 0; i < sizeX; i++)
+	for (size_t i = 0; i < m_screenWidth; i++)
 	{
 		sf::RectangleShape screenBackground(sf::Vector2f(m_windowScreen->getSize()));
 		screenBackground.setPosition(static_cast<float>(-m_worldSize.x / 2 + (i * screenBackground.getSize().x)), static_cast<float>(m_windowScreen->getSize().y - 50));
 
-		if (i == 0 || i == sizeX - 1)//furthest right and furthest left must be the same Value or screen warping looks sloppy
+		if (i == 0 || i == m_screenWidth - 1)//furthest right and furthest left must be the same Value or screen warping looks sloppy
 		{
 			screenBackground.setFillColor(sf::Color(255, 0, 0));
 		}
@@ -34,8 +34,11 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), numOfScreens(9)
 
 	m_camera = new Camera(sf::Vector2f(0, 0), static_cast<sf::Vector2f>(m_windowScreen->getSize()), false, true);
 
-	abductor = new Abductor(sf::Vector2f(0, 300), sf::Vector2f(m_windowScreen->getSize()));
-	abductor->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
+	m_abductor1 = new Abductor(sf::Vector2f(0, 300), sf::Vector2f(m_windowScreen->getSize()));
+	m_abductor2 = new Abductor(sf::Vector2f(300, 300), sf::Vector2f(m_windowScreen->getSize()));
+
+	m_abductor1->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
+	m_abductor2->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
 
 	m_playerShip.setPosition(m_camera->getView().getCenter());
 
@@ -100,15 +103,13 @@ void Game::update()
 	m_playerShip.boundaryResponse(m_worldSize);
 	m_playerShip.update(elapsedTime);
 
-	abductor->update(elapsedTime, m_playerShip.getBoundingBox());
+	m_abductor1->update(elapsedTime, m_playerShip.getBoundingBox());
+	m_abductor1->flock(m_abductor2->getBoundingBox());
 }
 
 void Game::render(sf::RenderWindow &renderer)
 {
 	renderer.clear(sf::Color(0, 0, 0, 255));
-	
-
-	
 
 	//render Scene
 	renderer.setView(m_camera->getView());
@@ -120,7 +121,8 @@ void Game::render(sf::RenderWindow &renderer)
 
 	m_playerShip.render(renderer);
 
-	abductor->render(renderer);
+	m_abductor1->render(renderer);
+	m_abductor2->render(renderer);
 	 
 	renderer.display();
 }

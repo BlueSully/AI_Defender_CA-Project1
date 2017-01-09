@@ -11,7 +11,7 @@ class Abductor
 private :
 	sf::RectangleShape m_boundingBox;//Bounding Box for Abductor
 	sf::RectangleShape m_attackRangeBox;//Bounding box for Attack Range
-	sf::RectangleShape m_flockRangeBox;//Bounding box for Flocking Range
+	sf::CircleShape m_flockRangeBox;//Bounding box for Flocking Range
 	sf::RectangleShape m_worldBounds;//World data
 	sf::RectangleShape m_screenBounds;//ScreenData
 
@@ -20,8 +20,9 @@ private :
 
 	sf::Vertex patrolLine[2];
 
-	int speed;
+	float speed;
 	int m_attackRange;
+	int m_flockRange;
 
 	bool m_enemyInRange;
 	bool m_canAttack;
@@ -34,6 +35,7 @@ public:
 
 	sf::Vector2f getSize();
 	sf::Vector2f getPosition();
+	sf::RectangleShape getBoundingBox();
 
 	void setWorldRectangle(sf::Vector2f postion, sf::Vector2f size);
 	void setPosition(sf::Vector2f value);
@@ -42,11 +44,11 @@ public:
 
 	void update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox);
 	sf::Vector2f getDirection();
-	void flock();
+
+	void flock(sf::RectangleShape target);
 	void patrol(sf::Time deltaTime);
 
 	void attack(sf::RectangleShape target);
-	void boundaryCollision();
 
 	bool rectCollision(sf::RectangleShape rectA, sf::RectangleShape rectB);
 	void render(sf::RenderWindow & renderer);
