@@ -76,8 +76,11 @@ void Abductor::setState(AiState value)
 	state = value;
 }
 
-void Abductor::flock(sf::RectangleShape target)
+void Abductor::flock(Abductor target, std::vector<Abductor> abductors)
 {
+	/*public function computeAlignment(myAgent:Agent) :Point
+	{
+	}*/
 	//m_flockRangeBox
 	//if (rectCollision(m_flockRangeBox, target)) //Check if value is inside of wander radius;
 	//{
@@ -105,6 +108,33 @@ void Abductor::patrol(sf::Time deltaTime)
 	}
 
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
+}
+
+sf::Vector2f Abductor::computeAlignment(std::vector<Abductor> abductors)
+{
+	sf::Vector2f v;
+	int neighborCount = 0;
+
+	for (size_t i = 0; i < abductors.size(); i++)
+	{
+		if (this != &abductors[i])
+		{
+			/*if (myAgent.distanceFrom(agent) < 300)
+			{
+				v.x += agent.velocity.x;
+				v.y += agent.velocity.y;
+				neighborCount++;
+			}*/
+		}
+	}
+
+	if (neighborCount == 0)
+		return v;
+
+	v.x /= neighborCount;
+	v.y /= neighborCount;
+	//v.normalize(1);
+	return v;
 }
 
 void Abductor::attack(sf::RectangleShape target)

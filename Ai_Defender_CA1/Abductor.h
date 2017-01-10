@@ -2,9 +2,12 @@
 #include <string>
 #include <SFML\Graphics.hpp>
 #include <iostream>
+#include <vector>
 #include "AiStates.h"
 #include <stdlib.h>
 #include <time.h>
+
+using namespace std;
 
 class Abductor
 {
@@ -45,8 +48,11 @@ public:
 	void update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox);
 	sf::Vector2f getDirection();
 
-	void flock(sf::RectangleShape target);
+	void flock(Abductor target, std::vector<Abductor> abductors);
 	void patrol(sf::Time deltaTime);
+
+	sf::Vector2f computeAlignment(std::vector<Abductor> abductors);
+
 
 	void attack(sf::RectangleShape target);
 

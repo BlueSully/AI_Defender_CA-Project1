@@ -34,17 +34,15 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 	m_camera = new Camera(sf::Vector2f(0, 0), static_cast<sf::Vector2f>(m_windowScreen->getSize()), false, true);
 
-	m_abductor1 = new Abductor(sf::Vector2f(0, 300), sf::Vector2f(m_windowScreen->getSize()));
-	m_abductor2 = new Abductor(sf::Vector2f(300, 300), sf::Vector2f(m_windowScreen->getSize()));
-
-	m_abductor1->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
-	m_abductor2->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
-
 	m_playerShip.setPosition(m_camera->getView().getCenter());
 
 	m_camera->setTargetPlayer(&m_playerShip);
 
-
+	for (size_t i = 0; i < 2; i++)
+	{
+		m_abductors.push_back(new Abductor(sf::Vector2f(i * 300, 300), sf::Vector2f(m_windowScreen->getSize())));
+		m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
+	}
 }
 
 Game::~Game()
