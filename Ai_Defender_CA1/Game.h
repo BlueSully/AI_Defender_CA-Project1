@@ -14,7 +14,6 @@ private:
 	Player m_playerShip;
 	vector<Abductor *> m_abductors;
 
-	vector<Abductor *> m_abductors;
 	sf::RenderWindow * m_windowScreen;
 	Camera * m_camera;
 	sf::View m_minimapView;

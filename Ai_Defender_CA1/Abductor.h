@@ -14,9 +14,9 @@ using namespace std;
 class Abductor
 {
 private :
-	const float m_ALIGNMENTWEIGHT = 10;
-	const float m_SEPERATIONWEIGHT = 5;
-	const float m_COHENSIONWEIGHT = 5;
+	const float m_ALIGNMENTWEIGHT = 5;
+	const float m_SEPERATIONWEIGHT = 7;
+	const float m_COHENSIONWEIGHT = 6;
 
 	sf::RectangleShape m_boundingBox;//Bounding Box for Abductor
 	sf::RectangleShape m_attackRangeBox;//Bounding box for Attack Range

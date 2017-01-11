@@ -91,15 +91,18 @@ void Abductor::setSpeed(float value)
 
 void Abductor::flock(vector<Abductor *> * abductors)
 {
-	sf::Vector2f alignmentVect = alignment(abductors) * m_ALIGNMENTWEIGHT;
-	sf::Vector2f cohesionVect = cohesion(abductors) * m_COHENSIONWEIGHT;
-	sf::Vector2f separationVect = seperation(abductors) * m_SEPERATIONWEIGHT;
+	sf::Vector2f alignmentVect = alignment(abductors);
+	sf::Vector2f cohesionVect = cohesion(abductors);
+	sf::Vector2f separationVect = seperation(abductors);
 
-	this->m_velocity.x += alignmentVect.x + cohesionVect.x + separationVect.x;
-	this->m_velocity.y += alignmentVect.y + cohesionVect.y + separationVect.y;
+	this->m_velocity.x += alignmentVect.x * m_ALIGNMENTWEIGHT + cohesionVect.x * m_COHENSIONWEIGHT + separationVect.x * m_SEPERATIONWEIGHT;
+	this->m_velocity.y += alignmentVect.y * m_ALIGNMENTWEIGHT + cohesionVect.y * m_COHENSIONWEIGHT + separationVect.y * m_SEPERATIONWEIGHT;
 
-	this->m_velocity = VectorHelper::normalise(this->m_velocity);
-	this->m_velocity *= m_speed;
+	if (VectorHelper::magnitude(this->m_velocity) != 0)
+	{
+		this->m_velocity = VectorHelper::normalise(this->m_velocity);
+		this->m_velocity *= m_speed;
+	}
 }
 
 sf::Vector2f Abductor::alignment(vector<Abductor *> * abductors)
@@ -125,7 +128,7 @@ sf::Vector2f Abductor::alignment(vector<Abductor *> * abductors)
 
 	if (length <= 0) 
 	{
-		v = sf::Vector2f(1, 0);
+		v = sf::Vector2f(-1, 0);
 	}
 
 	v.x /= neighborCount;
@@ -144,8 +147,8 @@ sf::Vector2f Abductor::seperation(vector<Abductor *> * abductors)
 		float distBetween = VectorHelper::distanceBetweenTwoVectors(getPosition(), (*abductors)[i]->getPosition());
 			if (distBetween < m_flockDistance)
 			{
-				v.x += getPosition().x - (*abductors)[i]->getPosition().x;
-				v.y += getPosition().y - (*abductors)[i]->getPosition().y;
+				v.x += (*abductors)[i]->getPosition().x - getPosition().x;
+				v.y += (*abductors)[i]->getPosition().y - getPosition().y;
 				neighborCount++;
 			}
 	}
