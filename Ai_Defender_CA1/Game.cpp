@@ -1,4 +1,4 @@
-#include "Game.h"
+﻿#include "Game.h"
 #include <iostream>
 
 Game::Game() : m_isGameRunning(true), m_numOfScreens(5)
@@ -34,12 +34,13 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 	m_camera = new Camera(sf::Vector2f(0, 0), static_cast<sf::Vector2f>(m_windowScreen->getSize()), false, true);
 
-	m_abductor1 = new Abductor(sf::Vector2f(0, 300), sf::Vector2f(m_windowScreen->getSize()));
-	m_abductor2 = new Abductor(sf::Vector2f(300, 300), sf::Vector2f(m_windowScreen->getSize()));
+	for (size_t i = 0; i < 2; i++)
+	{
+		m_abductors.push_back(new Abductor(sf::Vector2f(300 * i, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i));
+		m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
+	}
 
-	m_abductor1->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
-	m_abductor2->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
-
+	m_abductors[1]->setColour(sf::Color(0, 150, 0));
 	m_playerShip.setPosition(m_camera->getView().getCenter());
 
 	m_camera->setTargetPlayer(&m_playerShip);
@@ -51,8 +52,6 @@ Game::~Game()
 {
 
 }
-
-
 
 bool Game::isGameRunning() const
 {
@@ -79,6 +78,7 @@ void Game::getInput()
 	}
 }
 
+
 void Game::cameraWorldWrapping()
 {
 	if ((m_camera->getView().getCenter().x - m_camera->getView().getSize().x / 2) < -m_worldSize.x / 2) // if camera can't move more left warp everything on screen to right side of world
@@ -103,8 +103,19 @@ void Game::update()
 	m_playerShip.boundaryResponse(m_worldSize);
 	m_playerShip.update(elapsedTime);
 
-	m_abductor1->update(elapsedTime, m_playerShip.getBoundingBox());
-	m_abductor1->flock(m_abductor2->getBoundingBox());
+	for (size_t i = 0; i < m_abductors.size(); i++)
+	{
+		m_abductors[i]->update(elapsedTime, m_playerShip.getBoundingBox());
+		
+		if (i + 1 < m_abductors.size()) 
+		{
+			if (VectorHelper::distanceBetweenTwoVectors(m_abductors[i]->getPosition(), m_abductors[i + 1]->getPosition()) < 150)
+			{
+				m_abductors[i]->flock(&m_abductors);
+			}
+		}
+	}
+	cout << "Velo: " << m_abductors[0]->getVelocity().x << ' ' << m_abductors[0]->getVelocity().y << endl;
 }
 
 void Game::render(sf::RenderWindow &renderer)
@@ -121,8 +132,10 @@ void Game::render(sf::RenderWindow &renderer)
 
 	m_playerShip.render(renderer);
 
-	m_abductor1->render(renderer);
-	m_abductor2->render(renderer);
+	for (size_t i = 0; i < m_abductors.size(); i++)
+	{
+		m_abductors[i]->render(renderer);
+	}
 	 
 	renderer.display();
 }

@@ -2,14 +2,17 @@
 #include "Player.h"
 #include "Camera.h"
 #include "Abductor.h"
+#include <vector>
 #include <SFML\Graphics.hpp>
+
+using namespace std;
 
 class Game
 {
 private:
 	Player m_playerShip;
-	Abductor * m_abductor1;
-	Abductor * m_abductor2;
+	vector<Abductor *> m_abductors;
+
 	sf::RenderWindow * m_windowScreen;
 	Camera * m_camera;
 	sf::View m_minimapView;

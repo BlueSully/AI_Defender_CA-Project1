@@ -1,7 +1,8 @@
 #include "Abductor.h"
 
-Abductor::Abductor() : m_attackRange(17), m_flockRange(5), speed(20), state(PATROL), m_enemyInRange(false), m_canAttack(true)
+Abductor::Abductor() : m_attackRange(17), m_flockDistance(250), m_speed(20), state(PATROL), m_enemyInRange(false), m_canAttack(true)
 {
+	srand(time(NULL));
 	m_boundingBox.setPosition(sf::Vector2f(0, 300));
 	m_boundingBox.setSize(sf::Vector2f(32, 32));
 	m_boundingBox.setFillColor(sf::Color::Red);
@@ -10,15 +11,12 @@ Abductor::Abductor() : m_attackRange(17), m_flockRange(5), speed(20), state(PATR
 	m_attackRangeBox.setSize(sf::Vector2f(static_cast<float>(32 * m_attackRange), static_cast<float>(32 * m_attackRange)));
 	m_attackRangeBox.setPosition(m_boundingBox.getPosition() - sf::Vector2f(static_cast<float>(32 * (m_attackRange / 2)), static_cast<float>(32 * (m_attackRange / 2))));
 	
-	m_flockRangeBox.setFillColor(sf::Color(0, 0, 125, 175));
-	m_flockRangeBox.setRadius(static_cast<float>(32 * m_flockRange));
-	m_flockRangeBox.setOrigin(sf::Vector2f(-m_flockRangeBox.getRadius() / 2, -m_flockRangeBox.getRadius() / 2));
-
 	m_velocity = getDirection();
 }
 
-Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize) : m_attackRange(17), m_flockRange(5), speed(35), state(PATROL), m_enemyInRange(false), m_canAttack(true)
+Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize, int direction) : m_attackRange(17), m_flockDistance(250), m_speed(35), state(PATROL), m_enemyInRange(false), m_canAttack(true)
 {
+	srand(time(NULL));
 	m_boundingBox.setPosition(position);
 	m_boundingBox.setSize(sf::Vector2f(32, 32));
 	m_boundingBox.setFillColor(sf::Color::Red);
@@ -26,14 +24,9 @@ Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize) : m_attackRan
 	m_attackRangeBox.setFillColor(sf::Color(125, 50, 0, 175));
 	m_attackRangeBox.setSize(sf::Vector2f(static_cast<float>(32 * m_attackRange), static_cast<float>(32 * m_attackRange)));
 	m_attackRangeBox.setPosition(m_boundingBox.getPosition() - sf::Vector2f(static_cast<float>(32 * (m_attackRange / 2)), static_cast<float>(32 * (m_attackRange / 2))));
-
-	m_flockRangeBox.setFillColor(sf::Color(0, 0, 125, 175));
-	m_flockRangeBox.setRadius(static_cast<float>(32 * m_flockRange));
-	m_flockRangeBox.setOrigin(sf::Vector2f(m_flockRangeBox.getRadius() / 2, m_flockRangeBox.getRadius() / 2));
-
+	setDirection(direction);
 	m_velocity = getDirection();
 }
-
 
 Abductor::~Abductor()
 {
@@ -45,6 +38,16 @@ sf::Vector2f Abductor::getSize()
 	return m_boundingBox.getSize();
 }
 
+void Abductor::setSize(sf::Vector2f value)
+{
+	m_boundingBox.setSize(value);
+}
+
+void Abductor::setColour(sf::Color colour)
+{
+	m_boundingBox.setFillColor(colour);
+}
+
 sf::Vector2f Abductor::getPosition()
 {
 	return m_boundingBox.getPosition();
@@ -53,6 +56,11 @@ sf::Vector2f Abductor::getPosition()
 sf::RectangleShape Abductor::getBoundingBox()
 {
 	return m_boundingBox;
+}
+
+sf::Vector2f Abductor::getVelocity()
+{
+	return m_velocity;
 }
 
 void Abductor::setWorldRectangle(sf::Vector2f postion, sf::Vector2f size)
@@ -76,14 +84,111 @@ void Abductor::setState(AiState value)
 	state = value;
 }
 
-void Abductor::flock(sf::RectangleShape target)
+void Abductor::setSpeed(float value)
 {
-	//m_flockRangeBox
-	//if (rectCollision(m_flockRangeBox, target)) //Check if value is inside of wander radius;
-	//{
-	//	std::cout << "Flocking" << std::endl;
+	m_speed = value;
+}
 
-	//}
+void Abductor::flock(vector<Abductor *> * abductors)
+{
+	sf::Vector2f alignmentVect = alignment(abductors) * m_ALIGNMENTWEIGHT;
+	sf::Vector2f cohesionVect = cohesion(abductors) * m_COHENSIONWEIGHT;
+	sf::Vector2f separationVect = seperation(abductors) * m_SEPERATIONWEIGHT;
+
+	this->m_velocity.x += alignmentVect.x + cohesionVect.x + separationVect.x;
+	this->m_velocity.y += alignmentVect.y + cohesionVect.y + separationVect.y;
+
+	this->m_velocity = VectorHelper::normalise(this->m_velocity);
+	this->m_velocity *= m_speed;
+}
+
+sf::Vector2f Abductor::alignment(vector<Abductor *> * abductors)
+//Alignment is a behavior that causes a particular agent to line up with agents close by.
+{
+	sf::Vector2f v = sf::Vector2f(0, 0);
+	int neighborCount = 0;
+
+	for (size_t i = 0; i < abductors->size(); i++)
+	{
+		float distBetween = VectorHelper::distanceBetweenTwoVectors(getPosition(), (*abductors)[i]->getPosition());
+		if (distBetween < m_flockDistance)
+		{
+			v.x += (*abductors)[i]->m_velocity.x;
+			v.y += (*abductors)[i]->m_velocity.y;
+			neighborCount++;
+		}
+	}
+
+	if (neighborCount == 0)
+		return v;
+	float length = VectorHelper::magnitude(v);
+
+	if (length <= 0) 
+	{
+		v = sf::Vector2f(1, 0);
+	}
+
+	v.x /= neighborCount;
+	v.y /= neighborCount;
+	v = VectorHelper::normalise(v);
+	return v;
+}
+
+sf::Vector2f Abductor::seperation(vector<Abductor *> * abductors)
+{
+	sf::Vector2f v = sf::Vector2f(0, 0);
+	int neighborCount = 0;
+
+	for (size_t i = 0; i < abductors->size(); i++)
+	{
+		float distBetween = VectorHelper::distanceBetweenTwoVectors(getPosition(), (*abductors)[i]->getPosition());
+			if (distBetween < m_flockDistance)
+			{
+				v.x += getPosition().x - (*abductors)[i]->getPosition().x;
+				v.y += getPosition().y - (*abductors)[i]->getPosition().y;
+				neighborCount++;
+			}
+	}
+
+	if (neighborCount == 0)
+		return v;
+
+	v.x /= neighborCount;
+	v.y /= neighborCount;
+	v.x *= -1;
+	v.y *= -1;
+	v = VectorHelper::normalise(v);
+
+	return v;
+}
+
+sf::Vector2f Abductor::cohesion(vector<Abductor *> * abductors)
+//Cohesion is a behavior that causes agents to steer towards the "center of mass" - that is, the average position of the agents within a certain radius.
+{
+	sf::Vector2f v = sf::Vector2f(0, 0);
+	int neighborCount = 0;
+
+	for (size_t i = 0; i < abductors->size(); i++)
+	{
+		float distBetween = VectorHelper::distanceBetweenTwoVectors(getPosition(), (*abductors)[i]->getPosition());
+			if (distBetween < m_flockDistance)
+			{
+				v.x += (*abductors)[i]->getPosition().x;
+				v.y += (*abductors)[i]->getPosition().y;
+				neighborCount++;
+			}
+	}
+
+	if (neighborCount == 0)
+		return v;
+
+	v.x /= neighborCount;
+	v.y /= neighborCount;
+	// Need to set the steering to a negative to move away
+	
+	v = sf::Vector2f(v.x - getPosition().x, v.y - getPosition().y);
+	v = VectorHelper::normalise(v);
+	return v;
 }
 
 void Abductor::patrol(sf::Time deltaTime)
@@ -93,11 +198,11 @@ void Abductor::patrol(sf::Time deltaTime)
 	
 	if (static_cast<int>(m_boundingBox.getPosition().y + m_boundingBox.getSize().y / 2) < static_cast<int>(patrolLine[0].position.y))
 	{
-		m_velocity = sf::Vector2f(m_velocity.x, speed);
+		m_velocity = sf::Vector2f(m_velocity.x, m_speed);
 	}
 	else if (static_cast<int>(m_boundingBox.getPosition().y + m_boundingBox.getSize().y / 2) > static_cast<int>(patrolLine[0].position.y))
 	{
-		m_velocity = sf::Vector2f(m_velocity.x, -speed);
+		m_velocity = sf::Vector2f(m_velocity.x, -m_speed);
 	}
 	else 
 	{
@@ -140,28 +245,25 @@ void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 
 	//Move Radius with Abductor as the abductor moves
 	m_attackRangeBox.setPosition(m_boundingBox.getPosition() - sf::Vector2f(static_cast<float>(32 * (m_attackRange / 2)), static_cast<float>(32 * (m_attackRange / 2))));
-	m_flockRangeBox.setPosition(m_boundingBox.getPosition() - sf::Vector2f(m_flockRangeBox.getRadius() - (m_boundingBox.getSize().x / 2), m_flockRangeBox.getRadius() - (m_boundingBox.getSize().x / 2))); 
-	
 	attack(playerBoundingBox);// Attack player if in range
 }
 
 sf::Vector2f Abductor::getDirection()
 {
-	srand(time(NULL));
-	int direction = rand() % 2;
-	sf::Vector2f directionVector = sf::Vector2f(speed, 0);
+	return directionVector;
+}
 
-	/*switch (direction)
+void Abductor::setDirection(int value)
+{
+	switch (value)
 	{
 	case 0:
-		directionVector = sf::Vector2f(speed, 0);
+		directionVector = sf::Vector2f(m_speed, 0);
 		break;
 	case 1:
-		directionVector = sf::Vector2f(-speed, 0);
+		directionVector = sf::Vector2f(-m_speed, 0);
 		break;
-	}*/
-
-	return directionVector;
+	}
 }
 
 bool Abductor::rectCollision(sf::RectangleShape rectA, sf::RectangleShape rectB)
@@ -186,6 +288,5 @@ void Abductor::render(sf::RenderWindow & renderer)
 {
 	//renderer.draw(patrolLine, 2, sf::Lines);//Debug Patrol Line
 	renderer.draw(m_boundingBox);
-	renderer.draw(m_flockRangeBox);
 	//renderer.draw(m_attackRangeBox);
 }
