@@ -1,10 +1,13 @@
 #pragma once
 
 #include "MathHelper.h"
+#include <vector>
 #include "AiStates.h"
 
 #include <iostream>
 
+
+using namespace std;
 
 using namespace std;
 
@@ -62,6 +65,9 @@ public:
 	sf::Vector2f cohesion(vector<Abductor *> * abductors);
 
 	void patrol(sf::Time deltaTime);
+
+	sf::Vector2f computeAlignment(std::vector<Abductor> abductors);
+
 
 	void attack(sf::RectangleShape target);
 

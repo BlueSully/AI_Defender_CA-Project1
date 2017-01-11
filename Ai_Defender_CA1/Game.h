@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Camera.h"
 #include "Abductor.h"
+#include <iostream>
 #include <vector>
 #include <SFML\Graphics.hpp>
 
@@ -13,6 +14,7 @@ private:
 	Player m_playerShip;
 	vector<Abductor *> m_abductors;
 
+	vector<Abductor *> m_abductors;
 	sf::RenderWindow * m_windowScreen;
 	Camera * m_camera;
 	sf::View m_minimapView;
