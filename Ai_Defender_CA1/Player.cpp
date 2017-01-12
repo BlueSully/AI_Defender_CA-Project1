@@ -18,6 +18,8 @@ Player::Player()
 	m_smartBombReady = true;
 	m_smartBombNum = 3;
 	m_resetTime = 60;
+	m_isLeft = false;
+
 }
 
 Player::~Player()
@@ -30,10 +32,12 @@ void Player::processInputs(sf::Event *evt)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
 		m_playerState = PlayerStates::MOVING_LEFT;
+		m_isLeft = true;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		m_playerState = PlayerStates::MOVING_RIGHT;
+		m_isLeft = false;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
@@ -46,7 +50,7 @@ void Player::processInputs(sf::Event *evt)
 
 	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !sf::Keyboard::isKeyPressed(sf::Keyboard::D) &&
 		!sf::Keyboard::isKeyPressed(sf::Keyboard::W) && !sf::Keyboard::isKeyPressed(sf::Keyboard::S)
-		&&!sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+		&&!sf::Keyboard::isKeyPressed(sf::Keyboard::Q) &&!sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
 		m_playerState = PlayerStates::IDLE;
 	}
@@ -54,8 +58,27 @@ void Player::processInputs(sf::Event *evt)
 	// Ability keys
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		std::cout << "Fire Laser" << std::endl;
+		projMan.addLaser(m_isLeft,m_boundingBox.getPosition(), m_velocity.x, 3);
+
 	}
+
+
+	//test ########################################################################################
+
+
+	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
+	//{
+
+	//	sf::Vector2f offset = m_boundingBox.getPosition() - sf::Vector2f(100,100);
+	//	projMan.addMissile(m_boundingBox, offset, 10);
+
+	//}
+
+
+
+	//test ########################################################################################
+
+
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && m_jumpReady)
 	{
 		int worldX = -(m_worldSize.x / 2);
@@ -83,9 +106,9 @@ void Player::boundaryResponse(sf::Vector2f worldSize)
 {
 	m_worldSize = sf::Vector2f(worldSize.x, worldSize.y);
 
-	if(getPosition().y + m_size.y < m_size.y)
+	if (getPosition().y + m_size.y < (m_size.y + (m_worldSize.y / 10.0f)))//radar takes up the top 1/10 of the screen
 	{
-		setPosition(sf::Vector2f(getPosition().x, 0));
+		setPosition(sf::Vector2f(getPosition().x, (m_worldSize.y / 10.0f)));
 		m_velocity.y = 0;
 	}
 	else if (getPosition().y + m_size.y > m_worldSize.y)
@@ -162,12 +185,21 @@ void Player::update(sf::Time deltaTime)
 		}
 
 	}
+	projMan.Update(deltaTime);
+	//test	//test ########################################################################################
+	//projMan.Update(deltaTime, m_boundingBox);
+
+	//	//test ########################################################################################
+
+
+
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
 }
 
 void Player::render(sf::RenderWindow & renderer)
 {
 	renderer.draw(m_boundingBox);
+	projMan.Render(renderer);
 }
 
 void Player::render(sf::RenderWindow &renderer, float scale)
@@ -175,4 +207,5 @@ void Player::render(sf::RenderWindow &renderer, float scale)
 	sf::RectangleShape drawRect = m_boundingBox;
 	drawRect.setScale(sf::Vector2f(scale, scale));
 	renderer.draw(drawRect);
+	
 }

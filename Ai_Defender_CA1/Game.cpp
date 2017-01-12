@@ -101,6 +101,16 @@ void Game::render(sf::RenderWindow &renderer)
 
 	//render Scene
 	renderer.setView(m_camera->getView());
+	
+	for (size_t i = 0; i < sizeX; i++)
+	{
+		renderer.draw(m_testBackground[i]);
+	}
+	m_playerShip.render(renderer);
+
+	renderer.setView(m_camera->getRadar());
+
+
 	for (size_t i = 0; i < sizeX; i++)
 	{
 		renderer.draw(m_testBackground[i]);

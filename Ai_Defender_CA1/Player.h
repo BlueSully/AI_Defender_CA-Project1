@@ -2,10 +2,12 @@
 #include <SFML\Graphics.hpp>
 #include "PlayerState.h"
 #include <time.h>
+#include "ProjectileManager.h"
 
 class Player
 {
 private:
+	
 	sf::Vector2f m_velocity;
 	sf::Vector2f m_size;
 	sf::Vector2f m_speed;
@@ -17,9 +19,11 @@ private:
 	int m_smartBombNum;
 	int m_resetTime;
 	float timer;
+	bool m_isLeft;
 
 	sf::RectangleShape m_boundingBox;
 	PlayerStates m_playerState;
+	ProjectileManager projMan;
 public:
 	Player();
 	~Player();
