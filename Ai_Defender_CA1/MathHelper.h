@@ -13,6 +13,19 @@ struct VectorHelper
 		return distance;
 	}
 
+	static sf::Vector2f VectorHelper::limitByScalar(sf::Vector2f vect, float scalar)
+	{
+		if (vect.x > scalar) 
+		{
+			vect.x = scalar;
+		}
+		if (vect.y > scalar)
+		{
+			vect.y = scalar;
+		}
+		return vect;
+	}
+
 	static float VectorHelper::magnitude(sf::Vector2f vect) 
 	{
 		return sqrt((vect.x * vect.x) + (vect.y * vect.y));
@@ -20,6 +33,7 @@ struct VectorHelper
 
 	static sf::Vector2f VectorHelper::normalise(sf::Vector2f vect)
 	{
-		return sf::Vector2f(vect.x / magnitude(vect), vect.y / magnitude(vect));
+		float length = magnitude(vect);
+		return sf::Vector2f(vect.x / length, vect.y / length);
 	}
 };
