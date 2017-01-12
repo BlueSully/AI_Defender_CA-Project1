@@ -302,7 +302,7 @@ void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 
 		break;
 	case PATROL:
-		//patrol(deltaTime);
+		patrol(deltaTime);
 		break;
 	default:
 		break;

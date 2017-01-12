@@ -105,14 +105,14 @@ void Game::update()
 	{
 		m_abductors[i]->update(elapsedTime, m_playerShip.getBoundingBox());
 		
-		if (i + 1 < m_abductors.size()) 
-		{
-			//Check for Other Abductors within range
-			if (VectorHelper::distanceBetweenTwoVectors(m_abductors[i]->getPosition(), m_abductors[i + 1]->getPosition()) < 150)
-			{
+		//if (i + 1 < m_abductors.size()) 
+		//{
+		//	//Check for Other Abductors within range
+		//	if (VectorHelper::distanceBetweenTwoVectors(m_abductors[i]->getPosition(), m_abductors[i + 1]->getPosition()) < 150)
+		//	{
 				m_abductors[i]->flock(&m_abductors);
-			}
-		}
+			//}
+		//}
 	}
 	cout << "Velo: " << m_abductors[0]->getVelocity().x << ' ' << m_abductors[0]->getVelocity().y << endl;
 }

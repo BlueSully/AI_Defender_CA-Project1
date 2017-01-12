@@ -19,9 +19,18 @@ struct VectorHelper
 		{
 			vect.x = scalar;
 		}
+		else if (vect.x < -scalar)
+		{
+			vect.x = -scalar;
+		}
+
 		if (vect.y > scalar)
 		{
 			vect.y = scalar;
+		}
+		else if (vect.y < -scalar)
+		{
+			vect.y = -scalar;
 		}
 		return vect;
 	}
