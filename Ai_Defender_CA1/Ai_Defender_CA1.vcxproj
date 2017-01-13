@@ -195,6 +195,7 @@ xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-2.dll" "$(Ta
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Abductor.cpp" />
     <ClCompile Include="Ai_Defender_CA1.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -212,9 +213,12 @@ xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-2.dll" "$(Ta
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Astronaut.h" />
+    <ClInclude Include="Abductor.h" />
+    <ClInclude Include="AiStates.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="MathFunction.h" />
+    <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="Projectile.h" />

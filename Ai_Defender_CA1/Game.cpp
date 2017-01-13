@@ -1,52 +1,57 @@
-#include "Game.h"
+﻿#include "Game.h"
 #include <iostream>
 
-Game::Game() : m_isGameRunning(true), numOfScreens(9)
+Game::Game() : m_isGameRunning(true), m_numOfScreens(5)
 {
 
 }
 
-Game::Game(sf::RenderWindow & window, int numbScreens) : m_isGameRunning(true), numOfScreens(numbScreens)
+Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 {
 	srand(static_cast<unsigned int>(time(NULL)));
 	m_windowScreen = &window;
 
-	m_worldSize = sf::Vector2f(static_cast<float>(m_windowScreen->getSize().x * numOfScreens), static_cast<float>(m_windowScreen->getSize().y));
+	m_worldSize = sf::Vector2f(static_cast<float>(m_windowScreen->getSize().x * m_numOfScreens), static_cast<float>(m_windowScreen->getSize().y));
 
-	m_camera = new Camera(sf::Vector2f(0, 0), static_cast<sf::Vector2f>(m_windowScreen->getSize()), false, true);
+	m_screenWidth = (m_windowScreen->getSize().x * m_numOfScreens / m_windowScreen->getSize().x);
 
 	m_astronaut.init(sf::Vector2f(100, (m_windowScreen->getSize().y - m_astronaut.getSize().y) - 10), sf::Vector2f(0, 0));
 
-	m_playerShip.setPosition(m_camera->getView().getCenter());
-	m_camera->setTargetPlayer(&m_playerShip);
-
-	sizeX = (m_windowScreen->getSize().x * numOfScreens / (m_windowScreen->getSize().x));//gets the size of each of the screens
-
-	for (size_t i = 0; i < sizeX; i++)
+	for (size_t i = 0; i < m_screenWidth; i++)
 	{
-		sf::RectangleShape worldBottom(sf::Vector2f(static_cast<float>(m_windowScreen->getSize().x), static_cast<float>(rand() % 100 + 50)));
+		sf::RectangleShape screenBackground(sf::Vector2f(m_windowScreen->getSize()));
+		screenBackground.setPosition(static_cast<float>(-m_worldSize.x / 2 + (i * screenBackground.getSize().x)), static_cast<float>(m_windowScreen->getSize().y - 50));
 
-		if (i == 0 || i == (sizeX - 1))//furthest right and furthest left must be the same Value or screen warping looks sloppy
+		if (i == 0 || i == m_screenWidth - 1)//furthest right and furthest left must be the same Value or screen warping looks sloppy
 		{
-			worldBottom.setFillColor(sf::Color(255, 0, 0));
-			worldBottom.setSize(sf::Vector2f(worldBottom.getSize().x, 200));
+			screenBackground.setFillColor(sf::Color(255, 0, 0));
 		}
 		else
 		{
-			worldBottom.setFillColor(sf::Color(rand() % 235 + 10, rand() % 235 + 10, rand() % 235 + 10));
+			screenBackground.setFillColor(sf::Color(0, rand() % 235 + 10, rand() % 235 + 10));
 		}
 
-		worldBottom.setPosition(static_cast<float>((-m_worldSize.x / 2) + (i * worldBottom.getSize().x)), (m_windowScreen->getSize().y - worldBottom.getSize().y));
-		m_worldBackground.push_back(worldBottom);
+		m_worldBackground.push_back(screenBackground);
 	}
+
+	m_camera = new Camera(sf::Vector2f(0, 0), static_cast<sf::Vector2f>(m_windowScreen->getSize()), false, true);
+
+	m_playerShip.setPosition(m_camera->getView().getCenter());
+
+	m_camera->setTargetPlayer(&m_playerShip);
+
+	for (size_t i = 0; i < 4; i++)
+	{
+		m_abductors.push_back(new Abductor(sf::Vector2f(300 * i, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i, 35));
+		m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
+	}
+	m_abductors[1]->setColour(sf::Color(0, 150, 0));
 }
 
 Game::~Game()
 {
 
 }
-
-
 
 bool Game::isGameRunning() const
 {
@@ -98,10 +103,21 @@ void Game::update()
 
 	m_playerShip.boundaryResponse(m_worldSize);
 	m_playerShip.update(elapsedTime);
-	
-	m_astronaut.boundaryResponse(m_worldSize);
-	m_astronaut.update(elapsedTime);
-	m_astronaut.fleeCollisionCheck(m_playerShip.getPosition());
+
+	for (size_t i = 0; i < m_abductors.size(); i++)
+	{
+		m_abductors[i]->update(elapsedTime, m_playerShip.getBoundingBox());
+		
+		//if (i + 1 < m_abductors.size()) 
+		//{
+		//	//Check for Other Abductors within range
+		//	if (VectorHelper::distanceBetweenTwoVectors(m_abductors[i]->getPosition(), m_abductors[i + 1]->getPosition()) < 150)
+		//	{
+				m_abductors[i]->flock(&m_abductors);
+			//}
+		//}
+	}
+	cout << "Velo: " << m_abductors[0]->getVelocity().x << ' ' << m_abductors[0]->getVelocity().y << endl;
 }
 
 void Game::render(sf::RenderWindow &renderer)
@@ -111,11 +127,17 @@ void Game::render(sf::RenderWindow &renderer)
 	//render Scene
 	renderer.setView(m_camera->getView());
 	for (size_t i = 0; i < m_worldBackground.size(); i++)
+	for (size_t i = 0; i < m_worldBackground.size(); i++)
 	{
 		renderer.draw(m_worldBackground[i]);
 	}
 	m_astronaut.render(renderer);
 	m_playerShip.render(renderer);
 
+	for (size_t i = 0; i < m_abductors.size(); i++)
+	{
+		m_abductors[i]->render(renderer);
+	}
+	 
 	renderer.display();
 }

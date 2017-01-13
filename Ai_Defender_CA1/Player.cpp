@@ -115,6 +115,11 @@ void Player::setPosition(sf::Vector2f pos)
 	m_boundingBox.setPosition(pos);
 }
 
+sf::RectangleShape Player::getBoundingBox() const
+{
+	return m_boundingBox;
+}
+
 void Player::boundaryResponse(sf::Vector2f worldSize)
 {
 	m_worldSize = sf::Vector2f(worldSize.x, worldSize.y);

@@ -2,12 +2,20 @@
 #include "Player.h"
 #include "Astronaut.h"
 #include "Camera.h"
+#include "Abductor.h"
+#include <iostream>
+#include <vector>
+#include <SFML\Graphics.hpp>
+
+using namespace std;
 
 class Game
 {
 private:
 	Astronaut m_astronaut;
 	Player m_playerShip;
+	vector<Abductor *> m_abductors;
+
 	sf::RenderWindow * m_windowScreen;
 	Camera * m_camera;
 	sf::View m_minimapView;
@@ -15,9 +23,8 @@ private:
 	sf::Event m_event;
 	float debugTime;
 	bool m_isGameRunning;
-	int numOfScreens;
-	int sizeX;
-	int sizeY;
+	int m_numOfScreens;
+	int m_screenWidth;
 
 	sf::Clock m_clock;
 	sf::Time m_deltatime;
