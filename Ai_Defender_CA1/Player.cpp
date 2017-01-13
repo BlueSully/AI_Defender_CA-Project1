@@ -27,6 +27,19 @@ Player::~Player()
 
 }
 
+float Player::getNewOrientation(float currentOrientation, sf::Vector2f velocity)
+{
+	if (VectorHelper::magnitude(velocity) > 0)
+	{
+		return std::atan2(m_boundingBox.getPosition().y - (m_boundingBox.getPosition().y + velocity.y), 
+						  m_boundingBox.getPosition().x - (m_boundingBox.getPosition().x + velocity.x));
+	}
+	else
+	{
+		return currentOrientation;
+	}
+}
+
 void Player::processInputs(sf::Event *evt)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))

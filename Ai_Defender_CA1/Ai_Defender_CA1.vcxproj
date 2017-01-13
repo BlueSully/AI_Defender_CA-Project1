@@ -103,11 +103,11 @@
       <AdditionalLibraryDirectories>$(ProjectDir)\Dependencies\SFML\x86\lib</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x86\bin\sfml-graphics-d-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x86\bin\sfml-system-d-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x86\bin\sfml-window-d-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x86\bin\sfml-audio-d-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x86\bin\sfml-network-d-2.dll $(TargetDir)</Command>
+      <Command>xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x86\bin\sfml-graphics-d-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x86\bin\sfml-system-d-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x86\bin\sfml-window-d-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x86\bin\sfml-audio-d-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x86\bin\sfml-network-d-2.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -127,11 +127,11 @@ xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x86\bin\sfml-network-d-2.dll $(Tar
       <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-graphics-d-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-system-d-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-window-d-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-audio-d-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-d-2.dll $(TargetDir)</Command>
+      <Command>xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-graphics-d-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-system-d-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-window-d-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-audio-d-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-d-2.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -156,11 +156,11 @@ xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-d-2.dll $(Tar
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x86\bin\sfml-graphics-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x86\bin\sfml-system-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x86\bin\sfml-window-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x86\bin\sfml-audio-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x86\bin\sfml-network-2.dll $(TargetDir)</Command>
+      <Command>xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x86\bin\sfml-graphics-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x86\bin\sfml-system-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x86\bin\sfml-window-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x86\bin\sfml-audio-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x86\bin\sfml-network-2.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -184,11 +184,11 @@ xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x86\bin\sfml-network-2.dll $(Targe
       <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-graphics-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-system-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-window-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-audio-2.dll $(TargetDir)
-xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-2.dll $(TargetDir)</Command>
+      <Command>xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-graphics-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-system-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-window-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-audio-2.dll" "$(TargetDir)"
+xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-2.dll" "$(TargetDir)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -200,6 +200,7 @@ xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-2.dll $(Targe
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
       </PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="Astronaut.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Player.cpp">
@@ -210,8 +211,10 @@ xcopy /e /y /i $(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-2.dll $(Targe
     <ClCompile Include="ProjectileManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Astronaut.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="MathFunction.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="Projectile.h" />

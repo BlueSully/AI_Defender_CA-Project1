@@ -2,6 +2,7 @@
 #include <SFML\Graphics.hpp>
 #include "PlayerState.h"
 #include <time.h>
+#include "MathFunction.h"
 #include "ProjectileManager.h"
 
 class Player
@@ -21,6 +22,7 @@ private:
 	float timer;
 	bool m_isLeft;
 
+	float m_orientation;
 	sf::RectangleShape m_boundingBox;
 	PlayerStates m_playerState;
 	ProjectileManager projMan;
@@ -32,6 +34,7 @@ public:
 	sf::Vector2f getPosition() const;
 	void setPosition(sf::Vector2f pos);
 
+	float getNewOrientation(float currentOrientation, sf::Vector2f velocity);
 	void boundaryResponse(sf::Vector2f worldSize);
 	void activateSmartBomb();
 	void update(sf::Time deltaTime);
