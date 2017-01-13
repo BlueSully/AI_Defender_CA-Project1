@@ -12,12 +12,18 @@ Camera::Camera(sf::Vector2f startPosition, sf::Vector2f ViewportSize)
 {
 	m_view = sf::View(sf::FloatRect(startPosition.x, startPosition.y, ViewportSize.x, ViewportSize.y));
 	m_viewSize = ViewportSize;
+
+
+
 }
 
 Camera::Camera(sf::Vector2f startPosition, sf::Vector2f ViewportSize, bool xAxisLock, bool yAxisLock) : m_xAxisLocked(xAxisLock), m_yAxisLocked(yAxisLock)
 {
 	m_view = sf::View(sf::FloatRect(startPosition.x, startPosition.y, ViewportSize.x, ViewportSize.y));
 	m_viewSize = ViewportSize;
+	m_radar = sf::View(sf::FloatRect(startPosition.x, startPosition.y, (ViewportSize.x/3.0f), (ViewportSize.y / 3.0f)));
+	m_radar.setSize(ViewportSize.x *9.0f, ViewportSize.y);
+	m_radar.setViewport(sf::FloatRect(.2f, 0, .6f, 0.1f));
 }
 
 void Camera::setTargetPlayer(Player * player)
@@ -28,6 +34,7 @@ void Camera::setTargetPlayer(Player * player)
 void Camera::setViewport(sf::FloatRect viewport)
 {
 	m_view.setViewport(viewport);
+	
 }
 
 void Camera::xAxisLock(bool value) 
@@ -52,11 +59,21 @@ void Camera::UpdateView(sf::Vector2f worldbounds)
 		if (m_targetPlayer->getPosition().x > m_view.getCenter().x)
 		{
 			m_view.setCenter(m_targetPlayer->getPosition().x, m_view.getCenter().y);
+			m_radar.setCenter(m_targetPlayer->getPosition().x, m_view.getCenter().y);
 		}
 		else if (m_targetPlayer->getPosition().x < m_view.getCenter().x)
 		{
 			m_view.setCenter(m_targetPlayer->getPosition().x, m_view.getCenter().y);
+			m_radar.setCenter(m_targetPlayer->getPosition().x, m_view.getCenter().y);
 		}
+
+
+
+
+
+
+
+
 	}
 	//if (!m_yAxisLocked)
 	//{
@@ -74,4 +91,8 @@ void Camera::UpdateView(sf::Vector2f worldbounds)
 sf::View Camera::getView() const
 {
 	return m_view;
+}
+sf::View Camera::getRadar() const
+{
+	return m_radar;
 }

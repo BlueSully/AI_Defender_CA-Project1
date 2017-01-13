@@ -1,5 +1,6 @@
 #pragma once
 #include "Player.h"
+#include "Astronaut.h"
 #include "Camera.h"
 #include "Abductor.h"
 #include <iostream>
@@ -11,6 +12,7 @@ using namespace std;
 class Game
 {
 private:
+	Astronaut m_astronaut;
 	Player m_playerShip;
 	vector<Abductor *> m_abductors;
 
@@ -19,6 +21,7 @@ private:
 	sf::View m_minimapView;
 
 	sf::Event m_event;
+	float debugTime;
 	bool m_isGameRunning;
 	int m_numOfScreens;
 	int m_screenWidth;
@@ -31,7 +34,7 @@ private:
 
 public:
 	Game();
-	Game(sf::RenderWindow &window);
+	Game(sf::RenderWindow &window, int numbScreens);
 	~Game();
 
 	//Get Methods and Set methods
