@@ -160,8 +160,8 @@ void Astronaut::boundaryResponse(sf::Vector2f worldSize)
 
 void Astronaut::render(sf::RenderWindow & renderer)
 {
-	renderer.draw(m_fleeCircle);
-	renderer.draw(targetCircle);
+	//renderer.draw(m_fleeCircle);
+	//renderer.draw(targetCircle);
 	renderer.draw(m_boundingBox);
 	
 }

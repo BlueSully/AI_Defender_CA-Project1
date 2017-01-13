@@ -44,7 +44,34 @@ public:
 		return scaleBy(vect, i);
 	}
 
-	//Calculate the angle between Pvector 1 and Pvector 2
+	static float VectorHelper::distanceBetweenTwoVectors(sf::Vector2f a, sf::Vector2f b)
+	{
+		float distance = sqrt((b.x - a.x) * (b.x - a.x) + (b.y - a.y) * (b.y - a.y));
+		return distance;
+	}
+
+	static sf::Vector2f VectorHelper::limitByScalar(sf::Vector2f vect, float scalar)
+	{
+		if (vect.x > scalar)
+		{
+			vect.x = scalar;
+		}
+		else if (vect.x < -scalar)
+		{
+			vect.x = -scalar;
+		}
+
+		if (vect.y > scalar)
+		{
+			vect.y = scalar;
+		}
+		else if (vect.y < -scalar)
+		{
+			vect.y = -scalar;
+		}
+		return vect;
+	}
+
 	static float angleBetween(sf::Vector2f a, sf::Vector2f b)
 	{
 		if (a.x == 0 && a.y == 0) return 0.0f;

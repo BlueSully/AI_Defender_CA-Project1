@@ -8,7 +8,7 @@ int main()
 
 	sf::RenderWindow m_window(sf::VideoMode(800, 600, 32), "AI Defender Project", sf::Style::Default);
 
-	Game m_game(m_window, 9);
+	Game m_game(m_window);
 
 	while (!m_game.isGameRunning())
 	{

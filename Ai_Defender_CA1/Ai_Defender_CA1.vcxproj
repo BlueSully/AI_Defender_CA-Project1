@@ -212,13 +212,12 @@ xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-2.dll" "$(Ta
     <ClCompile Include="ProjectileManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Anthony O%27Sullivan\Desktop\Merging Files\master\Ai_Defender_CA1\MathFunction.h" />
     <ClInclude Include="Astronaut.h" />
     <ClInclude Include="Abductor.h" />
     <ClInclude Include="AiStates.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="MathFunction.h" />
-    <ClInclude Include="MathHelper.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerState.h" />
     <ClInclude Include="Projectile.h" />

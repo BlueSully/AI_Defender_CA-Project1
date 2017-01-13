@@ -364,7 +364,7 @@ bool Abductor::rectCollision(sf::RectangleShape rectA, sf::RectangleShape rectB)
 
 void Abductor::render(sf::RenderWindow & renderer)
 {
-	renderer.draw(patrolLine, 2, sf::Lines);//Debug Patrol Line
+	//renderer.draw(patrolLine, 2, sf::Lines);//Debug Patrol Line
 	renderer.draw(m_boundingBox);
 	//renderer.draw(m_attackRangeBox);
 }

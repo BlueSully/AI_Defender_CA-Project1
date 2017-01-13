@@ -71,10 +71,7 @@
     <ClInclude Include="AiStates.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MathHelper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MathFunction.h">
+    <ClInclude Include="..\..\..\..\..\Anthony O%27Sullivan\Desktop\Merging Files\master\Ai_Defender_CA1\MathFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,18 +1,9 @@
 #pragma once
 
 #include <SFML\Graphics.hpp>
-#include <iostream>
-#include <math.h>
 #include <string>
 #include "MathFunction.h"
-
-#define _USE_MATH_DEFINES
-
-enum AiState
-{
-	WANDER,
-	FLEE
-};
+#include "AiStates.h"
 
 class Astronaut
 {

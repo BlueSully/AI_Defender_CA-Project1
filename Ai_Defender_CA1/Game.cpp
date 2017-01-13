@@ -124,9 +124,11 @@ void Game::render(sf::RenderWindow &renderer)
 {
 	renderer.clear(sf::Color(0, 0, 0, 255));
 
+	renderer.clear(sf::Color(0, 0, 0, 255));
+
 	//render Scene
 	renderer.setView(m_camera->getView());
-	for (size_t i = 0; i < m_worldBackground.size(); i++)
+
 	for (size_t i = 0; i < m_worldBackground.size(); i++)
 	{
 		renderer.draw(m_worldBackground[i]);
@@ -138,6 +140,22 @@ void Game::render(sf::RenderWindow &renderer)
 	{
 		m_abductors[i]->render(renderer);
 	}
+
+	//Render mini-map
+	renderer.setView(m_camera->getRadar());
+	for (size_t i = 0; i < m_worldBackground.size(); i++)
+	{
+		renderer.draw(m_worldBackground[i]);
+	}
+
+	m_astronaut.render(renderer);
+	m_playerShip.render(renderer);
+
+	for (size_t i = 0; i < m_abductors.size(); i++)
+	{
+		m_abductors[i]->render(renderer);
+	}
+
 	 
 	renderer.display();
 }

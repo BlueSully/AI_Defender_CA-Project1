@@ -34,7 +34,7 @@ private:
 
 public:
 	Game();
-	Game(sf::RenderWindow &window, int numbScreens);
+	Game(sf::RenderWindow &window);
 	~Game();
 
 	//Get Methods and Set methods

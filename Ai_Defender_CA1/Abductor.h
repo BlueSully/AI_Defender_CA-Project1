@@ -1,19 +1,14 @@
 #pragma once
 
-#include "MathHelper.h"
+#include "MathFunction.h"
 #include <vector>
 #include "AiStates.h"
-
-#include <iostream>
-
-
-using namespace std;
 
 using namespace std;
 
 class Abductor
 {
-private :
+private:
 
 	sf::RectangleShape m_boundingBox;//Bounding Box for Abductor
 	sf::RectangleShape m_attackRangeBox;//Bounding box for Attack Range
