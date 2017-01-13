@@ -1,7 +1,7 @@
 #include "Projectile.h"
 
 Projectile::Projectile(bool isLeft, sf::Vector2f playerPos, float playerXVelocity,int ttl) : 
-m_size(sf::Vector2f(5, 3))
+m_size(sf::Vector2f(7,5))
 {
 	m_ttl = ttl;
 	m_projectileBoundBox.setFillColor(sf::Color::White);
