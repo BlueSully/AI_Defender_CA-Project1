@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML\Graphics.hpp>
 #include "PlayerState.h"
+#include "MathFunction.h"
 
 class Player
 {
@@ -11,6 +12,7 @@ private:
 	const float m_MAXHORIZONTALACCLERATION;
 	const float m_MAXVERTICALACCLERATION;
 
+	float m_orientation;
 	sf::RectangleShape m_boundingBox;
 	PlayerStates m_playerState;
 public:
@@ -21,6 +23,7 @@ public:
 	sf::Vector2f getPosition() const;
 	void setPosition(sf::Vector2f pos);
 
+	float getNewOrientation(float currentOrientation, sf::Vector2f velocity);
 	void boundaryResponse(sf::Vector2f worldSize);
 	void update(sf::Time deltaTime);
 	void render(sf::RenderWindow &renderer);

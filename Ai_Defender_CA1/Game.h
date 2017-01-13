@@ -1,16 +1,19 @@
 #pragma once
 #include "Player.h"
+#include "Astronaut.h"
 #include "Camera.h"
 
 class Game
 {
 private:
+	Astronaut m_astronaut;
 	Player m_playerShip;
 	sf::RenderWindow * m_windowScreen;
 	Camera * m_camera;
 	sf::View m_minimapView;
 
 	sf::Event m_event;
+	float debugTime;
 	bool m_isGameRunning;
 	int numOfScreens;
 	int sizeX;
@@ -20,11 +23,11 @@ private:
 	sf::Time m_deltatime;
 	sf::View *viewport;
 	sf::Vector2f m_worldSize;
-	std::vector<sf::RectangleShape> m_testBackground;
+	std::vector<sf::RectangleShape> m_worldBackground;
 
 public:
 	Game();
-	Game(sf::RenderWindow &window);
+	Game(sf::RenderWindow &window, int numbScreens);
 	~Game();
 
 	//Get Methods and Set methods
