@@ -1,15 +1,23 @@
 #include "Projectile.h"
 
-Projectile::Projectile(bool isLeft, sf::Vector2f playerPos, float playerXVelocity,int ttl) : 
-m_size(sf::Vector2f(7,5))
+Projectile::Projectile(bool isLeft, sf::Vector2f playerPos, float playerXVelocity, int ttl) :
+	m_size(sf::Vector2f(7, 5))
 {
+	float offset = 15.0f;//so lasers leave from centre of ship
 	m_ttl = ttl;
 	m_projectileBoundBox.setFillColor(sf::Color::White);
 	m_projectileBoundBox.setSize(m_size);
-	m_projectileBoundBox.setPosition(playerPos);
+	m_projectileBoundBox.setPosition(sf::Vector2f(playerPos.x, playerPos.y + offset));
 	m_alive = true;
 	//set to laser sprite
-	m_speed = 1.0f;
+	if (playerXVelocity > 700.0f)
+	{
+	m_speed = 1.6f;
+	}
+	else
+	{
+		m_speed = 1.0f;
+	}
 	m_isLaser = true;
 
 	if (isLeft == true)
@@ -61,7 +69,6 @@ bool Projectile::Update(sf::Time deltaTime)
 bool Projectile::Update(sf::Time deltaTime,sf::RectangleShape playerBox)
 {
 	m_playerBox = playerBox;
-
 	timer += deltaTime.asSeconds();
 	if (timer >= m_ttl)
 	{

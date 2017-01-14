@@ -192,6 +192,7 @@ void Player::update(sf::Time deltaTime)
 	}
 #pragma endregion
 
+	std::cout <<  m_velocity.x << std::endl;
 	if (m_smartBombReady == false)
 	{
 		timer += deltaTime.asSeconds();

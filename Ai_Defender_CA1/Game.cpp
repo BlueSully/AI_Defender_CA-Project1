@@ -15,7 +15,7 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 	m_screenWidth = (m_windowScreen->getSize().x * m_numOfScreens / m_windowScreen->getSize().x);
 
-	m_astronaut.init(sf::Vector2f(100, (m_windowScreen->getSize().y - m_astronaut.getSize().y) - 10), sf::Vector2f(0, 0));
+	//m_astronaut.init(sf::Vector2f(100, (m_windowScreen->getSize().y - m_astronaut.getSize().y) - 10), sf::Vector2f(0, 0));
 
 	for (size_t i = 0; i < m_screenWidth; i++)
 	{
@@ -45,7 +45,15 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 		m_abductors.push_back(new Abductor(sf::Vector2f(300 * i, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i, 35));
 		m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
 	}
+
 	m_abductors[1]->setColour(sf::Color(0, 150, 0));
+
+
+	for (size_t i = 0; i < 4; i++)
+	{
+		m_nests.push_back(new Nest(sf::Vector2f(300 * i, 100), sf::Vector2f(50,40)));
+		m_nests[i]->setColour(sf::Color(150+i, 200 +i, 240+i));
+	}
 }
 
 Game::~Game()
@@ -103,7 +111,7 @@ void Game::update()
 
 	m_playerShip.boundaryResponse(m_worldSize);
 	m_playerShip.update(elapsedTime);
-
+#pragma region abductures
 	for (size_t i = 0; i < m_abductors.size(); i++)
 	{
 		m_abductors[i]->update(elapsedTime, m_playerShip.getBoundingBox());
@@ -117,7 +125,18 @@ void Game::update()
 			//}
 		//}
 	}
-	cout << "Velo: " << m_abductors[0]->getVelocity().x << ' ' << m_abductors[0]->getVelocity().y << endl;
+
+#pragma endregion 
+
+
+	for (size_t i = 0; i < m_abductors.size(); i++)
+	{
+		m_nests[i]->update(elapsedTime);
+
+	}
+
+
+
 }
 
 void Game::render(sf::RenderWindow &renderer)
@@ -133,12 +152,16 @@ void Game::render(sf::RenderWindow &renderer)
 	{
 		renderer.draw(m_worldBackground[i]);
 	}
-	m_astronaut.render(renderer);
+	//m_astronaut.render(renderer);
 	m_playerShip.render(renderer);
 
 	for (size_t i = 0; i < m_abductors.size(); i++)
 	{
 		m_abductors[i]->render(renderer);
+	}
+	for (size_t i = 0; i < m_nests.size(); i++)
+	{
+		m_nests[i]->render(renderer);
 	}
 
 	//Render mini-map
@@ -148,12 +171,16 @@ void Game::render(sf::RenderWindow &renderer)
 		renderer.draw(m_worldBackground[i]);
 	}
 
-	m_astronaut.render(renderer);
+	//m_astronaut.render(renderer);
 	m_playerShip.render(renderer);
 
 	for (size_t i = 0; i < m_abductors.size(); i++)
 	{
 		m_abductors[i]->render(renderer);
+	}
+	for (size_t i = 0; i < m_nests.size(); i++)
+	{
+		m_nests[i]->render(renderer);
 	}
 
 	 

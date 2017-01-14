@@ -3,6 +3,7 @@
 #include "Astronaut.h"
 #include "Camera.h"
 #include "Abductor.h"
+#include "Nest.h"
 #include <iostream>
 #include <vector>
 #include <SFML\Graphics.hpp>
@@ -12,9 +13,10 @@ using namespace std;
 class Game
 {
 private:
-	Astronaut m_astronaut;
+	//Astronaut m_astronaut;
 	Player m_playerShip;
 	vector<Abductor *> m_abductors;
+	vector<Nest *> m_nests;
 
 	sf::RenderWindow * m_windowScreen;
 	Camera * m_camera;

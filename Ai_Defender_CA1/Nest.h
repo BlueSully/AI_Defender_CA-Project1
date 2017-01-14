@@ -5,7 +5,7 @@
 #include "MathFunction.h"
 #include "AiStates.h"
 
-class Astronaut
+class Nest
 {
 private:
 	sf::RectangleShape m_boundingBox;
@@ -14,32 +14,35 @@ private:
 	sf::Vector2f m_velocity;
 	sf::Vector2f m_steering;
 	sf::Vector2f m_fleeFromPos;
+	sf::RectangleShape m_worldBounds;//World data
 
 	float m_wanderAngle;
-	float m_wanderDelayTimer;
+	float m_wanderDelayTimer=0;
 
-	const float MAX_FORCE = 5.4f;
-	const float MAX_VELOCITY = 10;
-	const float CIRCLEDISTANCE = 6;
-	const float CIRCLE_RADIUS = 8;
-	const float ANGLECHANGE = 1000;
+	const float MAX_FORCE = 15.4f;
+	const float MAX_VELOCITY = 50;
+	const float CIRCLEDISTANCE =19;
+	const float CIRCLE_RADIUS =6;
+	const float ANGLECHANGE=11;
+
 
 	AiState state;
 	bool m_wander;
 	bool m_flee;
+	int swap = 0;
 public:
-	Astronaut();
-	~Astronaut();
+	Nest(sf::Vector2f position, sf::Vector2f veclocity);
+	~Nest();
 
 	//Get Method
 	sf::Vector2f getSize();
 	sf::Vector2f getPosition();
 	void setPosition(sf::Vector2f value);
+	void setWorldRectangle(sf::Vector2f postion, sf::Vector2f size);
+	void setColour(sf::Color colour);
 	void setFleeingTarget(sf::Vector2f);
 	void setState(std::string str);
 
-	//Methods
-	void init(sf::Vector2f position, sf::Vector2f veclocity);
 	sf::Vector2f wander();
 	sf::Vector2f flee();
 
