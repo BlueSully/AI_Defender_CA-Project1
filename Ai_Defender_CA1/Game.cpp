@@ -15,7 +15,10 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 	m_screenWidth = (m_windowScreen->getSize().x * m_numOfScreens / m_windowScreen->getSize().x);
 
-	m_astronaut.init(sf::Vector2f(100, (m_windowScreen->getSize().y - m_astronaut.getSize().y) - 10), sf::Vector2f(0, 0));
+	for (size_t i = 0; i < 1; i++)
+	{
+		m_astronauts.push_back(new Astronaut(sf::Vector2f(100, m_windowScreen->getSize().y), sf::Vector2f(0, 0)));
+	}
 
 	for (size_t i = 0; i < m_screenWidth; i++)
 	{
@@ -104,37 +107,79 @@ void Game::update()
 	m_playerShip.boundaryResponse(m_worldSize);
 	m_playerShip.update(elapsedTime);
 
-	for (size_t i = 0; i < m_abductors.size(); i++)
+	for (size_t i = 0; i < m_astronauts.size(); i++)
 	{
-		m_abductors[i]->update(elapsedTime, m_playerShip.getBoundingBox());
-		
-		//if (i + 1 < m_abductors.size()) 
-		//{
-		//	//Check for Other Abductors within range
-		//	if (VectorHelper::distanceBetweenTwoVectors(m_abductors[i]->getPosition(), m_abductors[i + 1]->getPosition()) < 150)
-		//	{
-				m_abductors[i]->flock(&m_abductors);
-			//}
-		//}
+		if (m_astronauts[i]->getState() != GRABBED) 
+		{
+			m_astronauts[i]->boundaryResponse(m_worldSize);
+			m_astronauts[i]->fleeCollisionCheck(m_playerShip.getPosition());
+
+			for (size_t j = 0; j < m_abductors.size(); j++)
+			{
+				m_astronauts[i]->fleeCollisionCheck(m_abductors[j]->getPosition());
+			}
+		}
+		m_astronauts[i]->update(elapsedTime);
 	}
-	cout << "Velo: " << m_abductors[0]->getVelocity().x << ' ' << m_abductors[0]->getVelocity().y << endl;
+
+	m_abductors[0]->update(elapsedTime, m_playerShip.getBoundingBox());
+
+	float distance = VectorHelper::distanceBetweenTwoVectors(m_abductors[0]->getPosition(), m_astronauts[0]->getPosition());
+
+	if (distance < 300)
+	{
+		m_abductors[0]->setState(ABDUCTING);
+		m_abductors[0]->abduct(elapsedTime, m_astronauts[0]->getPosition(), 0);
+
+		if (CollisionHelper::RectangleCollision(m_abductors[0]->getPosition(), m_abductors[0]->getSize(), m_astronauts[0]->getPosition(), m_astronauts[0]->getSize()))
+		{
+			cout << "Grabbed" << endl;
+			m_abductors[0]->setGrabbedAstronaut(true);
+			m_astronauts[0]->setState(GRABBED);			
+			m_astronauts[0]->setBeingAbducted(true);
+			m_astronauts[0]->setFollowTarget(&m_abductors[0]->getPosition(), &m_abductors[0]->getVelocity());
+		}
+		else
+		{
+			if (m_abductors[0]->getPosition().y < m_astronauts[0]->getPosition().y && m_astronauts[0]->getState() != GRABBED)
+			{
+				m_abductors[0]->setVelocity(sf::Vector2f(m_abductors[0]->getVelocity().x, 20));
+			}
+		}
+	}
+	else 
+	{
+		m_astronauts[0]->setBeingAbducted(false);
+	}
+	cout << "Velo: " << m_astronauts[0]->getVelocity().x << ' ' << m_astronauts[0]->getVelocity().y 
+		 << " Pos: " << m_astronauts[0]->getPosition().x << ' ' << m_astronauts[0]->getPosition().y <<  endl;
+
+	//cout << "velo: " << m_abductors[0]->getVelocity().x << ' ' << m_abductors[0]->getVelocity().y << endl;
+	//for (size_t i = 0; i < m_abductors.size(); i++)
+	//{
+	//	m_abductors[i]->update(elapsedTime, m_playerShip.getBoundingBox());
+	//	m_abductors[i]->flock(&m_abductors);
+	//}
 }
 
 void Game::render(sf::RenderWindow &renderer)
 {
 	renderer.clear(sf::Color(0, 0, 0, 255));
 
-	renderer.clear(sf::Color(0, 0, 0, 255));
-
 	//render Scene
 	renderer.setView(m_camera->getView());
+
+	m_playerShip.render(renderer);
 
 	for (size_t i = 0; i < m_worldBackground.size(); i++)
 	{
 		renderer.draw(m_worldBackground[i]);
 	}
-	m_astronaut.render(renderer);
-	m_playerShip.render(renderer);
+
+	for (size_t i = 0; i < m_astronauts.size(); i++)
+	{
+		m_astronauts[i]->render(renderer);
+	}
 
 	for (size_t i = 0; i < m_abductors.size(); i++)
 	{
@@ -143,19 +188,23 @@ void Game::render(sf::RenderWindow &renderer)
 
 	//Render mini-map
 	renderer.setView(m_camera->getRadar());
+	
+	m_playerShip.render(renderer);
+
 	for (size_t i = 0; i < m_worldBackground.size(); i++)
 	{
 		renderer.draw(m_worldBackground[i]);
 	}
 
-	m_astronaut.render(renderer);
-	m_playerShip.render(renderer);
+	for (size_t i = 0; i < m_astronauts.size(); i++)
+	{
+		m_astronauts[i]->render(renderer);
+	}
 
 	for (size_t i = 0; i < m_abductors.size(); i++)
 	{
 		m_abductors[i]->render(renderer);
 	}
 
-	 
 	renderer.display();
 }

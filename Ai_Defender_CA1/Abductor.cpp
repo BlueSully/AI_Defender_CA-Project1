@@ -5,6 +5,7 @@ Abductor::Abductor()
 	m_speed(35),
 	state(PATROL),
 	m_canAttack(true),
+	m_grabbedAstronaut(false),
 	m_timeTillNextAttack(0)
 {
 	m_boundingBox.setPosition(sf::Vector2f(0, 300));
@@ -19,12 +20,13 @@ Abductor::Abductor()
 	m_acceleration = sf::Vector2f(0, 0);
 }
 
-Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize, int id, float speed) 
+Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize, int id, float speed)
 	: m_attackRange(17),
 	m_speed(speed),
 	m_currentId(id),
-	state(PATROL), 
+	state(PATROL),
 	m_canAttack(true),
+	m_grabbedAstronaut(false),
 	m_timeTillNextAttack(0)
 {
 	m_boundingBox.setPosition(position);
@@ -77,6 +79,16 @@ sf::Vector2f Abductor::getDirection()
 	return directionVector;
 }
 
+bool Abductor::getGrabbedAstronaut() const
+{
+	return m_grabbedAstronaut;
+}
+
+void Abductor::setGrabbedAstronaut(bool value)
+{
+	m_grabbedAstronaut = value;
+}
+
 void Abductor::setWorldRectangle(sf::Vector2f postion, sf::Vector2f size)
 {
 	m_worldBounds.setPosition(postion);
@@ -98,6 +110,11 @@ void Abductor::setState(AiState value)
 	state = value;
 }
 
+void Abductor::setVelocity(sf::Vector2f value)
+{
+	m_velocity = value;
+}
+
 void Abductor::setSize(sf::Vector2f value)
 {
 	m_boundingBox.setSize(value);
@@ -111,7 +128,6 @@ void Abductor::setColour(sf::Color colour)
 void Abductor::setSpeed(float value)
 {
 	m_speed = value;
-
 }
 
 void Abductor::setDirection(int value)
@@ -129,7 +145,6 @@ void Abductor::setDirection(int value)
 
 void Abductor::flock(vector<Abductor *> * abductors)
 {
-
 	sf::Vector2f alignmentVect = alignment(abductors);
 	sf::Vector2f cohesionVect = cohesion(abductors);
 	sf::Vector2f separationVect = seperation(abductors);
@@ -178,7 +193,7 @@ sf::Vector2f Abductor::seperation(vector<Abductor *> * abductors)
 {
 	sf::Vector2f steering = sf::Vector2f(0, 0);
 	int neighborCount = 0;
-	float desiredseparation = 35;
+	float desiredseparation = 25;
 	for (size_t i = 0; i < abductors->size(); i++)
 	{
 		float distBetween = VectorHelper::distanceBetweenTwoVectors(getPosition(), (*abductors)[i]->getPosition());
@@ -252,12 +267,30 @@ sf::Vector2f Abductor::seek(sf::Vector2f v)
 	return m_acceleration;
 }
 
+void Abductor::abduct(sf::Time deltaTime, sf::Vector2f pos, int AstronautID)
+{
+	m_abducteePosition = pos;
+
+	if (static_cast<int>(m_abducteePosition.x) > static_cast<int>(getPosition().x))
+	{
+		m_velocity.x = m_speed;
+	}
+	else if (static_cast<int>(m_abducteePosition.x) < static_cast<int>(getPosition().x))
+	{
+		m_velocity.x = -m_speed;
+	}
+	else if (static_cast<int>(m_abducteePosition.x) == static_cast<int>(getPosition().x))
+	{
+		m_velocity.x = 0;
+	}
+}
+
 void Abductor::patrol(sf::Time deltaTime)
 {
-	patrolLine[0].position = sf::Vector2f(m_worldBounds.getPosition().x, 300);
-	patrolLine[1].position = sf::Vector2f(m_worldBounds.getPosition().x + m_worldBounds.getSize().x, 300);
+	patrolLine[0].position = sf::Vector2f(m_worldBounds.getPosition().x, 350);
+	patrolLine[1].position = sf::Vector2f(m_worldBounds.getPosition().x + m_worldBounds.getSize().x, 350);
 	
-	if (static_cast<int>(m_boundingBox.getPosition().y + m_boundingBox.getSize().y / 2) < static_cast<int>(patrolLine[0].position.y))
+	/*if (static_cast<int>(m_boundingBox.getPosition().y + m_boundingBox.getSize().y / 2) < static_cast<int>(patrolLine[0].position.y))
 	{
 		m_velocity.y = m_speed;
 	}
@@ -268,7 +301,7 @@ void Abductor::patrol(sf::Time deltaTime)
 	else 
 	{
 		m_velocity.y = 0;
-	}
+	}*/
 
 }
 
@@ -291,15 +324,21 @@ void Abductor::boundaryResponse()
 		setPosition(sf::Vector2f(getPosition().x, vect.y - getSize().y));
 		m_velocity.y = 0;
 	}
-
 }
 
 void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 {
 	switch (state)
 	{
-	case ABDUCT:
-
+	case ABDUCTING:
+		if (m_grabbedAstronaut)
+		{
+			m_velocity = sf::Vector2f(m_velocity.x, -20);
+		}
+		else if (!m_grabbedAstronaut) 
+		{
+			m_velocity = sf::Vector2f(m_velocity.x, 20);
+		}
 		break;
 	case PATROL:
 		patrol(deltaTime);
@@ -315,7 +354,6 @@ void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 	m_velocity = VectorHelper::limitByScalar(m_velocity, m_speed);
 	// Reset accelertion to 0 each cycle
 	m_acceleration = sf::Vector2f(0, 0);
-
 
 	//Move Radius with Abductor as the abductor moves
 	m_attackRangeBox.setPosition(m_boundingBox.getPosition() - sf::Vector2f(static_cast<float>(32 * (m_attackRange / 2)), static_cast<float>(32 * (m_attackRange / 2))));
@@ -364,7 +402,7 @@ bool Abductor::rectCollision(sf::RectangleShape rectA, sf::RectangleShape rectB)
 
 void Abductor::render(sf::RenderWindow & renderer)
 {
-	//renderer.draw(patrolLine, 2, sf::Lines);//Debug Patrol Line
+	renderer.draw(patrolLine, 2, sf::Lines);//Debug Patrol Line
 	renderer.draw(m_boundingBox);
 	//renderer.draw(m_attackRangeBox);
 }

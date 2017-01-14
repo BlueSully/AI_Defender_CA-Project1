@@ -6,6 +6,30 @@
 #include <math.h>
 #include <iostream>
 
+using namespace std;
+
+struct CollisionHelper 
+{
+	public:
+		static bool RectangleCollision(sf::Vector2f position1, sf::Vector2f size1, sf::Vector2f position2, sf::Vector2f size2)
+		{
+			float aLeft = position1.x;
+			float aTop = position1.y;
+			float aRight = position1.x + size1.x;
+			float aBottom = position1.y + size1.y;
+
+			float bLeft = position2.x;
+			float bTop = position2.y;
+			float bRight = position2.x + size2.x;
+			float bBottom = position2.y + size2.y;
+
+			return (aLeft <= bRight &&
+				bLeft <= aRight &&
+				aTop <= bBottom &&
+				bTop <= aBottom);
+		}
+};
+
 struct VectorHelper
 {
 public:

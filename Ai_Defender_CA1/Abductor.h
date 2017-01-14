@@ -28,6 +28,7 @@ private:
 	int m_currentId;
 
 	bool m_canAttack;
+	bool m_grabbedAstronaut;
 
 	AiState state;
 public:
@@ -40,17 +41,22 @@ public:
 	sf::RectangleShape getBoundingBox();
 	sf::Vector2f getVelocity();
 	sf::Vector2f getDirection();
+	bool getGrabbedAstronaut() const;
+	void setGrabbedAstronaut(bool value);
 
 	void setWorldRectangle(sf::Vector2f postion, sf::Vector2f size);
 	void setPosition(sf::Vector2f value);
 	void setAbductorTarget(sf::Vector2f target);
 	void setState(AiState value);
+	void setVelocity(sf::Vector2f value);
 	void setSpeed(float value);
 	void setDirection(int value);
 	void setSize(sf::Vector2f value);
 	void setColour(sf::Color colour);
 
 	void update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox);
+
+	
 
 	void flock(vector<Abductor *> * abductors);
 
@@ -59,6 +65,7 @@ public:
 	sf::Vector2f cohesion(vector<Abductor *> * abductors);
 	sf::Vector2f seek(sf::Vector2f v);
 
+	void abduct(sf::Time deltaTime, sf::Vector2f pos, int AstronautID);
 	void patrol(sf::Time deltaTime);
 
 	void attack(sf::RectangleShape target);
