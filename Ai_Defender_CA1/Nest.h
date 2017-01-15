@@ -4,6 +4,7 @@
 #include <string>
 #include "MathFunction.h"
 #include "AiStates.h"
+#include "ProjectileManager.h"
 
 class Nest
 {
@@ -15,21 +16,23 @@ private:
 	sf::Vector2f m_steering;
 	sf::Vector2f m_fleeFromPos;
 	sf::RectangleShape m_worldBounds;//World data
-
+	ProjectileManager projMan;
 	float m_wanderAngle;
 	float m_wanderDelayTimer=0;
 
 	const float MAX_FORCE = 15.4f;
 	const float MAX_VELOCITY = 50;
-	const float CIRCLEDISTANCE =19;
-	const float CIRCLE_RADIUS =6;
-	const float ANGLECHANGE=11;
+	const float CIRCLEDISTANCE = 19;
+	const float CIRCLE_RADIUS = 6;
+	const float ANGLECHANGE = 11;
 
 
 	AiState state;
 	bool m_wander;
 	bool m_flee;
 	int swap = 0;
+	int m_missileNum;
+
 public:
 	Nest(sf::Vector2f position, sf::Vector2f veclocity);
 	~Nest();
@@ -46,9 +49,12 @@ public:
 	sf::Vector2f wander();
 	sf::Vector2f flee();
 
-	void fleeCollisionCheck(sf::Vector2f value);
-	void boundaryResponse(sf::Vector2f worldSize);
-	void update(sf::Time elapsedTime);
+	void update(sf::Time elapsedTime, sf::RectangleShape value);
+
+	void fleeCollisionCheck(sf::RectangleShape value);
+	void fireMissiles(sf::RectangleShape value);
+	void boundaryResponse();
+
 	void render(sf::RenderWindow & renderer);
 };
 

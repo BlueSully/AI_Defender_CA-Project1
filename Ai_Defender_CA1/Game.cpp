@@ -5,7 +5,6 @@ Game::Game() : m_isGameRunning(true), m_numOfScreens(5)
 {
 
 }
-
 Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 {
 	srand(static_cast<unsigned int>(time(NULL)));
@@ -53,6 +52,7 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 	{
 		m_nests.push_back(new Nest(sf::Vector2f(300 * i, 100), sf::Vector2f(50,40)));
 		m_nests[i]->setColour(sf::Color(150+i, 200 +i, 240+i));
+		m_nests[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
 	}
 }
 
@@ -60,12 +60,10 @@ Game::~Game()
 {
 
 }
-
 bool Game::isGameRunning() const
 {
 	return false;
 }
-
 void Game::getInput()
 {
 	while (m_windowScreen->pollEvent(m_event))
@@ -131,12 +129,8 @@ void Game::update()
 
 	for (size_t i = 0; i < m_abductors.size(); i++)
 	{
-		m_nests[i]->update(elapsedTime);
-
+		m_nests[i]->update(elapsedTime, m_playerShip.getBoundingBox());
 	}
-
-
-
 }
 
 void Game::render(sf::RenderWindow &renderer)

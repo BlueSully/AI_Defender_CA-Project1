@@ -10,16 +10,8 @@ Projectile::Projectile(bool isLeft, sf::Vector2f playerPos, float playerXVelocit
 	m_projectileBoundBox.setPosition(sf::Vector2f(playerPos.x, playerPos.y + offset));
 	m_alive = true;
 	//set to laser sprite
-	if (playerXVelocity > 700.0f)
-	{
-	m_speed = 1.6f;
-	}
-	else
-	{
-		m_speed = 1.0f;
-	}
+	m_speed = 5.5f;
 	m_isLaser = true;
-
 	if (isLeft == true)
 	{
 		m_velocity = sf::Vector2f(-m_speed, 0);
@@ -28,10 +20,6 @@ Projectile::Projectile(bool isLeft, sf::Vector2f playerPos, float playerXVelocit
 	{
 		m_velocity = sf::Vector2f(m_speed, 0);
 	}
-
-
-
-
 }
 Projectile::Projectile(sf::RectangleShape playerPos, sf::Vector2f nestPos, int ttl):m_size(sf::Vector2f(10, 10))
 {
@@ -41,7 +29,7 @@ Projectile::Projectile(sf::RectangleShape playerPos, sf::Vector2f nestPos, int t
 	m_projectileBoundBox.setPosition(nestPos);
 	//set to missile sprite 
 	m_alive = true;
-	m_speed = 0.05f;
+	m_speed = 1.0f;
 	m_isLaser = false;
 	m_playerBox= playerPos;
 
@@ -51,7 +39,6 @@ Projectile::~Projectile()
 }
 bool Projectile::Update(sf::Time deltaTime)
 {
-
 	timer += deltaTime.asSeconds();
 	if (timer >= m_ttl)
 	{
@@ -75,18 +62,15 @@ bool Projectile::Update(sf::Time deltaTime,sf::RectangleShape playerBox)
 		timer = 0;
 		m_alive = false;
 	}
-	if (!m_isLaser)
-	{
-		if (!trackPlayer())
+		if (trackPlayer())
+		{
+		}
+		else
 		{
 			m_alive = false;
 		}
-
-	}
 	return m_alive;
 }
-
-
 void Projectile::Render(sf::RenderWindow &renderer)
 {
 	if(m_alive)
@@ -124,12 +108,9 @@ bool Projectile::trackPlayer()
 		}
 
 		m_projectileBoundBox.setPosition(pos);
-
-
 		return true;
 	}
 	else
-
 		return false;
 }
 
