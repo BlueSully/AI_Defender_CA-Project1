@@ -4,7 +4,7 @@ Nest::Nest(sf::Vector2f position, sf::Vector2f veclocity) : m_wander(true), m_fl
 {
 	//Gets Called when player is Created
 	m_boundingBox.setFillColor(sf::Color::White);
-	m_boundingBox.setSize(sf::Vector2f(32, 32));
+	m_boundingBox.setSize(sf::Vector2f(44, 16));
 	m_velocity = sf::Vector2f(0, 0);
 	m_fleeCircle.setFillColor(sf::Color(255, 175, 0, 75));
 	m_fleeCircle.setRadius(500);
@@ -17,7 +17,7 @@ Nest::Nest(sf::Vector2f position, sf::Vector2f veclocity) : m_wander(true), m_fl
 	m_abductorNum = 0;
 	if (!m_nestText.loadFromFile("AISprites/Nest.png"))
 	{
-		//error
+		std::cout << "eroor" << std::endl;
 	}
 
 	m_nestSprite.setTexture(m_nestText);
@@ -93,6 +93,7 @@ void Nest::update(sf::Time elapsedTime, sf::RectangleShape  value)
 	boundaryResponse();
 	animate(elapsedTime);
 	spawnAbductor(elapsedTime);
+	m_nestSprite.setPosition(m_boundingBox.getPosition());
 
 	if (m_missileNum < 2) 
 	{
@@ -156,7 +157,7 @@ void Nest::fleeCollisionCheck(sf::RectangleShape value)
 {
 	sf::Vector2f temp = sf::Vector2f(value.getPosition().x, value.getPosition().y);
 	targetCircle.setPosition(temp);
-	targetCircle.setRadius(32);
+	targetCircle.setRadius(10);
 	targetCircle.setOrigin(sf::Vector2f(targetCircle.getRadius(), targetCircle.getRadius()));
 
 	float a = m_fleeCircle.getPosition().x - targetCircle.getPosition().x;
@@ -199,10 +200,6 @@ void Nest::spawnAbductor(sf::Time elapsedTime)
 	}
 
 }
-
-
-
-
 
 void Nest::fireMissiles(sf::RectangleShape  value)
 {
