@@ -2,7 +2,7 @@
 
 Astronaut::Astronaut() : m_beingAbducted(false), m_abductorId(-1)
 {
-	srand(static_cast<unsigned int>(time(NULL)));
+
 	//Gets Called when player is Created
 	m_boundingBox.setFillColor(sf::Color::White);
 	m_boundingBox.setSize(sf::Vector2f(16, 32));
@@ -13,7 +13,6 @@ Astronaut::Astronaut() : m_beingAbducted(false), m_abductorId(-1)
 
 Astronaut::Astronaut(sf::Vector2f position, sf::Vector2f veclocity) : m_beingAbducted(false), m_abductorId(-1)
 {
-	srand(static_cast<unsigned int>(time(NULL)));
 	//Gets Called when player is Created
 	m_boundingBox.setFillColor(sf::Color::White);
 	m_boundingBox.setSize(sf::Vector2f(16, 32));

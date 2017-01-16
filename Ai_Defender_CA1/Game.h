@@ -46,6 +46,7 @@ public:
 	//Methods
 	void update();
 	void cameraWorldWrapping();
+	void warpingOtherEntities();
 	void render(sf::RenderWindow &renderer);
 };
 
