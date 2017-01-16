@@ -195,6 +195,7 @@ xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-2.dll" "$(Ta
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\Anthony O%27Sullivan\Desktop\Merging Files\Mutants\Ai_Defender_CA1\Mutant.cpp" />
     <ClCompile Include="Abductor.cpp" />
     <ClCompile Include="Ai_Defender_CA1.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
@@ -212,6 +213,7 @@ xcopy /e /y /i "$(ProjectDir)Dependencies\SFML\x64\bin\sfml-network-2.dll" "$(Ta
     <ClCompile Include="ProjectileManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\..\Anthony O%27Sullivan\Desktop\Merging Files\Mutants\Ai_Defender_CA1\Mutant.h" />
     <ClInclude Include="Astronaut.h" />
     <ClInclude Include="Abductor.h" />
     <ClInclude Include="AiStates.h" />

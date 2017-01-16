@@ -194,6 +194,9 @@ void Player::update(sf::Time deltaTime)
 	}
 	projMan.Update(deltaTime);
 
+	
+	m_velocity = VectorHelper::truncate(m_velocity, m_MAXHORIZONTALACCLERATION);
+
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
 }
 

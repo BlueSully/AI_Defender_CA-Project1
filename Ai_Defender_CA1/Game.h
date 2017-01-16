@@ -1,6 +1,7 @@
 #pragma once
 #include "Player.h"
 #include "Astronaut.h"
+#include "Mutant.h"
 #include "Camera.h"
 #include "Abductor.h"
 #include <vector>
@@ -15,6 +16,7 @@ private:
 	Player m_playerShip;
 	vector<Astronaut *> m_astronauts;
 	vector<Abductor *> m_abductors;
+	vector<Mutant *> m_mutants;
 
 	sf::RenderWindow * m_windowScreen;
 	Camera * m_camera;
@@ -41,6 +43,7 @@ public:
 	bool isGameRunning() const;
 	void getInput();
 	void manageHumans(sf::Time elapsedTime);
+	void manageMutants(sf::Time elapsedTime);
 	void manageAbductors(sf::Time elapsedTime);
 
 	//Methods

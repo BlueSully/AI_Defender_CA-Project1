@@ -41,27 +41,31 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 	m_camera->setTargetPlayer(&m_playerShip);
 
-	const int minPosition = m_worldBackground[0].getPosition().x;
-	const int maxPosition = m_worldBackground[m_numOfScreens - 1].getPosition().x;
+	const int minPosition = static_cast<const int>(m_worldBackground[0].getPosition().x);
+	const int maxPosition = static_cast<const int>(m_worldBackground[m_numOfScreens - 1].getPosition().x);
 
 	for (int i = 0; i < 5; i++)
 	{
 		//Getting a random value between each side of the world
-		int locationX = minPosition + (rand() * (int)(maxPosition - minPosition) / RAND_MAX);
+		float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
 
-		sf::Vector2f positon = sf::Vector2f(locationX, m_windowScreen->getSize().y);
+		sf::Vector2f positon = sf::Vector2f(locationX, (float)m_windowScreen->getSize().y);
 		m_astronauts.push_back(new Astronaut(positon, sf::Vector2f(0, 0)));
 	}
 
 	for (size_t i = 0; i < 5; i++)
 	{
-		int locationX = minPosition + (rand() * (int)(maxPosition - minPosition) / RAND_MAX);
+		float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
 
 		m_abductors.push_back(new Abductor(sf::Vector2f(locationX, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i, 32));
 		m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
 		m_abductors[i]->setColour(sf::Color(0, rand() % 235 + 10, rand() % 235 + 10));
 	}
 	
+	for (size_t i = 0; i < 1; i++)
+	{
+		m_mutants.push_back(new Mutant(sf::Vector2f(250, 200), sf::Vector2f(0, 0)));
+	}
 }
 
 Game::~Game()
@@ -98,7 +102,7 @@ void Game::getInput()
 void Game::manageHumans(sf::Time elapsedTime)
 {
 	float fleeingDistance = 300;
-	for (size_t i = 0; i < m_astronauts.size(); i++)
+	for (int i = 0; i < m_astronauts.size(); i++)
 	{
 		bool canWander = false;
 		std::map<int, float> alienDist;//humanDist : Get all distances to nearest humans
@@ -106,7 +110,7 @@ void Game::manageHumans(sf::Time elapsedTime)
 		{
 			m_astronauts[i]->boundaryResponse(m_worldSize);
 
-			for (size_t j = 0; j < m_abductors.size(); j++)
+			for (int j = 0; j < m_abductors.size(); j++)
 			{
 				float distance = VectorHelper::distanceBetweenTwoVectors(m_abductors[j]->getPosition(), m_astronauts[i]->getPosition());
 
@@ -125,7 +129,7 @@ void Game::manageHumans(sf::Time elapsedTime)
 			}
 
 			//Check distances from aliens if any are within range don't go back to wandering
-			for (size_t i = 0; i < alienDist.size(); i++)
+			for (int i = 0; i < alienDist.size(); i++)
 			{
 				if (alienDist[i] > fleeingDistance)
 				{
@@ -148,6 +152,14 @@ void Game::manageHumans(sf::Time elapsedTime)
 
 		}
 		m_astronauts[i]->update(elapsedTime);
+	}
+}
+
+void Game::manageMutants(sf::Time elapsedTime)
+{
+	for (size_t i = 0; i < m_mutants.size(); i++)
+	{
+		m_mutants[i]->update(elapsedTime, m_playerShip.getPosition());
 	}
 }
 
@@ -216,12 +228,9 @@ void Game::update()
 	m_playerShip.boundaryResponse(m_worldSize);
 	m_playerShip.update(elapsedTime);
 
-	manageAbductors(elapsedTime);
-	manageHumans(elapsedTime);
-	cout << "0: " << m_abductors[0]->getAbucteeId()
-		 << " 1: " << m_abductors[1]->getAbucteeId()
-		 << " 2: " << m_abductors[2]->getAbucteeId()
-		 << " 3: " << m_abductors[3]->getAbucteeId() << endl;
+	//manageAbductors(elapsedTime);
+	manageMutants(elapsedTime);
+	//manageHumans(elapsedTime);
 }
 
 //used to create a seamless transition from side to side as the player travels
@@ -229,12 +238,12 @@ void Game::cameraWorldWrapping()
 {
 	if ((m_camera->getView().getCenter().x - m_camera->getView().getSize().x / 2) < (m_worldBackground.front().getPosition().x)) // if camera can't move more left warp everything on screen to right side of world
 	{
-		std::cout << "Warp to Right" << std::endl;
+		//std::cout << "Warp to Right" << std::endl;
 		m_playerShip.setPosition(sf::Vector2f(m_worldBackground.back().getPosition().x + m_worldBackground.back().getSize().x - m_camera->getView().getSize().x / 2, m_playerShip.getPosition().y));//Move player to center of screen on right side of the world
 	}
 	else if ((m_camera->getView().getCenter().x + m_camera->getView().getSize().x / 2) > (m_worldBackground.back().getPosition().x + m_worldBackground.back().getSize().x)) // if camera can't move more right warp everything on screen to left side of world
 	{
-		std::cout << "Warp to Left" << std::endl;
+		//std::cout << "Warp to Left" << std::endl;
 		m_playerShip.setPosition(sf::Vector2f((m_worldBackground.front().getPosition().x + m_camera->getView().getSize().x / 2), m_playerShip.getPosition().y));
 	}
 }
@@ -257,7 +266,7 @@ void Game::render(sf::RenderWindow &renderer)
 
 	m_playerShip.render(renderer);
 
-	for (size_t i = 0; i < m_astronauts.size(); i++)
+	/*for (size_t i = 0; i < m_astronauts.size(); i++)
 	{
 		m_astronauts[i]->render(renderer);
 	}
@@ -265,6 +274,11 @@ void Game::render(sf::RenderWindow &renderer)
 	for (size_t i = 0; i < m_abductors.size(); i++)
 	{
 		m_abductors[i]->render(renderer);
+	}*/
+
+	for (size_t i = 0; i < m_mutants.size(); i++)
+	{
+		m_mutants[i]->render(renderer);
 	}
 
 	//Render mini-map
@@ -277,14 +291,19 @@ void Game::render(sf::RenderWindow &renderer)
 
 	m_playerShip.render(renderer);
 
-	for (size_t i = 0; i < m_astronauts.size(); i++)
-	{
-		m_astronauts[i]->render(renderer);
-	}
+	//for (size_t i = 0; i < m_astronauts.size(); i++)
+	//{
+	//	m_astronauts[i]->render(renderer);
+	//}
 
-	for (size_t i = 0; i < m_abductors.size(); i++)
+	//for (size_t i = 0; i < m_abductors.size(); i++)
+	//{
+	//	m_abductors[i]->render(renderer);
+	//}
+
+	for (size_t i = 0; i < m_mutants.size(); i++)
 	{
-		m_abductors[i]->render(renderer);
+		m_mutants[i]->render(renderer);
 	}
 
 	renderer.display();

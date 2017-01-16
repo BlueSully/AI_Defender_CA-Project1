@@ -16,6 +16,7 @@ Abductor::Abductor()
 	m_attackRangeBox.setFillColor(sf::Color(125, 50, 0, 175));
 	m_attackRangeBox.setSize(sf::Vector2f(static_cast<float>(32 * m_attackRange), static_cast<float>(32 * m_attackRange)));
 	m_attackRangeBox.setPosition(m_boundingBox.getPosition() - sf::Vector2f(static_cast<float>(32 * (m_attackRange / 2)), static_cast<float>(32 * (m_attackRange / 2))));
+	
 	m_position = m_boundingBox.getPosition();
 	m_velocity = getDirection();
 	m_acceleration = sf::Vector2f(0, 0);
