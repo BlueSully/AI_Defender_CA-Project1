@@ -5,7 +5,7 @@ Astronaut::Astronaut() : m_beingAbducted(false), m_abductorId(-1)
 	srand(static_cast<unsigned int>(time(NULL)));
 	//Gets Called when player is Created
 	m_boundingBox.setFillColor(sf::Color::White);
-	m_boundingBox.setSize(sf::Vector2f(32, 32));
+	m_boundingBox.setSize(sf::Vector2f(16, 32));
 	m_velocity = sf::Vector2f(0, 0);
 	m_state = AiState::WANDER;
 	m_wanderAngle = 0;
@@ -16,7 +16,7 @@ Astronaut::Astronaut(sf::Vector2f position, sf::Vector2f veclocity) : m_beingAbd
 	srand(static_cast<unsigned int>(time(NULL)));
 	//Gets Called when player is Created
 	m_boundingBox.setFillColor(sf::Color::White);
-	m_boundingBox.setSize(sf::Vector2f(32, 32));
+	m_boundingBox.setSize(sf::Vector2f(16, 32));
 	m_velocity = sf::Vector2f(0, 0);
 	m_state = AiState::WANDER;
 	m_wanderAngle = 0;
@@ -40,9 +40,9 @@ sf::Vector2f Astronaut::getPosition()
 	return m_boundingBox.getPosition();
 }
 
-void Astronaut::setFleeDirection(int value)
+void Astronaut::setFleeTarget(sf::Vector2f * value)
 {
-	m_fleeingDirection = value;
+	m_fleeTarget = value;
 }
 
 sf::Vector2f Astronaut::getVelocity()
@@ -58,11 +58,6 @@ AiState Astronaut::getState() const
 void Astronaut::setPosition(sf::Vector2f value)
 {
 	m_boundingBox.setPosition(value);
-}
-
-void Astronaut::setFleeingTarget(sf::Vector2f * value)
-{
-	m_fleeFromPos = value;
 }
 
 void Astronaut::setState(AiState value)
@@ -121,19 +116,16 @@ sf::Vector2f Astronaut::wander()
 	return wanderForce;
 }
 
-void Astronaut::flee()
+sf::Vector2f Astronaut::flee()
 {
-	if (m_fleeingDirection == 0)
+	sf::Vector2f desired_velocity = VectorHelper::normalise(getPosition() - *m_fleeTarget) * MAX_VELOCITY;
+	sf::Vector2f steering = desired_velocity - m_velocity;
+	steering.y = 0;
+	if (steering.x < 0.1f)
 	{
-		m_velocity = sf::Vector2f(-MAX_VELOCITY, 0);
+		steering.x = -MAX_VELOCITY;
 	}
-	else if (m_fleeingDirection == 1)
-	{
-		m_velocity = sf::Vector2f(MAX_VELOCITY, 0);
-	}
-
-	desired_velocity = normalize(position - target) * max_velocity
-		steering = desired_velocity - velocity
+	return steering;
 }
 
 void Astronaut::update(sf::Time elapsedTime)

@@ -12,7 +12,7 @@ private:
 
 	sf::Vector2f m_velocity;
 	sf::Vector2f m_steering;
-	sf::Vector2f * m_fleeFromPos;
+	sf::Vector2f * m_fleeTarget;
 	sf::Vector2f * m_followTarget;
 	sf::Vector2f m_followSize;
 
@@ -38,11 +38,10 @@ public:
 	//Get Method
 	sf::Vector2f getSize();
 	sf::Vector2f getPosition();	
-	void setFleeDirection(int value);
+	void setFleeTarget(sf::Vector2f * value);
 	sf::Vector2f getVelocity();
 	AiState getState() const;
 	void setPosition(sf::Vector2f value);
-	void setFleeingTarget(sf::Vector2f * value);
 	void setState(AiState value);
 	void setBeingAbducted(bool value);
 	bool getBeingAbducted() const;
@@ -52,7 +51,7 @@ public:
 
 	//Methods
 	sf::Vector2f wander();
-	void flee();
+	sf::Vector2f flee();
 
 	void boundaryResponse(sf::Vector2f worldSize);
 	void update(sf::Time elapsedTime);

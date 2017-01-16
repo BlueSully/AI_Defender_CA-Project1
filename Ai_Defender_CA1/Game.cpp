@@ -14,7 +14,7 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 	m_screenWidth = (m_windowScreen->getSize().x * m_numOfScreens / m_windowScreen->getSize().x);
 
-	for (size_t i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		m_astronauts.push_back(new Astronaut(sf::Vector2f(100 * i, m_windowScreen->getSize().y), sf::Vector2f(0, 0)));
 	}
@@ -83,54 +83,68 @@ void Game::getInput()
 //Function to Manage astronauts within gameworld
 void Game::manageHumans(sf::Time elapsedTime)
 {
-	float fleeingDistance = 350;
+	float fleeingDistance = 125;
 	for (size_t i = 0; i < m_astronauts.size(); i++)
 	{
+		bool canWander = false;
+		std::map<int, float> alienDist;//humanDist : Get all distances to nearest humans
 		if (m_astronauts[i]->getState() != GRABBED)
 		{
 			m_astronauts[i]->boundaryResponse(m_worldSize);
 
-			//Check if id isn't out of range
-			if (m_astronauts[i]->getAbuctorId() >= 0) 
+			for (size_t j = 0; j < m_abductors.size(); j++)
 			{
-				//if distance from pursuer is greater that the fleeing distance go back wandering
-				float distance = VectorHelper::distanceBetweenTwoVectors(m_abductors[m_astronauts[i]->getAbuctorId()]->getPosition(), m_astronauts[i]->getPosition());
+				float distance = VectorHelper::distanceBetweenTwoVectors(m_abductors[j]->getPosition(), m_astronauts[i]->getPosition());
 
-				if (distance <= fleeingDistance && m_astronauts[i]->getState() != FLEE)
-				{
-					m_astronauts[i]->setState(FLEE);			
-					m_astronauts[i]->setFleeingTarget(&m_abductors[i]->getPosition());
+				alienDist[j] = distance;
+			}
 
-					if (m_abductors[m_astronauts[i]->getAbuctorId()]->getPosition().x > m_astronauts[i]->getPosition().x)
-					{
-						m_astronauts[i]->setFleeDirection(0);
-					}
-					else if (m_abductors[m_astronauts[i]->getAbuctorId()]->getPosition().x < m_astronauts[i]->getPosition().x)
-					{
-						m_astronauts[i]->setFleeDirection(1);
-					}
-				}
-				else if (distance > fleeingDistance && m_astronauts[i]->getState() != WANDER)
+			if (alienDist.size() > 1)
+			{
+				std::pair<int, float> min = *min_element(alienDist.begin(), alienDist.end(), compareValues());
+
+				if (min.second < fleeingDistance)
 				{
-					m_astronauts[i]->setAbductorId(-1);
-					m_astronauts[i]->setBeingAbducted(false);
-					m_astronauts[i]->setState(WANDER);
+					m_astronauts[i]->setState(FLEE);
+					m_astronauts[i]->setFleeTarget(&m_abductors[min.first]->getPosition());
 				}
 			}
+
+			//Check distances from aliens if any are within range don't go back to wandering
+			for (size_t i = 0; i < alienDist.size(); i++)
+			{
+				if (alienDist[i] > fleeingDistance)
+				{
+					canWander = true;
+				}
+				else
+				{
+					canWander = false;
+					break;
+				}
+			}
+
+			//if distance from pursuer is greater that the fleeing distance go back wandering
+			if (canWander)
+			{
+				m_astronauts[i]->setAbductorId(-1);
+				m_astronauts[i]->setBeingAbducted(false);
+				m_astronauts[i]->setState(WANDER);
+			}
+
 		}
 		m_astronauts[i]->update(elapsedTime);
 	}
-	cout << "veloc: " << m_astronauts[0]->getVelocity().x << ' ' << m_astronauts[0]->getVelocity().y << endl;
 }
 
 //Function to Manage abductors within gameworld
 void Game::manageAbductors(sf::Time elapsedTime)
 {
-	for (size_t i = 0; i < 2; i++)
+	for (int i = 0; i < m_abductors.size(); i++)
 	{
 		std::map<int, float> humanDist;//humanDist : Get all distances to nearest humans
 
-		for (size_t j = 0; j < m_astronauts.size(); j++)//Look for nearest unmarked human
+		for (int j = 0; j < m_astronauts.size(); j++)//Look for nearest unmarked human
 		{
 			float distance = VectorHelper::distanceBetweenTwoVectors(m_abductors[i]->getPosition(), m_astronauts[j]->getPosition());
 			
@@ -210,12 +224,12 @@ void Game::render(sf::RenderWindow &renderer)
 	//render Scene
 	renderer.setView(m_camera->getView());
 
-	m_playerShip.render(renderer);
-
 	for (size_t i = 0; i < m_worldBackground.size(); i++)
 	{
 		renderer.draw(m_worldBackground[i]);
 	}
+
+	m_playerShip.render(renderer);
 
 	for (size_t i = 0; i < m_astronauts.size(); i++)
 	{
@@ -229,13 +243,13 @@ void Game::render(sf::RenderWindow &renderer)
 
 	//Render mini-map
 	renderer.setView(m_camera->getRadar());
-	
-	m_playerShip.render(renderer);
 
 	for (size_t i = 0; i < m_worldBackground.size(); i++)
 	{
 		renderer.draw(m_worldBackground[i]);
 	}
+
+	m_playerShip.render(renderer);
 
 	for (size_t i = 0; i < m_astronauts.size(); i++)
 	{
