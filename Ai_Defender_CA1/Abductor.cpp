@@ -304,8 +304,9 @@ void Abductor::abduct(sf::Time deltaTime, sf::Vector2f * pos)
 
 void Abductor::patrol(sf::Time deltaTime)
 {
-	patrolLine[0].position = sf::Vector2f(m_worldBounds.getPosition().x, 350);
-	patrolLine[1].position = sf::Vector2f(m_worldBounds.getPosition().x + m_worldBounds.getSize().x, 350);
+	int patrolHeight = rand() % 300 + 100;
+	patrolLine[0].position = sf::Vector2f(m_worldBounds.getPosition().x, patrolHeight);
+	patrolLine[1].position = sf::Vector2f(m_worldBounds.getPosition().x + m_worldBounds.getSize().x, patrolHeight);
 	
 	if (static_cast<int>(m_boundingBox.getPosition().y + m_boundingBox.getSize().y / 2) < static_cast<int>(patrolLine[0].position.y))
 	{
@@ -402,7 +403,6 @@ void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 
 void Abductor::render(sf::RenderWindow & renderer)
 {
-	renderer.draw(patrolLine, 2, sf::Lines);//Debug Patrol Line
 	renderer.draw(m_boundingBox);
 	//renderer.draw(m_attackRangeBox);
 }

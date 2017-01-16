@@ -173,7 +173,7 @@ void Game::manageAbductors(sf::Time elapsedTime)
 		{
 			std::pair<int, float> min = *min_element(humanDist.begin(), humanDist.end(), compareValues());
 
-			if (min.second < 300 && !(m_astronauts[min.first]->getBeingAbducted()))//Marking unmarked human as targeted
+			if (min.second < 500 && !(m_astronauts[min.first]->getBeingAbducted()))//Marking unmarked human as targeted
 			{
 				m_abductors[i]->setState(ABDUCTING);
 				m_abductors[i]->setAbducteeId(min.first);

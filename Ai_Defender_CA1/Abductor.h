@@ -60,8 +60,6 @@ public:
 
 	void update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox);
 
-	
-
 	void flock(vector<Abductor *> * abductors);
 
 	sf::Vector2f alignment(vector<Abductor *> * abductors);

@@ -2,28 +2,27 @@
 
 Camera::Camera() : m_xAxisLocked(false), m_yAxisLocked(false)
 {
+
 }
 
 Camera::~Camera()
 {
+
 }
 
 Camera::Camera(sf::Vector2f startPosition, sf::Vector2f ViewportSize) 
 {
 	m_view = sf::View(sf::FloatRect(startPosition.x, startPosition.y, ViewportSize.x, ViewportSize.y));
 	m_viewSize = ViewportSize;
-
-
-
 }
 
 Camera::Camera(sf::Vector2f startPosition, sf::Vector2f ViewportSize, bool xAxisLock, bool yAxisLock) : m_xAxisLocked(xAxisLock), m_yAxisLocked(yAxisLock)
 {
 	m_view = sf::View(sf::FloatRect(startPosition.x, startPosition.y, ViewportSize.x, ViewportSize.y));
 	m_viewSize = ViewportSize;
-	m_radar = sf::View(sf::Vector2f(startPosition.x, ViewportSize.y/2),sf::Vector2f( ViewportSize.x *9.0f, ViewportSize.y));
+	m_radar = sf::View(sf::Vector2f(startPosition.x + ViewportSize.x / 2, ViewportSize.y / 2),sf::Vector2f(ViewportSize.x * 9.0f, ViewportSize.y));
 
-	m_radar.setViewport(sf::FloatRect(0, 0, 1, 0.1f));
+	m_radar.setViewport(sf::FloatRect(0.25f, 0, 0.5f, 0.1f));
 }
 
 void Camera::setTargetPlayer(Player * player)
@@ -34,7 +33,6 @@ void Camera::setTargetPlayer(Player * player)
 void Camera::setViewport(sf::FloatRect viewport)
 {
 	m_view.setViewport(viewport);
-	
 }
 
 void Camera::xAxisLock(bool value) 
@@ -64,14 +62,6 @@ void Camera::UpdateView(sf::Vector2f worldbounds)
 		{
 			m_view.setCenter(m_targetPlayer->getPosition().x, m_view.getCenter().y);
 		}
-
-
-
-
-
-
-
-
 	}
 	//if (!m_yAxisLocked)
 	//{
