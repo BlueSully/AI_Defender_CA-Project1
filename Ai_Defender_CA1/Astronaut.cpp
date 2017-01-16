@@ -55,7 +55,7 @@ void Astronaut::setPosition(sf::Vector2f value)
 	m_boundingBox.setPosition(value);
 }
 
-void Astronaut::setFleeingTarget(sf::Vector2f value)
+void Astronaut::setFleeingTarget(sf::Vector2f * value)
 {
 	m_fleeFromPos = value;
 }
@@ -75,10 +75,10 @@ bool Astronaut::getBeingAbducted() const
 	return m_beingAbducted;
 }
 
-void Astronaut::setFollowTarget(sf::Vector2f * value, sf::Vector2f * velocity)
+void Astronaut::setFollowTarget(sf::Vector2f & value, sf::Vector2f size)
 {
-	m_followTarget = value;
-	m_followVelocity = velocity;
+	m_followTarget = &value;
+	m_followSize = size;
 }
 
 sf::Vector2f Astronaut::wander()
@@ -109,16 +109,15 @@ sf::Vector2f Astronaut::wander()
 
 void Astronaut::flee()
 {
-	if (m_fleeFromPos.x > getPosition().x)
+	if (m_fleeFromPos->x > getPosition().x)
 	{
 		m_velocity = sf::Vector2f(-MAX_VELOCITY, 0);
 	}
-	else if (m_fleeFromPos.x < getPosition().x)
+	else if (m_fleeFromPos->x < getPosition().x)
 	{
 		m_velocity = sf::Vector2f(MAX_VELOCITY, 0);
 	}
 }
-
 
 void Astronaut::update(sf::Time elapsedTime)
 {
@@ -126,7 +125,9 @@ void Astronaut::update(sf::Time elapsedTime)
 	switch (m_state)
 	{
 	case GRABBED:
-		m_velocity = *m_followVelocity;
+		m_steering = sf::Vector2f(0, 0);
+		m_velocity = sf::Vector2f(0, 0);
+		m_boundingBox.setPosition(sf::Vector2f((*m_followTarget).x, (*m_followTarget).y + m_followSize.y));
 		break;
 	case WANDER:
 		if (m_wanderDelayTimer > 100)//0.1 of a second delay 
@@ -143,12 +144,14 @@ void Astronaut::update(sf::Time elapsedTime)
 	default:
 		break;
 	}
-	if(!m_beingAbducted)
+
+	if (m_state != GRABBED) 
+	{
 		m_velocity = VectorHelper::truncate(m_velocity + m_steering, MAX_VELOCITY);
 
-	m_boundingBox.move(m_velocity * elapsedTime.asSeconds());
+		m_boundingBox.move(m_velocity * elapsedTime.asSeconds());
+	}
 }
-
 
 
 void Astronaut::fleeCollisionCheck(sf::Vector2f value)
@@ -158,13 +161,9 @@ void Astronaut::fleeCollisionCheck(sf::Vector2f value)
 		float distance = VectorHelper::distanceBetweenTwoVectors(getPosition(), value);
 		if (distance < 300) //Check if value is inside of wander radius;
 		{
-			setState(FLEE);
-			setFleeingTarget(value);
+			
 		}
-		else if (distance > 300)
-		{
-			setState(WANDER);
-		}
+		
 	}
 }
 

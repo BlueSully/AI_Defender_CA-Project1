@@ -15,9 +15,9 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 	m_screenWidth = (m_windowScreen->getSize().x * m_numOfScreens / m_windowScreen->getSize().x);
 
-	for (size_t i = 0; i < 1; i++)
+	for (size_t i = 0; i < 4; i++)
 	{
-		m_astronauts.push_back(new Astronaut(sf::Vector2f(100, m_windowScreen->getSize().y), sf::Vector2f(0, 0)));
+		m_astronauts.push_back(new Astronaut(sf::Vector2f(100 * i, m_windowScreen->getSize().y), sf::Vector2f(0, 0)));
 	}
 
 	for (size_t i = 0; i < m_screenWidth; i++)
@@ -45,7 +45,7 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 	for (size_t i = 0; i < 4; i++)
 	{
-		m_abductors.push_back(new Abductor(sf::Vector2f(300 * i, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i, 35));
+		m_abductors.push_back(new Abductor(sf::Vector2f(300 * i, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i, 32));
 		m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
 	}
 	m_abductors[1]->setColour(sf::Color(0, 150, 0));
@@ -112,11 +112,20 @@ void Game::update()
 		if (m_astronauts[i]->getState() != GRABBED) 
 		{
 			m_astronauts[i]->boundaryResponse(m_worldSize);
-			m_astronauts[i]->fleeCollisionCheck(m_playerShip.getPosition());
 
 			for (size_t j = 0; j < m_abductors.size(); j++)
 			{
-				m_astronauts[i]->fleeCollisionCheck(m_abductors[j]->getPosition());
+				float distance = VectorHelper::distanceBetweenTwoVectors(m_abductors[i]->getPosition(), m_astronauts[j]->getPosition());
+
+				if (distance < 300)
+				{
+					m_astronauts[i]->setState(FLEE);
+					m_astronauts[i]->setFleeingTarget(&m_abductors[i]->getPosition());
+				}
+				else
+				{
+					m_astronauts[i]->setState(WANDER);
+				}
 			}
 		}
 		m_astronauts[i]->update(elapsedTime);
@@ -124,42 +133,43 @@ void Game::update()
 
 	m_abductors[0]->update(elapsedTime, m_playerShip.getBoundingBox());
 
-	float distance = VectorHelper::distanceBetweenTwoVectors(m_abductors[0]->getPosition(), m_astronauts[0]->getPosition());
-
-	if (distance < 300)
+	
+	for (size_t i = 0; i < m_abductors.size(); i++)
 	{
-		m_abductors[0]->setState(ABDUCTING);
-		m_abductors[0]->abduct(elapsedTime, m_astronauts[0]->getPosition(), 0);
+		m_abductors[i]->update(elapsedTime, m_playerShip.getBoundingBox());
+		for (size_t j = 0; j < m_astronauts.size(); j++)
+		{
+			float distance = VectorHelper::distanceBetweenTwoVectors(m_abductors[i]->getPosition(), m_astronauts[j]->getPosition());
 
-		if (CollisionHelper::RectangleCollision(m_abductors[0]->getPosition(), m_abductors[0]->getSize(), m_astronauts[0]->getPosition(), m_astronauts[0]->getSize()))
-		{
-			cout << "Grabbed" << endl;
-			m_abductors[0]->setGrabbedAstronaut(true);
-			m_astronauts[0]->setState(GRABBED);			
-			m_astronauts[0]->setBeingAbducted(true);
-			m_astronauts[0]->setFollowTarget(&m_abductors[0]->getPosition(), &m_abductors[0]->getVelocity());
-		}
-		else
-		{
-			if (m_abductors[0]->getPosition().y < m_astronauts[0]->getPosition().y && m_astronauts[0]->getState() != GRABBED)
+			if (distance < 300 && !(m_astronauts[j]->getBeingAbducted()) && m_astronauts[j]->getState() != GRABBED)
 			{
-				m_abductors[0]->setVelocity(sf::Vector2f(m_abductors[0]->getVelocity().x, 20));
+				m_abductors[i]->setState(ABDUCTING);
+				m_abductors[i]->abduct(elapsedTime, &m_astronauts[j]->getPosition(), 0);
+				m_astronauts[j]->setBeingAbducted(true);
+
+				if (CollisionHelper::RectangleCollision(m_abductors[i]->getPosition(), m_abductors[i]->getSize(), m_astronauts[0]->getPosition(), m_astronauts[0]->getSize()))
+				{
+					m_abductors[i]->setGrabbedAstronaut(true);
+					m_astronauts[j]->setFollowTarget((m_abductors[i]->getPosition()), m_abductors[i]->getSize());
+					m_astronauts[j]->setState(GRABBED);
+				}
+				else
+				{
+					if (m_abductors[i]->getPosition().y < m_astronauts[j]->getPosition().y && m_astronauts[j]->getState() != GRABBED)
+					{
+						m_abductors[i]->setVelocity(sf::Vector2f(m_abductors[i]->getVelocity().x, 20));
+					}
+				}
+			}
+			else
+			{
+				m_astronauts[j]->setBeingAbducted(false);
 			}
 		}
-	}
-	else 
-	{
-		m_astronauts[0]->setBeingAbducted(false);
-	}
-	cout << "Velo: " << m_astronauts[0]->getVelocity().x << ' ' << m_astronauts[0]->getVelocity().y 
-		 << " Pos: " << m_astronauts[0]->getPosition().x << ' ' << m_astronauts[0]->getPosition().y <<  endl;
 
-	//cout << "velo: " << m_abductors[0]->getVelocity().x << ' ' << m_abductors[0]->getVelocity().y << endl;
-	//for (size_t i = 0; i < m_abductors.size(); i++)
-	//{
-	//	m_abductors[i]->update(elapsedTime, m_playerShip.getBoundingBox());
-	//	m_abductors[i]->flock(&m_abductors);
-	//}
+		if(m_abductors[i]->getState() != ABDUCTING)// Don't flock if grabbing a human
+			m_abductors[i]->flock(&m_abductors);
+	}
 }
 
 void Game::render(sf::RenderWindow &renderer)

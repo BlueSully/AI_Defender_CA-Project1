@@ -12,15 +12,15 @@ private:
 
 	sf::Vector2f m_velocity;
 	sf::Vector2f m_steering;
-	sf::Vector2f m_fleeFromPos;
+	sf::Vector2f * m_fleeFromPos;
 	sf::Vector2f * m_followTarget;
-	sf::Vector2f * m_followVelocity;
+	sf::Vector2f m_followSize;
 
 	float m_wanderAngle;
 	float m_wanderDelayTimer;
 
 	const float MAX_FORCE = 6.4f;
-	const float MAX_VELOCITY = 20;
+	const float MAX_VELOCITY = 10;
 	const float CIRCLEDISTANCE = 6;
 	const float CIRCLE_RADIUS = 8;
 	const float ANGLECHANGE = 1;
@@ -39,11 +39,11 @@ public:
 	sf::Vector2f getVelocity();
 	AiState getState() const;
 	void setPosition(sf::Vector2f value);
-	void setFleeingTarget(sf::Vector2f);
+	void setFleeingTarget(sf::Vector2f * value);
 	void setState(AiState value);
 	void setBeingAbducted(bool value);
 	bool getBeingAbducted() const;
-	void setFollowTarget(sf::Vector2f * value, sf::Vector2f * velocity);
+	void setFollowTarget(sf::Vector2f & value, sf::Vector2f size);
 
 	//Methods
 	sf::Vector2f wander();

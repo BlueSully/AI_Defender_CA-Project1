@@ -3,7 +3,7 @@
 Abductor::Abductor()
 	: m_attackRange(17),
 	m_speed(35),
-	state(PATROL),
+	m_state(PATROL),
 	m_canAttack(true),
 	m_grabbedAstronaut(false),
 	m_timeTillNextAttack(0)
@@ -15,7 +15,7 @@ Abductor::Abductor()
 	m_attackRangeBox.setFillColor(sf::Color(125, 50, 0, 175));
 	m_attackRangeBox.setSize(sf::Vector2f(static_cast<float>(32 * m_attackRange), static_cast<float>(32 * m_attackRange)));
 	m_attackRangeBox.setPosition(m_boundingBox.getPosition() - sf::Vector2f(static_cast<float>(32 * (m_attackRange / 2)), static_cast<float>(32 * (m_attackRange / 2))));
-	
+	m_position = m_boundingBox.getPosition();
 	m_velocity = getDirection();
 	m_acceleration = sf::Vector2f(0, 0);
 }
@@ -23,8 +23,8 @@ Abductor::Abductor()
 Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize, int id, float speed)
 	: m_attackRange(17),
 	m_speed(speed),
-	m_currentId(id),
-	state(PATROL),
+	m_abducteeId(id),
+	m_state(PATROL),
 	m_canAttack(true),
 	m_grabbedAstronaut(false),
 	m_timeTillNextAttack(0)
@@ -32,7 +32,7 @@ Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize, int id, float
 	m_boundingBox.setPosition(position);
 	m_boundingBox.setSize(sf::Vector2f(32, 32));
 	m_boundingBox.setFillColor(sf::Color::Red);
-
+	
 	m_attackRangeBox.setFillColor(sf::Color(125, 50, 0, 175));
 	m_attackRangeBox.setSize(sf::Vector2f(static_cast<float>(32 * m_attackRange), static_cast<float>(32 * m_attackRange)));
 	m_attackRangeBox.setPosition(m_boundingBox.getPosition() - sf::Vector2f(static_cast<float>(32 * (m_attackRange / 2)), static_cast<float>(32 * (m_attackRange / 2))));
@@ -47,6 +47,7 @@ Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize, int id, float
 	setDirection(dir);
 	m_velocity = getDirection();
 	m_acceleration = sf::Vector2f(0, 0);
+	m_position = m_boundingBox.getPosition();
 }
 
 Abductor::~Abductor()
@@ -59,14 +60,19 @@ sf::Vector2f Abductor::getSize()
 	return m_boundingBox.getSize();
 }
 
-sf::Vector2f Abductor::getPosition()
+sf::Vector2f & Abductor::getPosition()
 {
-	return m_boundingBox.getPosition();
+	return m_position;
 }
 
 sf::RectangleShape Abductor::getBoundingBox()
 {
 	return m_boundingBox;
+}
+
+AiState Abductor::getState()
+{
+	return m_state;
 }
 
 sf::Vector2f Abductor::getVelocity()
@@ -100,14 +106,14 @@ void Abductor::setPosition(sf::Vector2f value)
 	m_boundingBox.setPosition(value);
 }
 
-void Abductor::setAbductorTarget(sf::Vector2f target)
+void Abductor::setAbductorTarget(sf::Vector2f * target)
 {
 	m_abducteePosition = target;
 }
 
 void Abductor::setState(AiState value)
 {
-	state = value;
+	m_state = value;
 }
 
 void Abductor::setVelocity(sf::Vector2f value)
@@ -267,19 +273,19 @@ sf::Vector2f Abductor::seek(sf::Vector2f v)
 	return m_acceleration;
 }
 
-void Abductor::abduct(sf::Time deltaTime, sf::Vector2f pos, int AstronautID)
+void Abductor::abduct(sf::Time deltaTime, sf::Vector2f * pos, int AstronautID)
 {
 	m_abducteePosition = pos;
 
-	if (static_cast<int>(m_abducteePosition.x) > static_cast<int>(getPosition().x))
+	if (static_cast<int>(m_abducteePosition->x) > static_cast<int>(getPosition().x))
 	{
 		m_velocity.x = m_speed;
 	}
-	else if (static_cast<int>(m_abducteePosition.x) < static_cast<int>(getPosition().x))
+	else if (static_cast<int>(m_abducteePosition->x) < static_cast<int>(getPosition().x))
 	{
 		m_velocity.x = -m_speed;
 	}
-	else if (static_cast<int>(m_abducteePosition.x) == static_cast<int>(getPosition().x))
+	else if (static_cast<int>(m_abducteePosition->x) == static_cast<int>(getPosition().x))
 	{
 		m_velocity.x = 0;
 	}
@@ -328,16 +334,16 @@ void Abductor::boundaryResponse()
 
 void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 {
-	switch (state)
+	switch (m_state)
 	{
 	case ABDUCTING:
 		if (m_grabbedAstronaut)
 		{
-			m_velocity = sf::Vector2f(m_velocity.x, -20);
+			m_velocity = sf::Vector2f(0, -10);
 		}
 		else if (!m_grabbedAstronaut) 
 		{
-			m_velocity = sf::Vector2f(m_velocity.x, 20);
+			m_velocity = sf::Vector2f(m_velocity.x, 10);
 		}
 		break;
 	case PATROL:
@@ -380,6 +386,7 @@ void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 	boundaryResponse();
 
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
+	m_position = m_boundingBox.getPosition();
 }
 
 bool Abductor::rectCollision(sf::RectangleShape rectA, sf::RectangleShape rectB)
