@@ -1,7 +1,7 @@
 #include "Projectile.h"
 
 Projectile::Projectile(bool isLeft, sf::Vector2f playerPos, float playerXVelocity, int ttl) :
-	m_size(sf::Vector2f(7, 5))
+	m_size(sf::Vector2f(40, 5))
 {
 	float offset = 15.0f;//so lasers leave from centre of ship
 	m_ttl = ttl;
@@ -10,7 +10,8 @@ Projectile::Projectile(bool isLeft, sf::Vector2f playerPos, float playerXVelocit
 	m_projectileBoundBox.setPosition(sf::Vector2f(playerPos.x, playerPos.y + offset));
 	m_alive = true;
 	//set to laser sprite
-	m_speed = 5.5f;
+	m_speed = 2.5f;
+	m_timer = 0;
 	m_isLaser = true;
 	if (isLeft == true)
 	{
@@ -32,6 +33,7 @@ Projectile::Projectile(sf::RectangleShape playerPos, sf::Vector2f nestPos, int t
 	m_speed = 1.0f;
 	m_isLaser = false;
 	m_playerBox= playerPos;
+	m_timer = 0;
 
 }
 Projectile::~Projectile()
@@ -39,15 +41,20 @@ Projectile::~Projectile()
 }
 bool Projectile::Update(sf::Time deltaTime)
 {
-	timer += deltaTime.asSeconds();
-	if (timer >= m_ttl)
+	m_timer += deltaTime.asSeconds();
+	if (m_timer >= m_ttl)
 	{
-		timer = 0;
+		m_timer = 0;
 		m_alive = false;
 	}
 	if (m_isLaser) 
 	{
-
+		m_colourCount++;
+		m_projectileBoundBox.setFillColor(sf::Color(1 * m_colourCount, 1.5f * m_colourCount, 2.0f * m_colourCount));
+		if (m_colourCount > 170)
+		{
+			m_colourCount = 0;
+		}
 	sf::Vector2f pos = (m_projectileBoundBox.getPosition() + m_velocity);
 	m_projectileBoundBox.setPosition(pos);
 	}
@@ -56,10 +63,10 @@ bool Projectile::Update(sf::Time deltaTime)
 bool Projectile::Update(sf::Time deltaTime,sf::RectangleShape playerBox)
 {
 	m_playerBox = playerBox;
-	timer += deltaTime.asSeconds();
-	if (timer >= m_ttl)
+	m_timer += deltaTime.asSeconds();
+	if (m_timer >= m_ttl)
 	{
-		timer = 0;
+		m_timer = 0;
 		m_alive = false;
 	}
 		if (trackPlayer())

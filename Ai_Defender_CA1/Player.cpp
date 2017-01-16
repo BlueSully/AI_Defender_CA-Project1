@@ -69,6 +69,7 @@ void Player::processInputs(sf::Event *evt)
 	// Ability keys
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
+		if(projMan.getProjNumber() <10)
 		projMan.addLaser(m_isLeft,m_boundingBox.getPosition(), m_velocity.x, 3);
 
 	}
@@ -169,11 +170,11 @@ void Player::update(sf::Time deltaTime)
 	std::cout <<  m_velocity.x << std::endl;
 	if (m_smartBombReady == false)
 	{
-		timer += deltaTime.asSeconds();
-		std::cout << "time : " << timer << std::endl;
-		if (timer >= m_resetTime)
+		m_timer += deltaTime.asSeconds();
+		std::cout << "time : " << m_timer << std::endl;
+		if (m_timer >= m_resetTime)
 		{
-			timer = 0;
+			m_timer = 0;
 			m_smartBombReady = true;
 		}
 	}

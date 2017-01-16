@@ -42,7 +42,7 @@ void ProjectileManager::addMissile(sf::RectangleShape playerPos, sf::Vector2f ne
 	m_projectiles.push_back(Projectile(playerPos, nestPos, ttl));
 }
 
-float ProjectileManager::getMissileNumber()
+float ProjectileManager::getProjNumber()
 {
 	return m_projectiles.size();
 }

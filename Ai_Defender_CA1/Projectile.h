@@ -12,9 +12,10 @@ private:
 	sf::RectangleShape m_projectileBoundBox;
 	bool m_alive;
 	int m_ttl;
-	float timer = 0;
+	float m_timer;
 	bool m_isLaser;
 	float m_speed;
+	int m_colourCount;
 	
 
 public:

@@ -27,11 +27,20 @@ private:
 	const float ANGLECHANGE = 11;
 
 
+	const int MAX_ABDUCTORS = 20;
+	sf::Texture m_nestText;
+	sf::Sprite m_nestSprite;
+
+
+
+
 	AiState state;
 	bool m_wander;
 	bool m_flee;
 	int swap = 0;
 	int m_missileNum;
+	int m_abductorNum;
+	float m_timer;
 
 public:
 	Nest(sf::Vector2f position, sf::Vector2f veclocity);
@@ -52,6 +61,8 @@ public:
 	void update(sf::Time elapsedTime, sf::RectangleShape value);
 
 	void fleeCollisionCheck(sf::RectangleShape value);
+	void animate(sf::Time elapsedTime);
+	void spawnAbductor(sf::Time elapsedTime);
 	void fireMissiles(sf::RectangleShape value);
 	void boundaryResponse();
 
