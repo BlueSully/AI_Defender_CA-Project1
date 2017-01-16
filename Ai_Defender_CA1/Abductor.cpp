@@ -6,7 +6,8 @@ Abductor::Abductor()
 	m_state(PATROL),
 	m_canAttack(true),
 	m_grabbedAstronaut(false),
-	m_timeTillNextAttack(0)
+	m_timeTillNextAttack(0),
+	m_abducteeId(-1)
 {
 	m_boundingBox.setPosition(sf::Vector2f(0, 300));
 	m_boundingBox.setSize(sf::Vector2f(32, 32));
@@ -23,11 +24,11 @@ Abductor::Abductor()
 Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize, int id, float speed)
 	: m_attackRange(17),
 	m_speed(speed),
-	m_abducteeId(id),
 	m_state(PATROL),
 	m_canAttack(true),
 	m_grabbedAstronaut(false),
-	m_timeTillNextAttack(0)
+	m_timeTillNextAttack(0),
+	m_abducteeId(-1)
 {
 	m_boundingBox.setPosition(position);
 	m_boundingBox.setSize(sf::Vector2f(32, 32));
@@ -55,7 +56,7 @@ Abductor::~Abductor()
 
 }
 
-sf::Vector2f Abductor::getSize()
+sf::Vector2f Abductor::getSize() const
 {
 	return m_boundingBox.getSize();
 }
@@ -65,24 +66,34 @@ sf::Vector2f & Abductor::getPosition()
 	return m_position;
 }
 
-sf::RectangleShape Abductor::getBoundingBox()
+sf::RectangleShape Abductor::getBoundingBox() const
 {
 	return m_boundingBox;
 }
 
-AiState Abductor::getState()
+AiState Abductor::getState() const
 {
 	return m_state;
 }
 
-sf::Vector2f Abductor::getVelocity()
+sf::Vector2f Abductor::getVelocity() const
 {
 	return m_velocity;
 }
 
-sf::Vector2f Abductor::getDirection()
+sf::Vector2f Abductor::getDirection() const
 {
 	return directionVector;
+}
+
+int Abductor::getAbucteeId() const
+{
+	return m_abducteeId;
+}
+
+void Abductor::setAbducteeId(int astronnautId)
+{
+	m_abducteeId = astronnautId;
 }
 
 bool Abductor::getGrabbedAstronaut() const
@@ -273,7 +284,7 @@ sf::Vector2f Abductor::seek(sf::Vector2f v)
 	return m_acceleration;
 }
 
-void Abductor::abduct(sf::Time deltaTime, sf::Vector2f * pos, int AstronautID)
+void Abductor::abduct(sf::Time deltaTime, sf::Vector2f * pos)
 {
 	m_abducteePosition = pos;
 
@@ -296,7 +307,7 @@ void Abductor::patrol(sf::Time deltaTime)
 	patrolLine[0].position = sf::Vector2f(m_worldBounds.getPosition().x, 350);
 	patrolLine[1].position = sf::Vector2f(m_worldBounds.getPosition().x + m_worldBounds.getSize().x, 350);
 	
-	/*if (static_cast<int>(m_boundingBox.getPosition().y + m_boundingBox.getSize().y / 2) < static_cast<int>(patrolLine[0].position.y))
+	if (static_cast<int>(m_boundingBox.getPosition().y + m_boundingBox.getSize().y / 2) < static_cast<int>(patrolLine[0].position.y))
 	{
 		m_velocity.y = m_speed;
 	}
@@ -307,7 +318,7 @@ void Abductor::patrol(sf::Time deltaTime)
 	else 
 	{
 		m_velocity.y = 0;
-	}*/
+	}
 
 }
 
@@ -339,11 +350,11 @@ void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 	case ABDUCTING:
 		if (m_grabbedAstronaut)
 		{
-			m_velocity = sf::Vector2f(0, -10);
+			m_velocity = sf::Vector2f(0, -(m_speed / 2));
 		}
 		else if (!m_grabbedAstronaut) 
 		{
-			m_velocity = sf::Vector2f(m_velocity.x, 10);
+			m_velocity = sf::Vector2f(m_velocity.x, (m_speed / 2));
 		}
 		break;
 	case PATROL:
@@ -375,7 +386,7 @@ void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 	}
 	else if (m_canAttack == true)
 	{
-		if (rectCollision(m_attackRangeBox, playerBoundingBox)) //Check if value is inside of Attack Boundary;
+		if (CollisionHelper::RectangleCollision(m_attackRangeBox.getPosition(), m_attackRangeBox.getSize(), playerBoundingBox.getPosition(), playerBoundingBox.getSize())) //Check if value is inside of Attack Boundary;
 		{
 			//Check if canAttack Player in rang
 			attack(playerBoundingBox);// Attack player
@@ -387,24 +398,6 @@ void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
 	m_position = m_boundingBox.getPosition();
-}
-
-bool Abductor::rectCollision(sf::RectangleShape rectA, sf::RectangleShape rectB)
-{
-	float aLeft = rectA.getPosition().x;
-	float aTop = rectA.getPosition().y;
-	float aRight = rectA.getPosition().x + rectA.getSize().x;
-	float aBottom = rectA.getPosition().y + rectA.getSize().y;
-
-	float bLeft = rectB.getPosition().x;
-	float bTop = rectB.getPosition().y;
-	float bRight = rectB.getPosition().x + rectB.getSize().x;
-	float bBottom = rectB.getPosition().y + rectB.getSize().y;
-
-	return (aLeft <= bRight &&
-			bLeft <= aRight &&
-			aTop <= bBottom &&
-			bTop <= aBottom);
 }
 
 void Abductor::render(sf::RenderWindow & renderer)

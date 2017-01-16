@@ -37,12 +37,14 @@ public:
 	Abductor(sf::Vector2f position, sf::Vector2f windowSize, int id, float speed);
 	~Abductor();
 
-	sf::Vector2f getSize();
+	sf::Vector2f getSize() const;
 	sf::Vector2f & getPosition();
-	sf::RectangleShape getBoundingBox();
-	AiState getState();
-	sf::Vector2f getVelocity();
-	sf::Vector2f getDirection();
+	sf::RectangleShape getBoundingBox() const;
+	AiState getState() const;
+	sf::Vector2f getVelocity() const;
+	sf::Vector2f getDirection() const;
+	int getAbucteeId() const;
+	void setAbducteeId(int astronnautId);
 	bool getGrabbedAstronaut() const;
 	void setGrabbedAstronaut(bool value);
 
@@ -67,14 +69,13 @@ public:
 	sf::Vector2f cohesion(vector<Abductor *> * abductors);
 	sf::Vector2f seek(sf::Vector2f v);
 
-	void abduct(sf::Time deltaTime, sf::Vector2f * pos, int AstronautID);
+	void abduct(sf::Time deltaTime, sf::Vector2f * pos);
 	void patrol(sf::Time deltaTime);
 
 	void attack(sf::RectangleShape target);
 
 	void boundaryResponse();
 
-	bool rectCollision(sf::RectangleShape rectA, sf::RectangleShape rectB);
 	void render(sf::RenderWindow & renderer);
 };
 

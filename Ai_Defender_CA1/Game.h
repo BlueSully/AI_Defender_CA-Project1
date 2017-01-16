@@ -6,6 +6,7 @@
 #include <vector>
 #include "MathFunction.h"
 
+
 using namespace std;
 
 class Game
@@ -39,10 +40,12 @@ public:
 	//Get Methods and Set methods
 	bool isGameRunning() const;
 	void getInput();
+	void manageHumans(sf::Time elapsedTime);
+	void manageAbductors(sf::Time elapsedTime);
 
 	//Methods
-	void cameraWorldWrapping();
 	void update();
+	void cameraWorldWrapping();
 	void render(sf::RenderWindow &renderer);
 };
 

@@ -1,8 +1,10 @@
 #pragma once
 #include "SFML\Graphics.hpp"
-#include <random>
 
 #define _USE_MATH_DEFINES
+
+#include <random>
+#include <limits>       // std::numeric_limits
 #include <math.h>
 #include <iostream>
 
@@ -28,6 +30,15 @@ struct CollisionHelper
 				aTop <= bBottom &&
 				bTop <= aBottom);
 		}
+};
+
+typedef std::pair<int, float> MyPairType;
+struct compareValues
+{
+	bool operator()(const MyPairType& left, const MyPairType& right) const
+	{
+		return left.second < right.second;
+	}
 };
 
 struct VectorHelper

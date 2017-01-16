@@ -17,6 +17,8 @@ private:
 	sf::Vector2f m_followSize;
 
 	float m_wanderAngle;
+	int m_abductorId;
+	int m_fleeingDirection;
 	float m_wanderDelayTimer;
 
 	const float MAX_FORCE = 6.4f;
@@ -36,6 +38,7 @@ public:
 	//Get Method
 	sf::Vector2f getSize();
 	sf::Vector2f getPosition();	
+	void setFleeDirection(int value);
 	sf::Vector2f getVelocity();
 	AiState getState() const;
 	void setPosition(sf::Vector2f value);
@@ -43,13 +46,14 @@ public:
 	void setState(AiState value);
 	void setBeingAbducted(bool value);
 	bool getBeingAbducted() const;
+	int getAbuctorId() const;
+	void setAbductorId(int value);
 	void setFollowTarget(sf::Vector2f & value, sf::Vector2f size);
 
 	//Methods
 	sf::Vector2f wander();
 	void flee();
 
-	void fleeCollisionCheck(sf::Vector2f value);
 	void boundaryResponse(sf::Vector2f worldSize);
 	void update(sf::Time elapsedTime);
 	void render(sf::RenderWindow & renderer);
