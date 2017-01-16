@@ -3,17 +3,17 @@
 #include "Astronaut.h"
 #include "Camera.h"
 #include "Abductor.h"
-#include <iostream>
 #include <vector>
-#include <SFML\Graphics.hpp>
+#include "MathFunction.h"
+
 
 using namespace std;
 
 class Game
 {
 private:
-	Astronaut m_astronaut;
 	Player m_playerShip;
+	vector<Astronaut *> m_astronauts;
 	vector<Abductor *> m_abductors;
 
 	sf::RenderWindow * m_windowScreen;
@@ -40,10 +40,13 @@ public:
 	//Get Methods and Set methods
 	bool isGameRunning() const;
 	void getInput();
+	void manageHumans(sf::Time elapsedTime);
+	void manageAbductors(sf::Time elapsedTime);
 
 	//Methods
-	void cameraWorldWrapping();
 	void update();
+	void cameraWorldWrapping();
+	void warpingOtherEntities();
 	void render(sf::RenderWindow &renderer);
 };
 

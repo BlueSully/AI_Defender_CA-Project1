@@ -5,6 +5,7 @@ enum AiState
 	FLEE,
 	PATROL,
 	SEEK,
-	ABDUCT,
+	ABDUCTING,
+	GRABBED,
 	EVADE
 };

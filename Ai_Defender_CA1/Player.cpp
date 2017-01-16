@@ -71,14 +71,9 @@ void Player::processInputs(sf::Event *evt)
 	// Ability keys
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		projMan.addLaser(m_isLeft,m_boundingBox.getPosition(), m_velocity.x, 3);
+		projMan.addLaser(m_isLeft, m_boundingBox.getPosition(), m_velocity.x, 3);
 
 	}
-
-
-	//test ########################################################################################
-
-
 	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
 	//{
 
@@ -86,17 +81,11 @@ void Player::processInputs(sf::Event *evt)
 	//	projMan.addMissile(m_boundingBox, offset, 10);
 
 	//}
-
-
-
-	//test ########################################################################################
-
-
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && m_jumpReady)
 	{
 		int worldX = -(m_worldSize.x / 2);
-		int worldY = m_worldSize.y;
-		setPosition(sf::Vector2f(rand() % ((int)m_worldSize.x + 1) + (worldX), rand() % (worldY - 50) + 50));
+		int worldY = m_worldSize.y / 2;
+		setPosition(sf::Vector2f(rand() % ((int)m_worldSize.x + 1) + (worldX), getPosition().y));
 		m_jumpReady = false;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::E) && m_smartBombReady && m_smartBombNum > 0)
@@ -204,12 +193,6 @@ void Player::update(sf::Time deltaTime)
 
 	}
 	projMan.Update(deltaTime);
-	//test	//test ########################################################################################
-	//projMan.Update(deltaTime, m_boundingBox);
-
-	//	//test ########################################################################################
-
-
 
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
 }
@@ -224,6 +207,5 @@ void Player::render(sf::RenderWindow &renderer, float scale)
 {
 	sf::RectangleShape drawRect = m_boundingBox;
 	drawRect.setScale(sf::Vector2f(scale, scale));
-	renderer.draw(drawRect);
-	
+	renderer.draw(drawRect);	
 }
