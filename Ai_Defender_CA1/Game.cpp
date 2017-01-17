@@ -233,7 +233,7 @@ void Game::update()
 
 	//manageAbductors(elapsedTime);
 	manageMutants(elapsedTime);
-	manageHumans(elapsedTime);
+	//manageHumans(elapsedTime);
 }
 
 //used to create a seamless transition from side to side as the player travels
@@ -270,15 +270,15 @@ void Game::render(sf::RenderWindow &renderer)
 
 	m_playerShip.render(renderer);
 
-	for (size_t i = 0; i < m_astronauts.size(); i++)
-	{
-		m_astronauts[i]->render(renderer);
-	}
+	//for (size_t i = 0; i < m_astronauts.size(); i++)
+	//{
+	//	m_astronauts[i]->render(renderer);
+	//}
 
-	for (size_t i = 0; i < m_abductors.size(); i++)
-	{
-		m_abductors[i]->render(renderer);
-	}
+	//for (size_t i = 0; i < m_abductors.size(); i++)
+	//{
+	//	m_abductors[i]->render(renderer);
+	//}
 
 	for (size_t i = 0; i < m_mutants.size(); i++)
 	{
