@@ -42,7 +42,7 @@
     <ClCompile Include="Abductor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Anthony O%27Sullivan\Desktop\Merging Files\Mutants\Ai_Defender_CA1\Mutant.cpp">
+    <ClCompile Include="Mutant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -77,7 +77,7 @@
     <ClInclude Include="MathFunction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Anthony O%27Sullivan\Desktop\Merging Files\Mutants\Ai_Defender_CA1\Mutant.h">
+    <ClInclude Include="Mutant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

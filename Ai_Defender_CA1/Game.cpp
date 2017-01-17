@@ -62,9 +62,9 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 		m_abductors[i]->setColour(sf::Color(0, rand() % 235 + 10, rand() % 235 + 10));
 	}
 	
-	for (size_t i = 0; i < 1; i++)
+	for (size_t i = 0; i < 5; i++)
 	{
-		m_mutants.push_back(new Mutant(sf::Vector2f(250, 200), sf::Vector2f(0, 0)));
+		m_mutants.push_back(new Mutant(sf::Vector2f(250 * i, 200 + i * 100), sf::Vector2f(20, 0)));
 	}
 }
 
@@ -160,7 +160,10 @@ void Game::manageMutants(sf::Time elapsedTime)
 	for (size_t i = 0; i < m_mutants.size(); i++)
 	{
 		m_mutants[i]->update(elapsedTime, m_playerShip.getPosition());
+		m_mutants[i]->swarm(m_mutants);
 	}
+
+	cout << "MutV: " << m_mutants[0]->getVelocity().x << ' ' << m_mutants[0]->getVelocity().y << endl;
 }
 
 //Function to Manage abductors within gameworld
@@ -230,7 +233,7 @@ void Game::update()
 
 	//manageAbductors(elapsedTime);
 	manageMutants(elapsedTime);
-	//manageHumans(elapsedTime);
+	manageHumans(elapsedTime);
 }
 
 //used to create a seamless transition from side to side as the player travels
@@ -250,6 +253,7 @@ void Game::cameraWorldWrapping()
 
 void Game::warpingOtherEntities()
 {
+
 }
 
 void Game::render(sf::RenderWindow &renderer)
@@ -266,7 +270,7 @@ void Game::render(sf::RenderWindow &renderer)
 
 	m_playerShip.render(renderer);
 
-	/*for (size_t i = 0; i < m_astronauts.size(); i++)
+	for (size_t i = 0; i < m_astronauts.size(); i++)
 	{
 		m_astronauts[i]->render(renderer);
 	}
@@ -274,7 +278,7 @@ void Game::render(sf::RenderWindow &renderer)
 	for (size_t i = 0; i < m_abductors.size(); i++)
 	{
 		m_abductors[i]->render(renderer);
-	}*/
+	}
 
 	for (size_t i = 0; i < m_mutants.size(); i++)
 	{
