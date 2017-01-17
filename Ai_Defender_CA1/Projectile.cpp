@@ -87,10 +87,7 @@ bool Projectile::trackPlayer()
 {
 	m_velocity = sf::Vector2f(0,0);
 
-	if (!(m_projectileBoundBox.getPosition().x < m_playerBox.getPosition().x + m_playerBox.getSize().x
-		&& m_projectileBoundBox.getPosition().x > m_playerBox.getPosition().x
-		&& m_projectileBoundBox.getPosition().y < m_playerBox.getPosition().y + m_playerBox.getSize().y
-		&& m_projectileBoundBox.getPosition().y > m_playerBox.getPosition().y))
+	if(CollisionHelper::RectangleCollision(m_projectileBoundBox.getPosition(), m_projectileBoundBox.getSize(), m_playerBox.getPosition(), m_playerBox.getSize()))
 	{
 		sf::Vector2f pos;
 		if (m_projectileBoundBox.getPosition().x < m_playerBox.getPosition().x)

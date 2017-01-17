@@ -2,6 +2,8 @@
 #include <SFML\Graphics.hpp>
 #include <vector>
 #include <iostream>
+#include "MathFunction.h"
+
 class Projectile
 {
 private:
