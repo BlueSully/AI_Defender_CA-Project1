@@ -15,7 +15,7 @@ Nest::Nest(sf::Vector2f position, sf::Vector2f veclocity) : m_wander(true), m_fl
 	m_velocity = veclocity;
 	m_timer = 0;
 	m_abductorNum = 0;
-	if (!m_nestText.loadFromFile("AISprites/Nest.png"))
+	if (!m_nestText.loadFromFile("Resources/Nest.png"))
 	{
 		std::cout << "eroor" << std::endl;
 	}
@@ -86,13 +86,14 @@ sf::Vector2f Nest::flee()
 }
 void Nest::update(sf::Time elapsedTime, sf::RectangleShape  value)
 {
-	int randC = rand() % 60 +40;
+	//int randC = rand() % 60 +40;
 	m_wanderDelayTimer += elapsedTime.asMilliseconds();
 
-	fleeCollisionCheck(value);
+	fleeCollisionCheck(value,elapsedTime);
 	boundaryResponse();
 	animate(elapsedTime);
 	spawnAbductor(elapsedTime);
+	
 	m_nestSprite.setPosition(m_boundingBox.getPosition());
 
 	if (m_missileNum < 2) 
@@ -102,22 +103,9 @@ void Nest::update(sf::Time elapsedTime, sf::RectangleShape  value)
 	switch (state)
 	{
 	case WANDER:
-		if (m_wanderDelayTimer > randC)//0.1 of a second delay 
+		if (m_wanderDelayTimer > 100)//0.1 of a second delay 
 		{
-			swap++;
-			if (swap <50)
-			{
-				m_steering = wander();	
-			}
-			else if (swap<rand() % 90 + 51 && swap > 50)
-			{
-				m_steering = sf::Vector2f((1.5f * wander().x), (-1.5f * wander().y));	
-			}
-			else if (swap<rand() % 140 + 91 && swap > 90)
-			{
-				m_steering = sf::Vector2f((-1.5f * wander().x), (1.5f * wander().y));
-				swap = 0;
-			}
+			m_steering = wander();
 			m_steering = VectorHelper::truncate(m_steering, MAX_FORCE);
 			m_wanderDelayTimer = 0;
 		}
@@ -153,7 +141,7 @@ void Nest::setState(std::string str)
 		state = AiState::FLEE;
 	}	
 }
-void Nest::fleeCollisionCheck(sf::RectangleShape value)
+void Nest::fleeCollisionCheck(sf::RectangleShape value, sf::Time elapsedTime)
 {
 	sf::Vector2f temp = sf::Vector2f(value.getPosition().x, value.getPosition().y);
 	targetCircle.setPosition(temp);
@@ -171,49 +159,47 @@ void Nest::fleeCollisionCheck(sf::RectangleShape value)
 	{
 		setState("Flee");
 		setFleeingTarget(temp);
-		fireMissiles(value);
+		fireMissiles(value, elapsedTime);
 	}
 }
 
 void Nest::animate(sf::Time elapsedTime)
 {
 	m_timer += elapsedTime.asSeconds();
-	if (m_timer >= 3)
+	if (m_timer >= 1)
 	{
 		m_timer = 0;
 		m_nestSprite.setTextureRect(sf::IntRect(0, 0, 44, 16));
 	}
 	else
 		m_nestSprite.setTextureRect(sf::IntRect(44, 0, 44, 16));
-	
-
 }
 
 void Nest::spawnAbductor(sf::Time elapsedTime)
 {
-	m_timer += elapsedTime.asSeconds();
-	if (m_timer >= 20 && m_abductorNum < MAX_ABDUCTORS)
+	m_abductorTimer += elapsedTime.asSeconds();
+	if (m_abductorTimer >= 20 && m_abductorNum < MAX_ABDUCTORS)
 	{
-		m_timer = 0;
+		m_abductorTimer = 0;
 		//spawn abductor
 		m_abductorNum++;
 	}
 
 }
 
-void Nest::fireMissiles(sf::RectangleShape  value)
+void Nest::fireMissiles(sf::RectangleShape  value, sf::Time elapsedTime)
 {
-	if (m_missileNum > 0)
+	m_missileTimer += elapsedTime.asSeconds();
+	std::cout << m_missileTimer << std::endl;
+	if (m_missileNum > 0 && m_missileTimer >= 3.5f)
 	{
 		projMan.addMissile(value, m_boundingBox.getPosition(), 10);
 		m_missileNum--;
+		m_missileTimer=0;
 	}
-	else if (m_missileNum == 0)
-	{
-		if (projMan.getProjNumber() <= 0)
-		{
-			m_missileNum++;
-		}
+	else if (m_missileNum == 0  && projMan.getProjNumber() <= 0)
+	{	
+		m_missileNum++;
 	}
 }
 void Nest::boundaryResponse()
@@ -238,7 +224,7 @@ void Nest::render(sf::RenderWindow & renderer)
 {
 	//renderer.draw(m_fleeCircle);
 	//renderer.draw(targetCircle);
-	renderer.draw(m_boundingBox);
+	//renderer.draw(m_boundingBox);
 	projMan.Render(renderer);
 	renderer.draw(m_nestSprite);
 	

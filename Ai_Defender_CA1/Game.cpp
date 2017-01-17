@@ -50,7 +50,7 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 	for (size_t i = 0; i < 4; i++)
 	{
-		m_nests.push_back(new Nest(sf::Vector2f(300 * i, 100), sf::Vector2f(50,40)));
+		m_nests.push_back(new Nest(sf::Vector2f(300 * i, m_windowScreen->getSize().y/2), sf::Vector2f(50,40)));
 		m_nests[i]->setColour(sf::Color(150+i, 200 +i, 240+i));
 		m_nests[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
 	}
