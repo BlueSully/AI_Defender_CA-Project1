@@ -15,9 +15,10 @@ private:
 	sf::RectangleShape m_worldBounds;//World data
 	sf::RectangleShape m_screenBounds;//ScreenData
 
+	sf::Vector2f m_position;
 	sf::Vector2f m_velocity;
 	sf::Vector2f m_acceleration;
-	sf::Vector2f m_abducteePosition;
+	sf::Vector2f * m_abducteePosition;
 	sf::Vector2f directionVector;
 
 	sf::Vertex patrolLine[2];
@@ -25,26 +26,33 @@ private:
 	float m_speed;
 	float m_timeTillNextAttack;
 	int m_attackRange;
-	int m_currentId;
+	int m_abducteeId;
 
 	bool m_canAttack;
+	bool m_grabbedAstronaut;
 
-	AiState state;
+	AiState m_state;
 public:
 	Abductor();
 	Abductor(sf::Vector2f position, sf::Vector2f windowSize, int id, float speed);
 	~Abductor();
 
-	sf::Vector2f getSize();
-	sf::Vector2f getPosition();
-	sf::RectangleShape getBoundingBox();
-	sf::Vector2f getVelocity();
-	sf::Vector2f getDirection();
+	sf::Vector2f getSize() const;
+	sf::Vector2f & getPosition();
+	sf::RectangleShape getBoundingBox() const;
+	AiState getState() const;
+	sf::Vector2f getVelocity() const;
+	sf::Vector2f getDirection() const;
+	int getAbucteeId() const;
+	void setAbducteeId(int astronnautId);
+	bool getGrabbedAstronaut() const;
+	void setGrabbedAstronaut(bool value);
 
 	void setWorldRectangle(sf::Vector2f postion, sf::Vector2f size);
 	void setPosition(sf::Vector2f value);
-	void setAbductorTarget(sf::Vector2f target);
+	void setAbductorTarget(sf::Vector2f * target);
 	void setState(AiState value);
+	void setVelocity(sf::Vector2f value);
 	void setSpeed(float value);
 	void setDirection(int value);
 	void setSize(sf::Vector2f value);
@@ -59,13 +67,13 @@ public:
 	sf::Vector2f cohesion(vector<Abductor *> * abductors);
 	sf::Vector2f seek(sf::Vector2f v);
 
+	void abduct(sf::Time deltaTime, sf::Vector2f * pos);
 	void patrol(sf::Time deltaTime);
 
 	void attack(sf::RectangleShape target);
 
 	void boundaryResponse();
 
-	bool rectCollision(sf::RectangleShape rectA, sf::RectangleShape rectB);
 	void render(sf::RenderWindow & renderer);
 };
 
