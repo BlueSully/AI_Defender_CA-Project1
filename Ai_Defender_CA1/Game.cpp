@@ -40,8 +40,8 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 	m_camera->setTargetPlayer(&m_playerShip);
 
-	const int minPosition = m_worldBackground[0].getPosition().x;
-	const int maxPosition = m_worldBackground[m_numOfScreens - 1].getPosition().x;
+	const int minPosition = static_cast<const int>(m_worldBackground[0].getPosition().x);
+	const int maxPosition = static_cast<const int>(m_worldBackground[m_numOfScreens - 1].getPosition().x);
 
 	for (int i = 0; i < 5; i++)
 	{
@@ -52,7 +52,7 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 		m_astronauts.push_back(new Astronaut(positon, sf::Vector2f(0, 0)));
 	}
 
-	for (size_t i = 0; i < 5; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		int locationX = minPosition + (rand() * (int)(maxPosition - minPosition) / RAND_MAX);
 
@@ -61,9 +61,7 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 		m_abductors[i]->setColour(sf::Color(0, rand() % 235 + 10, rand() % 235 + 10));
 	}
 	
-
-
-	for (size_t i = 0; i < 4; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		m_nests.push_back(new Nest(sf::Vector2f(300 * i, m_windowScreen->getSize().y/2), sf::Vector2f(50,40)));
 		m_nests[i]->setColour(sf::Color(150+i, 200 +i, 240+i));
@@ -75,10 +73,12 @@ Game::~Game()
 {
 
 }
+
 bool Game::isGameRunning() const
 {
 	return false;
 }
+
 void Game::getInput()
 {
 	while (m_windowScreen->pollEvent(m_event))
@@ -156,6 +156,14 @@ void Game::manageHumans(sf::Time elapsedTime)
 	}
 }
 
+void Game::manageNests(sf::Time elapsedTime)
+{
+	for (size_t i = 0; i < m_nests.size(); i++)
+	{
+		m_nests[i]->update(elapsedTime, m_playerShip.getBoundingBox());
+	}
+}
+
 //Function to Manage abductors within gameworld
 void Game::manageAbductors(sf::Time elapsedTime)
 {
@@ -220,13 +228,12 @@ void Game::update()
 
 	m_playerShip.boundaryResponse(m_worldSize);
 	m_playerShip.update(elapsedTime);
-#pragma region abductures
+
 	manageAbductors(elapsedTime);
+
 	manageHumans(elapsedTime);
-	cout << "0: " << m_abductors[0]->getAbucteeId()
-		 << " 1: " << m_abductors[1]->getAbucteeId()
-		 << " 2: " << m_abductors[2]->getAbucteeId()
-		 << " 3: " << m_abductors[3]->getAbucteeId() << endl;
+	manageNests(elapsedTime);
+	
 }
 
 //used to create a seamless transition from side to side as the player travels
@@ -242,17 +249,11 @@ void Game::cameraWorldWrapping()
 		std::cout << "Warp to Left" << std::endl;
 		m_playerShip.setPosition(sf::Vector2f((m_worldBackground.front().getPosition().x + m_camera->getView().getSize().x / 2), m_playerShip.getPosition().y));
 	}
-#pragma endregion 
-
-
-	for (size_t i = 0; i < m_abductors.size(); i++)
-	{
-		m_nests[i]->update(elapsedTime, m_playerShip.getBoundingBox());
-	}
 }
 
 void Game::warpingOtherEntities()
 {
+
 }
 
 void Game::render(sf::RenderWindow &renderer)

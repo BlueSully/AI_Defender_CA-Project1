@@ -79,11 +79,13 @@ sf::Vector2f Nest::wander()
 
 	return wanderForce;
 }
+
 sf::Vector2f Nest::flee()
 {
 	sf::Vector2f desired_velocity = VectorHelper::normalise(m_fleeFromPos - getPosition()) * 100.0f;
 	return (desired_velocity - m_velocity);
 }
+
 void Nest::update(sf::Time elapsedTime, sf::RectangleShape  value)
 {
 	//int randC = rand() % 60 +40;
