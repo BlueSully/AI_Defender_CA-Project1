@@ -60,27 +60,19 @@ void Player::processInputs(sf::Event *evt)
 	{
 		m_playerState = PlayerStates::MOVING_DOWN;
 	}
-
 	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::A) && !sf::Keyboard::isKeyPressed(sf::Keyboard::D) &&
 		!sf::Keyboard::isKeyPressed(sf::Keyboard::W) && !sf::Keyboard::isKeyPressed(sf::Keyboard::S)
 		&&!sf::Keyboard::isKeyPressed(sf::Keyboard::Q) &&!sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
 		m_playerState = PlayerStates::IDLE;
 	}
-
 	// Ability keys
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
+		if(projMan.getProjNumber() <10)
 		projMan.addLaser(m_isLeft, m_boundingBox.getPosition(), m_velocity.x, 3);
 
 	}
-	//if (sf::Keyboard::isKeyPressed(sf::Keyboard::B))
-	//{
-
-	//	sf::Vector2f offset = m_boundingBox.getPosition() - sf::Vector2f(100,100);
-	//	projMan.addMissile(m_boundingBox, offset, 10);
-
-	//}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && m_jumpReady)
 	{
 		int worldX = -(m_worldSize.x / 2);
@@ -93,22 +85,18 @@ void Player::processInputs(sf::Event *evt)
 		activateSmartBomb();
 	}
 }
-
 sf::Vector2f Player::getPosition() const
 {
 	return m_boundingBox.getPosition();
 }
-
 void Player::setPosition(sf::Vector2f pos)
 {
 	m_boundingBox.setPosition(pos);
 }
-
 sf::RectangleShape Player::getBoundingBox() const
 {
 	return m_boundingBox;
 }
-
 void Player::boundaryResponse(sf::Vector2f worldSize)
 {
 	m_worldSize = sf::Vector2f(worldSize.x, worldSize.y);
@@ -131,7 +119,6 @@ void Player::activateSmartBomb()
 	m_smartBombNum--;
 	//add kill all once Enemies added
 }
-
 void Player::update(sf::Time deltaTime)
 {
 #pragma region moveStates
@@ -180,29 +167,25 @@ void Player::update(sf::Time deltaTime)
 		}
 	}
 #pragma endregion
-
+	//std::cout <<  m_velocity.x << std::endl;
 	if (m_smartBombReady == false)
 	{
-		timer += deltaTime.asSeconds();
-		std::cout << "time : " << timer << std::endl;
-		if (timer >= m_resetTime)
+		m_timer += deltaTime.asSeconds();
+		std::cout << "time : " << m_timer << std::endl;
+		if (m_timer >= m_resetTime)
 		{
-			timer = 0;
+			m_timer = 0;
 			m_smartBombReady = true;
 		}
-
 	}
 	projMan.Update(deltaTime);
-
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
 }
-
 void Player::render(sf::RenderWindow & renderer)
 {
 	renderer.draw(m_boundingBox);
 	projMan.Render(renderer);
 }
-
 void Player::render(sf::RenderWindow &renderer, float scale)
 {
 	sf::RectangleShape drawRect = m_boundingBox;

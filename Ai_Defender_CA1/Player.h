@@ -19,7 +19,7 @@ private:
 	bool m_jumpReady;
 	int m_smartBombNum;
 	int m_resetTime;
-	float timer;
+	float m_timer;
 	bool m_isLeft;
 
 	float m_orientation;

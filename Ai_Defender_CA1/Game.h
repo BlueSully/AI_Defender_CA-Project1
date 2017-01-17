@@ -3,6 +3,7 @@
 #include "Astronaut.h"
 #include "Camera.h"
 #include "Abductor.h"
+#include "Nest.h"
 #include <vector>
 #include "MathFunction.h"
 
@@ -15,6 +16,7 @@ private:
 	Player m_playerShip;
 	vector<Astronaut *> m_astronauts;
 	vector<Abductor *> m_abductors;
+	vector<Nest *> m_nests;
 
 	sf::RenderWindow * m_windowScreen;
 	Camera * m_camera;

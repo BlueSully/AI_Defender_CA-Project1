@@ -25,7 +25,7 @@ private:
 	const float MAX_VELOCITY = 10;
 	const float CIRCLEDISTANCE = 6;
 	const float CIRCLE_RADIUS = 8;
-	const float ANGLECHANGE = 1;
+	const float ANGLECHANGE = 1000;
 
 	AiState m_state;
 	bool m_beingAbducted;

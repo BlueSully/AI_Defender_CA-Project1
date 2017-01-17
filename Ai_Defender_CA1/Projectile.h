@@ -2,6 +2,8 @@
 #include <SFML\Graphics.hpp>
 #include <vector>
 #include <iostream>
+#include "MathFunction.h"
+
 class Projectile
 {
 private:
@@ -12,9 +14,10 @@ private:
 	sf::RectangleShape m_projectileBoundBox;
 	bool m_alive;
 	int m_ttl;
-	float timer = 0;
+	float m_timer;
 	bool m_isLaser;
 	float m_speed;
+	int m_colourCount;
 	
 
 public:

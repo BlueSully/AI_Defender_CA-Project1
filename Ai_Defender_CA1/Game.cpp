@@ -4,7 +4,6 @@ Game::Game() : m_isGameRunning(true), m_numOfScreens(5)
 {
 
 }
-
 Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 {
 	srand(static_cast<unsigned int>(time(NULL)));
@@ -62,18 +61,24 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 		m_abductors[i]->setColour(sf::Color(0, rand() % 235 + 10, rand() % 235 + 10));
 	}
 	
+
+
+	for (size_t i = 0; i < 4; i++)
+	{
+		m_nests.push_back(new Nest(sf::Vector2f(300 * i, m_windowScreen->getSize().y/2), sf::Vector2f(50,40)));
+		m_nests[i]->setColour(sf::Color(150+i, 200 +i, 240+i));
+		m_nests[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
+	}
 }
 
 Game::~Game()
 {
 
 }
-
 bool Game::isGameRunning() const
 {
 	return false;
 }
-
 void Game::getInput()
 {
 	while (m_windowScreen->pollEvent(m_event))
@@ -215,7 +220,7 @@ void Game::update()
 
 	m_playerShip.boundaryResponse(m_worldSize);
 	m_playerShip.update(elapsedTime);
-
+#pragma region abductures
 	manageAbductors(elapsedTime);
 	manageHumans(elapsedTime);
 	cout << "0: " << m_abductors[0]->getAbucteeId()
@@ -236,6 +241,13 @@ void Game::cameraWorldWrapping()
 	{
 		std::cout << "Warp to Left" << std::endl;
 		m_playerShip.setPosition(sf::Vector2f((m_worldBackground.front().getPosition().x + m_camera->getView().getSize().x / 2), m_playerShip.getPosition().y));
+	}
+#pragma endregion 
+
+
+	for (size_t i = 0; i < m_abductors.size(); i++)
+	{
+		m_nests[i]->update(elapsedTime, m_playerShip.getBoundingBox());
 	}
 }
 
@@ -266,6 +278,10 @@ void Game::render(sf::RenderWindow &renderer)
 	{
 		m_abductors[i]->render(renderer);
 	}
+	for (size_t i = 0; i < m_nests.size(); i++)
+	{
+		m_nests[i]->render(renderer);
+	}
 
 	//Render mini-map
 	renderer.setView(m_camera->getRadar());
@@ -285,6 +301,10 @@ void Game::render(sf::RenderWindow &renderer)
 	for (size_t i = 0; i < m_abductors.size(); i++)
 	{
 		m_abductors[i]->render(renderer);
+	}
+	for (size_t i = 0; i < m_nests.size(); i++)
+	{
+		m_nests[i]->render(renderer);
 	}
 
 	renderer.display();
