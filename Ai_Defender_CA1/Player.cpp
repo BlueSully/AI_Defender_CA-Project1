@@ -19,6 +19,14 @@ Player::Player()
 	m_smartBombNum = 3;
 	m_resetTime = 60;
 	m_isLeft = false;
+	if (!m_playerText.loadFromFile("Resources/Player.png"))
+	{
+		std::cout << "File failed to load. Check folder location is correct" << std::endl;
+	}
+
+	m_playerSprite.setTexture(m_playerText);
+	m_playerSprite.setTextureRect(sf::IntRect(0, 0, 60, 24));
+	m_playerSprite.setOrigin(m_playerSprite.getTextureRect().width / 2, m_playerSprite.getTextureRect().height / 2);
 
 }
 
@@ -46,11 +54,16 @@ void Player::processInputs(sf::Event *evt)
 	{
 		m_playerState = PlayerStates::MOVING_LEFT;
 		m_isLeft = true;
+		m_playerSprite.setScale(-1.f, 1.f);
+		m_playerSprite.setTextureRect(sf::IntRect(60, 0, 60, 24));
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		m_playerState = PlayerStates::MOVING_RIGHT;
 		m_isLeft = false;
+		m_playerSprite.setScale(1.f, 1.f);
+		m_playerSprite.setTextureRect(sf::IntRect(60, 0, 60, 24));
+
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
@@ -65,12 +78,13 @@ void Player::processInputs(sf::Event *evt)
 		&&!sf::Keyboard::isKeyPressed(sf::Keyboard::Q) &&!sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
 		m_playerState = PlayerStates::IDLE;
+		m_playerSprite.setTextureRect(sf::IntRect(0, 0, 60, 24));
 	}
 	// Ability keys
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-		if(projMan.getProjNumber() <10)
-		projMan.addLaser(m_isLeft, m_boundingBox.getPosition(), m_velocity.x, 3);
+		if(projMan.getProjNumber() <5)
+		projMan.addLaser(m_isLeft, m_boundingBox.getPosition(), m_velocity.x, 3,false);
 
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) && m_jumpReady)
@@ -121,6 +135,7 @@ void Player::activateSmartBomb()
 }
 void Player::update(sf::Time deltaTime)
 {
+
 #pragma region moveStates
 	if (m_playerState == PlayerStates::MOVING_RIGHT && m_velocity.x < m_MAXHORIZONTALACCLERATION)
 	{
@@ -168,6 +183,10 @@ void Player::update(sf::Time deltaTime)
 	}
 #pragma endregion
 
+
+	sf::Vector2f spritePos = sf::Vector2f(m_boundingBox.getPosition().x + (m_boundingBox.getSize().x / 2.0f), m_boundingBox.getPosition().y + (m_boundingBox.getSize().y / 2.0f));
+	m_playerSprite.setPosition(spritePos);
+
 	if (m_smartBombReady == false)
 	{
 		m_timer += deltaTime.asSeconds();
@@ -178,17 +197,31 @@ void Player::update(sf::Time deltaTime)
 			m_smartBombReady = true;
 		}
 	}
-	projMan.Update(deltaTime);
+	
+	projMan.Update(deltaTime, m_boundingBox);
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
 }
 void Player::render(sf::RenderWindow & renderer)
 {
+	//renderer.draw(m_boundingBox);
+	projMan.Render(renderer);
+	renderer.draw(m_playerSprite);
+}
+
+
+void Player::renderRadar(sf::RenderWindow & renderer)
+{
 	renderer.draw(m_boundingBox);
 	projMan.Render(renderer);
+
 }
+
+
+
 void Player::render(sf::RenderWindow &renderer, float scale)
 {
 	sf::RectangleShape drawRect = m_boundingBox;
 	drawRect.setScale(sf::Vector2f(scale, scale));
-	renderer.draw(drawRect);	
+	renderer.draw(drawRect);
+	renderer.draw(m_playerSprite);
 }

@@ -58,13 +58,11 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 		m_abductors.push_back(new Abductor(sf::Vector2f(locationX, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i, 32));
 		m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
-		m_abductors[i]->setColour(sf::Color(0, rand() % 235 + 10, rand() % 235 + 10));
 	}
 	
 	for (int i = 0; i < 4; i++)
 	{
 		m_nests.push_back(new Nest(sf::Vector2f(300 * i, m_windowScreen->getSize().y/2), sf::Vector2f(50,40)));
-		m_nests[i]->setColour(sf::Color(150+i, 200 +i, 240+i));
 		m_nests[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
 	}
 }
@@ -292,21 +290,21 @@ void Game::render(sf::RenderWindow &renderer)
 		renderer.draw(m_worldBackground[i]);
 	}
 
-	m_playerShip.render(renderer);
+	m_playerShip.renderRadar(renderer);
 
 	for (size_t i = 0; i < m_astronauts.size(); i++)
 	{
-		m_astronauts[i]->render(renderer);
+		m_astronauts[i]->renderRadar(renderer);
 	}
 
 	for (size_t i = 0; i < m_abductors.size(); i++)
 	{
-		m_abductors[i]->render(renderer);
+		m_abductors[i]->renderRadar(renderer);
 	}
-	for (size_t i = 0; i < m_nests.size(); i++)
-	{
-		m_nests[i]->render(renderer);
-	}
+	//for (size_t i = 0; i < m_nests.size(); i++)
+	//{
+	//	m_nests[i]->renderRadar(renderer);
+	//}
 
 	renderer.display();
 }

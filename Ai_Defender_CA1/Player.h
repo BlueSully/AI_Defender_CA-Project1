@@ -26,6 +26,8 @@ private:
 	sf::RectangleShape m_boundingBox;
 	PlayerStates m_playerState;
 	ProjectileManager projMan;
+	sf::Texture m_playerText;
+	sf::Sprite m_playerSprite;
 public:
 	Player();
 	~Player();
@@ -40,6 +42,7 @@ public:
 	void activateSmartBomb();
 	void update(sf::Time deltaTime);
 	void render(sf::RenderWindow &renderer);
+	void renderRadar(sf::RenderWindow & renderer);
 	void render(sf::RenderWindow &renderer, float scale);
 };
 

@@ -3,7 +3,7 @@
 Nest::Nest(sf::Vector2f position, sf::Vector2f veclocity) : m_wander(true), m_flee(false),m_missileNum(2)
 {
 	//Gets Called when player is Created
-	m_boundingBox.setFillColor(sf::Color::White);
+	m_boundingBox.setFillColor(sf::Color::Blue);
 	m_boundingBox.setSize(sf::Vector2f(44, 16));
 	m_velocity = sf::Vector2f(0, 0);
 	m_fleeCircle.setFillColor(sf::Color(255, 175, 0, 75));
@@ -17,10 +17,11 @@ Nest::Nest(sf::Vector2f position, sf::Vector2f veclocity) : m_wander(true), m_fl
 	m_abductorNum = 0;
 	if (!m_nestText.loadFromFile("Resources/Nest.png"))
 	{
-		std::cout << "eroor" << std::endl;
+		std::cout << "File failed to load. Check folder location is correct" << std::endl;
 	}
 
 	m_nestSprite.setTexture(m_nestText);
+	m_nestSprite.setTextureRect(sf::IntRect(0, 0, 44, 16));
 
 }
 
@@ -93,14 +94,14 @@ void Nest::update(sf::Time elapsedTime, sf::RectangleShape  value)
 
 	fleeCollisionCheck(value,elapsedTime);
 	boundaryResponse();
-	animate(elapsedTime);
+	//animate(elapsedTime);
 	spawnAbductor(elapsedTime);
 	
 	m_nestSprite.setPosition(m_boundingBox.getPosition());
 
-	if (m_missileNum < 2) 
+	if (m_missileNum <=    2) 
 	{
-		projMan.Update(elapsedTime, value);
+		projMan.UpdateMissile(elapsedTime, value);
 	}
 	switch (state)
 	{
@@ -173,8 +174,7 @@ void Nest::animate(sf::Time elapsedTime)
 		m_timer = 0;
 		m_nestSprite.setTextureRect(sf::IntRect(0, 0, 44, 16));
 	}
-	else
-		m_nestSprite.setTextureRect(sf::IntRect(44, 0, 44, 16));
+
 }
 
 void Nest::spawnAbductor(sf::Time elapsedTime)
@@ -192,7 +192,7 @@ void Nest::spawnAbductor(sf::Time elapsedTime)
 void Nest::fireMissiles(sf::RectangleShape  value, sf::Time elapsedTime)
 {
 	m_missileTimer += elapsedTime.asSeconds();
-	std::cout << m_missileTimer << std::endl;
+	//std::cout << m_missileTimer << std::endl;
 	if (m_missileNum > 0 && m_missileTimer >= 3.5f)
 	{
 		projMan.addMissile(value, m_boundingBox.getPosition(), 10);
@@ -230,4 +230,12 @@ void Nest::render(sf::RenderWindow & renderer)
 	projMan.Render(renderer);
 	renderer.draw(m_nestSprite);
 	
+}
+
+void Nest::renderRadar(sf::RenderWindow & renderer)
+{
+
+	renderer.draw(m_boundingBox);
+	projMan.Render(renderer);
+
 }

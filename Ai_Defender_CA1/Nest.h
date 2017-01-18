@@ -70,5 +70,6 @@ public:
 	void boundaryResponse();
 
 	void render(sf::RenderWindow & renderer);
+	void renderRadar(sf::RenderWindow & renderer);
 };
 
