@@ -25,6 +25,7 @@ private:
 	const float CIRCLEDISTANCE = 6;
 	const float CIRCLE_RADIUS = 8;
 	const float ANGLECHANGE = 1;
+	
 
 
 	const int MAX_ABDUCTORS = 20;
@@ -43,6 +44,7 @@ private:
 	float m_timer;
 	float m_abductorTimer;
 	float m_missileTimer;
+	bool m_alive;
 
 public:
 	Nest(sf::Vector2f position, sf::Vector2f veclocity);
@@ -52,6 +54,8 @@ public:
 	sf::Vector2f getSize();
 	sf::Vector2f getPosition();
 	void setPosition(sf::Vector2f value);
+	bool isAlive() const;
+	void setAlive(bool value);
 	void setWorldRectangle(sf::Vector2f postion, sf::Vector2f size);
 	void setColour(sf::Color colour);
 	void setFleeingTarget(sf::Vector2f);

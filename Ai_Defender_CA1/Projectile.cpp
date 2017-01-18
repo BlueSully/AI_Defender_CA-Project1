@@ -3,7 +3,7 @@
 Projectile::Projectile(bool isLeft, sf::Vector2f playerPos, float playerXVelocity, int ttl, bool isEnemyBullet) :
 	m_size(sf::Vector2f(40, 5)),
 	m_alive(true),
-	m_speed(0.5f),
+	m_speed(2.5f),
 	m_isLaser(true),
 	m_timer(0)
 {
@@ -26,7 +26,7 @@ Projectile::Projectile(sf::RectangleShape playerPos, sf::Vector2f nestPos, int t
 	:m_size(sf::Vector2f(24, 12)),
 	m_alive(true),
 	m_speed(0.01f),
-	MAX_SPEED(1.0f),
+	MAX_SPEED(.5f),
 	m_isLaser(false),
 	m_timer(0),
 	m_rotation(atan2(m_velocity.x, m_velocity.y) * (180 / 3.141592654))
@@ -157,6 +157,15 @@ sf::Vector2f Projectile::getSize() const
 {
 	return m_projectileBoundBox.getSize();
 }
+void Projectile::setAlive(bool value)
+{
+	m_alive = value;
+}
+bool Projectile::isAlive() const
+{
+	return m_alive;
+}
+
 void Projectile::collisionCheck()
 {
 	if (m_isEnemyBullet)

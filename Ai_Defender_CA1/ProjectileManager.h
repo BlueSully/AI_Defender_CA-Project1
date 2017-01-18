@@ -16,4 +16,5 @@ public:
 	void Render(sf::RenderWindow & renderer);
 	std::vector<Projectile> getProjList() const;
 	void addMissile(sf::RectangleShape playerPos, sf::Vector2f nestPos, int ttl);
+	void setAlive(bool value, int index);
 };
