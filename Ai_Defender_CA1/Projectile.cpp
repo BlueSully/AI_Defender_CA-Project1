@@ -23,7 +23,7 @@ Projectile::Projectile(bool isLeft, sf::Vector2f playerPos, float playerXVelocit
 	}
 }
 Projectile::Projectile(sf::RectangleShape playerPos, sf::Vector2f nestPos, int ttl)
-	:m_size(sf::Vector2f(24, 12)),
+	:m_size(sf::Vector2f(20, 12)),
 	m_alive(true),
 	m_speed(0.01f),
 	MAX_SPEED(.5f),
@@ -103,7 +103,6 @@ void Projectile::Render(sf::RenderWindow &renderer)
 		}
 		else
 		{
-			renderer.draw(m_projectileBoundBox);
 			renderer.draw(m_missileSprite);
 		}
 

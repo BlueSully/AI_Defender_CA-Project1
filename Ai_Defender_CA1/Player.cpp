@@ -17,6 +17,7 @@ Player::Player()
 	m_jumpReady = true;
 	m_smartBombReady = true;
 	m_smartBombNum = 3;
+	m_smartBombFired = false;
 	m_resetTime = 60;
 	m_isLeft = false;
 	if (!m_playerText.loadFromFile("Resources/Player.png"))
@@ -116,6 +117,15 @@ void Player::setLives(int value)
 {
 	m_lives = value;
 }
+
+bool Player::getBomb() const
+{
+	return m_smartBombFired;
+}
+void Player::setBomb(bool value)
+{
+	m_smartBombFired = value;
+}
 std::vector<Projectile> Player::getProjList() const
 {
 	return projMan.getProjList();
@@ -150,6 +160,7 @@ void Player::activateSmartBomb()
 	m_smartBombReady = false;
 	//std::cout << "smrtBmb" << std::endl;
 	m_smartBombNum--;
+	m_smartBombFired = true;
 	//add kill all once Enemies added
 }
 void Player::update(sf::Time deltaTime)

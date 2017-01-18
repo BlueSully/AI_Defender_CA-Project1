@@ -328,7 +328,27 @@ bool Game::collisionChecker()
 	return false;
 }
 
+void Game::killAllPowerUp()
+{
+	if (m_playerShip.getBomb() == true)
+	{
+		//kill all
+		for (size_t h = 0; h < m_mutants.size() / 2; h++)
+		{
+			m_mutants[h]->setAlive(false);
+		}
+		for (size_t h = 0; h < m_nests.size() / 2; h++)
+		{
+			m_nests[h]->setAlive(false);
+		}
+		for (size_t h = 0; h < m_abductors.size() / 2; h++)
+		{
+			m_abductors[h]->setAlive(false);
+		}
 
+		m_playerShip.setBomb(false);
+	}
+}
 
 
 bool Game::playerHit()
@@ -384,7 +404,7 @@ bool Game::playerHit()
 	return false;
 
 }
-void Game::update()
+bool Game::update()
 {
 	sf::Time elapsedTime = m_clock.restart();
 	getInput();
@@ -398,7 +418,7 @@ void Game::update()
 	manageMutants(elapsedTime);
 	manageHumans(elapsedTime);
 	manageNests(elapsedTime);
-
+	killAllPowerUp();
 	if (collisionChecker())
 	{
 		std::cout << "Score :" << m_score << std::endl;
@@ -415,10 +435,10 @@ void Game::update()
 	if (m_playerShip.getLives() <= 0)
 	{
 
-		//end game
-		int x = 0;
+		return false;
 
 	}
+	return true;
 
 }
 

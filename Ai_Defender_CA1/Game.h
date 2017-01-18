@@ -56,10 +56,12 @@ public:
 
 	bool collisionChecker();
 
+	void killAllPowerUp();
+
 	bool playerHit();
 
 	//Methods
-	void update();
+	bool update();
 	void cameraWorldWrapping();
 	void render(sf::RenderWindow &renderer);
 };
