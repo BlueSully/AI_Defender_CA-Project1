@@ -19,6 +19,11 @@ Mutant::~Mutant()
 
 }
 
+sf::Vector2f Mutant::getSize() const
+{
+	return m_boundingBox.getSize();
+}
+
 sf::Vector2f Mutant::getVelocity() const
 {
 	return m_velocity;

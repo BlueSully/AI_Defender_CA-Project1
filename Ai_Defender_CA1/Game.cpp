@@ -37,7 +37,7 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 	m_camera = new Camera(centerOfWorld, static_cast<sf::Vector2f>(m_windowScreen->getSize()), false, true);
 
-	m_playerShip.setPosition(m_camera->getView().getCenter());
+	m_playerShip.setPosition(sf::Vector2f(m_camera->getView().getCenter().x, 0));
 
 	m_camera->setTargetPlayer(&m_playerShip);
 
@@ -47,25 +47,25 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 	for (int i = 0; i < 5; i++)
 	{
 		//float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
-		float locationX = 300 * i;
-		sf::Vector2f positon = sf::Vector2f(locationX, (float)m_windowScreen->getSize().y);
+		float locationX = (float)300 * i;
+		sf::Vector2f positon = sf::Vector2f(m_worldBackground[0].getPosition().x + 100 * i, (float)m_windowScreen->getSize().y);
 		m_astronauts.push_back(new Astronaut(positon, sf::Vector2f(0, 0)));
 	}
 
-	for (size_t i = 0; i < 5; i++)
-	{
-		//float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
+	//for (size_t i = 0; i < 5; i++)
+	//{
+	//	//float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
 
-		float locationX = 100 * i;
+	//	float locationX = 100 * i;
 
-		m_abductors.push_back(new Abductor(sf::Vector2f(locationX, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i, 64));
-		m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
-	}
-	
-	for (size_t i = 0; i < 5; i++)
-	{
-		m_mutants.push_back(new Mutant(sf::Vector2f(250 * i, 200 + i * 100), sf::Vector2f(20, 0)));
-	}
+	//	m_abductors.push_back(new Abductor(sf::Vector2f(locationX, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i, 64));
+	//	m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
+	//}
+	//
+	//for (size_t i = 0; i < 5; i++)
+	//{
+	//	m_mutants.push_back(new Mutant(sf::Vector2f(250 * i, 200 + i * 100), sf::Vector2f(20, 0)));
+	//}
 }
 
 Game::~Game()
@@ -260,27 +260,50 @@ void Game::update()
 	m_playerShip.boundaryResponse(m_worldSize);
 	m_playerShip.update(elapsedTime);
 
-	manageAbductors(elapsedTime);
-	manageMutants(elapsedTime);
+	//manageAbductors(elapsedTime);
+	//manageMutants(elapsedTime);
 	manageHumans(elapsedTime);
 }
 
-//used to create a seamless transition from side to side as the player travels
+//Used to create a seamless transition from side to side as the player travels on screen
 void Game::cameraWorldWrapping()
 {
+	
+	sf::Vector2f cameraPos = sf::Vector2f(m_camera->getView().getCenter().x - m_camera->getView().getSize().x / 2, m_camera->getView().getCenter().y - m_camera->getView().getSize().y / 2);
+	screenRect.setPosition(cameraPos);
+	screenRect.setSize(m_camera->getView().getSize());
+	screenRect.setFillColor(sf::Color(0, 100, 0, 100));
+
+	float leftSideWorldX = m_worldBackground.front().getPosition().x + m_worldBackground.front().getSize().x / 2;
+	float rightSideWorldX = m_worldBackground.back().getPosition().x + m_worldBackground.back().getSize().x / 2;
+
 	if ((m_camera->getView().getCenter().x - m_camera->getView().getSize().x / 2) < (m_worldBackground.front().getPosition().x)) // if camera can't move more left warp everything on screen to right side of world
 	{
-		m_playerShip.setPosition(sf::Vector2f(m_worldBackground.back().getPosition().x + m_worldBackground.back().getSize().x - m_camera->getView().getSize().x / 2, m_playerShip.getPosition().y));//Move player to center of screen on right side of the world
+		m_playerShip.setPosition(sf::Vector2f(rightSideWorldX, m_playerShip.getPosition().y));//Move player to center of screen on right side of the world
+
+		for (size_t i = 0; i < m_astronauts.size(); i++)
+		{
+			float screenPostion = m_astronauts[i]->getPosition().x - m_worldBackground.front().getPosition().x;
+			
+			if (CollisionHelper::RectangleCollision(cameraPos, m_camera->getView().getSize(), m_astronauts[i]->getPosition(), m_astronauts[i]->getSize()))
+			{
+				m_astronauts[i]->setPosition(sf::Vector2f(m_worldBackground.back().getPosition().x + screenPostion, m_astronauts[i]->getPosition().y));
+			}
+		}
 	}
-	else if ((m_camera->getView().getCenter().x + m_camera->getView().getSize().x / 2) > (m_worldBackground.back().getPosition().x + m_worldBackground.back().getSize().x)) // if camera can't move more right warp everything on screen to left side of world
+	else if ((m_camera->getView().getCenter().x + m_camera->getView().getSize().x / 2) >(m_worldBackground.back().getPosition().x + m_worldBackground.back().getSize().x)) // if camera can't move more right warp everything on screen to left side of world
 	{
-		m_playerShip.setPosition(sf::Vector2f((m_worldBackground.front().getPosition().x + m_camera->getView().getSize().x / 2), m_playerShip.getPosition().y));
+		m_playerShip.setPosition(sf::Vector2f(leftSideWorldX, m_playerShip.getPosition().y));
+		for (size_t i = 0; i < m_astronauts.size(); i++)
+		{
+			float screenPostion = m_astronauts[i]->getPosition().x - m_worldBackground.back().getPosition().x;
+
+			if (CollisionHelper::RectangleCollision(cameraPos, m_camera->getView().getSize(), m_astronauts[i]->getPosition(), m_astronauts[i]->getSize()))
+			{
+				m_astronauts[i]->setPosition(sf::Vector2f(leftSideWorldX + screenPostion, m_astronauts[i]->getPosition().y));
+			}
+		}
 	}
-}
-
-void Game::warpingOtherEntities()
-{
-
 }
 
 void Game::render(sf::RenderWindow &renderer)
@@ -294,7 +317,7 @@ void Game::render(sf::RenderWindow &renderer)
 	{
 		renderer.draw(m_worldBackground[i]);
 	}
-
+	renderer.draw(screenRect);
 	m_playerShip.render(renderer);
 
 	for (size_t i = 0; i < m_astronauts.size(); i++)
@@ -322,6 +345,8 @@ void Game::render(sf::RenderWindow &renderer)
 	{
 		renderer.draw(m_worldBackground[i]);
 	}
+
+	renderer.draw(screenRect);
 
 	m_playerShip.render(renderer);
 

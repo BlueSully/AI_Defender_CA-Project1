@@ -19,6 +19,8 @@ public:
 	Mutant();
 	Mutant(sf::Vector2f position, sf::Vector2f velocity);
 	~Mutant();
+	
+	sf::Vector2f getSize() const;
 
 	sf::Vector2f getVelocity() const;
 	void setVelocity(sf::Vector2f value);

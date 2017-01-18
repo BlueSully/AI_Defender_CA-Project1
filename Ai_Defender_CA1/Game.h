@@ -19,6 +19,8 @@ private:
 	vector<Mutant *> m_mutants;
 
 	sf::RenderWindow * m_windowScreen;
+
+	sf::RectangleShape screenRect;
 	Camera * m_camera;
 	sf::View m_minimapView;
 
@@ -52,7 +54,6 @@ public:
 	//Methods
 	void update();
 	void cameraWorldWrapping();
-	void warpingOtherEntities();
 	void render(sf::RenderWindow &renderer);
 };
 
