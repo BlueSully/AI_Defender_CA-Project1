@@ -125,10 +125,10 @@ sf::Vector2f Astronaut::wander()
 		circleCenter = VectorHelper::normalise(circleCenter);
 	}
 
-	circleCenter = VectorHelper::MulitplyByScalar(circleCenter, CIRCLEDISTANCE);
+	circleCenter = VectorHelper::MultiplyByScalar(circleCenter, CIRCLEDISTANCE);
 
 	displacement = sf::Vector2f(0, -1);
-	displacement = VectorHelper::MulitplyByScalar(displacement, CIRCLE_RADIUS);
+	displacement = VectorHelper::MultiplyByScalar(displacement, CIRCLE_RADIUS);
 	displacement = VectorHelper::setVectorByAngle(displacement, m_wanderAngle);
 
 	float randomF = static_cast <float> (rand()) / static_cast <float> (RAND_MAX + 1);

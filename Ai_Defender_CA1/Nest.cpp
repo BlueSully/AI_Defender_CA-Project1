@@ -3,18 +3,23 @@
 Nest::Nest(sf::Vector2f position, sf::Vector2f veclocity) : m_wander(true), m_flee(false),m_missileNum(2)
 {
 	//Gets Called when player is Created
+	m_boundingBox.setPosition(position);
 	m_boundingBox.setFillColor(sf::Color::Blue);
 	m_boundingBox.setSize(sf::Vector2f(44, 16));
+
 	m_velocity = sf::Vector2f(0, 0);
+
 	m_fleeCircle.setFillColor(sf::Color(255, 175, 0, 75));
 	m_fleeCircle.setRadius(500);
 	m_fleeCircle.setOrigin(sf::Vector2f(m_fleeCircle.getRadius(), m_fleeCircle.getRadius()));
+
 	state = AiState::WANDER;
 	m_wanderAngle = 0;
-	m_boundingBox.setPosition(position);
+	
 	m_velocity = veclocity;
 	m_timer = 0;
 	m_abductorNum = 0;
+
 	if (!m_nestText.loadFromFile("Resources/Nest.png"))
 	{
 		std::cout << "File failed to load. Check folder location is correct" << std::endl;
@@ -22,7 +27,6 @@ Nest::Nest(sf::Vector2f position, sf::Vector2f veclocity) : m_wander(true), m_fl
 
 	m_nestSprite.setTexture(m_nestText);
 	m_nestSprite.setTextureRect(sf::IntRect(0, 0, 44, 16));
-
 }
 
 Nest::~Nest()
@@ -55,6 +59,7 @@ void Nest::setColour(sf::Color colour)
 {
 	m_boundingBox.setFillColor(colour);
 }
+
 sf::Vector2f Nest::wander()
 {
 	srand(static_cast<unsigned int>(time(NULL)));
@@ -67,10 +72,10 @@ sf::Vector2f Nest::wander()
 		circleCenter = VectorHelper::normalise(circleCenter);
 	}
 
-	circleCenter = VectorHelper::scaleBy(circleCenter, CIRCLEDISTANCE);
-
+	circleCenter = VectorHelper::MultiplyByScalar(circleCenter, CIRCLEDISTANCE);
+	
 	displacement = sf::Vector2f(0, -1);
-	displacement = VectorHelper::scaleBy(displacement, CIRCLE_RADIUS);
+	displacement = VectorHelper::MultiplyByScalar(displacement, CIRCLE_RADIUS);
 	displacement = VectorHelper::setVectorByAngle(displacement, m_wanderAngle);
 
 	float randomF = static_cast <float> (rand()) / static_cast <float> (RAND_MAX + 1);
@@ -99,7 +104,7 @@ void Nest::update(sf::Time elapsedTime, sf::RectangleShape  value)
 	
 	m_nestSprite.setPosition(m_boundingBox.getPosition());
 
-	if (m_missileNum <=    2) 
+	if (m_missileNum <= 2) 
 	{
 		projMan.UpdateMissile(elapsedTime, value);
 	}

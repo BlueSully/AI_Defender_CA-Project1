@@ -76,7 +76,7 @@ public:
 		i = value / magnitude(vect);
 		i = i < 1.0f ? i : 1.0f;
 
-		return MulitplyByScalar(vect, i);
+		return MultiplyByScalar(vect, i);
 	}
 
 	static float VectorHelper::distanceBetweenTwoVectors(sf::Vector2f a, sf::Vector2f b)
@@ -129,7 +129,7 @@ public:
 		return tmp;
 	}
 
-	static sf::Vector2f Mulitply(sf::Vector2f vect1, sf::Vector2f vect2)
+	static sf::Vector2f Multiply(sf::Vector2f vect1, sf::Vector2f vect2)
 	{
 		sf::Vector2f result;
 
@@ -148,7 +148,7 @@ public:
 	}
 
 
-	static sf::Vector2f MulitplyByScalar(sf::Vector2f vectToScale, float scaleVAl)
+	static sf::Vector2f MultiplyByScalar(sf::Vector2f vectToScale, float scaleVAl)
 	{
 		sf::Vector2f result;
 		result = vectToScale * scaleVAl;
