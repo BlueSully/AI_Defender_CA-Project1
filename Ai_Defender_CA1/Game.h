@@ -35,7 +35,7 @@ private:
 	bool m_isGameRunning;
 	int m_numOfScreens;/*!<Variable to hold How large the world will become.*/
 	int m_screenWidth;/*!<Variable for how large each screen's width is.*/
-
+	int m_score;
 	sf::Clock m_clock;
 	sf::Time m_deltatime;
 	sf::View *viewport;
@@ -63,5 +63,9 @@ public:
 	void cameraWorldWrapping();/**< When player hits end of the world either side teleport to opposite side and anything on screen with him*/
 	void warpingEntities();/**< Teleports any entities that goes past the world bounds to the opposite side*/
 	void render(sf::RenderWindow &renderer);/**< renders entities also handles drawing the mini-map */
+	void killAllPowerUp();
+
+	bool playerHit();
+
 };
 

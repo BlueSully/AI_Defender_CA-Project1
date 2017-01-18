@@ -5,7 +5,7 @@ Mutant::Mutant()
 
 }
 
-Mutant::Mutant(sf::Vector2f position, sf::Vector2f velocity) : m_state(SEEK), m_velocity(velocity)
+Mutant::Mutant(sf::Vector2f position, sf::Vector2f velocity) : m_state(SEEK), m_velocity(velocity),m_lives(2)
 {
 	m_boundingBox.setPosition(position);
 	m_boundingBox.setSize(sf::Vector2f(32, 32));
@@ -32,7 +32,10 @@ sf::Vector2f Mutant::getSize() const
 {
 	return m_boundingBox.getSize();
 }
-
+std::vector<Projectile> Mutant::getProjList() const
+{
+	return projMan.getProjList();
+}
 sf::Vector2f Mutant::getVelocity() const
 {
 	return m_velocity;
@@ -41,6 +44,14 @@ sf::Vector2f Mutant::getVelocity() const
 void Mutant::setVelocity(sf::Vector2f value)
 {
 	m_velocity = value;
+}
+int Mutant::getLives() const
+{
+	return m_lives;
+}
+void Mutant::setLives(int value)
+{
+	m_lives = value;
 }
 
 sf::Vector2f Mutant::getPosition() const
@@ -124,7 +135,7 @@ void Mutant::update(sf::Time deltaTime, sf::Vector2f playerPostion)
 	default:
 		break;
 	}
-
+	projMan.Update(deltaTime);
 	m_acceleration *= 0.4f;
 
 	m_velocity += m_acceleration;
@@ -145,4 +156,11 @@ void Mutant::render(sf::RenderWindow & renderer)
 void Mutant::renderRadar(sf::RenderWindow & renderer)
 {
 	renderer.draw(m_boundingBox);
+	projMan.Render(renderer);
+}
+void Mutant::renderRadar(sf::RenderWindow & renderer)
+{
+
+	renderer.draw(m_boundingBox);
+	projMan.Render(renderer);
 }

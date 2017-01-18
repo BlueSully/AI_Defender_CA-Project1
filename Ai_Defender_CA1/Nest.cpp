@@ -1,6 +1,6 @@
 #include "Nest.h"
 
-Nest::Nest(sf::Vector2f position, sf::Vector2f veclocity) : m_wander(true), m_flee(false),m_missileNum(2)
+Nest::Nest(sf::Vector2f position, sf::Vector2f veclocity) : m_wander(true), m_flee(false),m_missileNum(2),m_alive(true)
 {
 	//Gets Called when player is Created
 	m_boundingBox.setPosition(position);
@@ -48,7 +48,15 @@ void Nest::setPosition(sf::Vector2f value)
 {
 	m_boundingBox.setPosition(value);
 }
+bool Nest::isAlive() const
+{
+	return m_alive;
+}
 
+void Nest::setAlive(bool value)
+{
+	m_alive = value;
+}
 void Nest::setWorldRectangle(sf::Vector2f postion, sf::Vector2f size)
 {
 	m_worldBounds.setPosition(postion);
@@ -149,6 +157,7 @@ void Nest::setState(std::string str)
 		state = AiState::FLEE;
 	}	
 }
+
 void Nest::fleeCollisionCheck(sf::RectangleShape value, sf::Time elapsedTime)
 {
 	sf::Vector2f temp = sf::Vector2f(value.getPosition().x, value.getPosition().y);
@@ -225,6 +234,10 @@ void Nest::boundaryResponse()
 		m_velocity.y = 0;
 	}
 
+}
+std::vector<Projectile> Nest::getProjList() const
+{
+	return projMan.getProjList();
 }
 
 void Nest::render(sf::RenderWindow & renderer)

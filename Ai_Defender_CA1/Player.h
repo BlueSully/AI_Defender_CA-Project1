@@ -29,6 +29,8 @@ private:
 	int m_resetTime;
 	float m_timer;
 	bool m_isLeft;
+	int m_lives;
+	bool m_smartBombFired;
 
 	float m_orientation;
 	sf::RectangleShape m_boundingBox;
@@ -44,6 +46,10 @@ public:
 	void processInputs(sf::Event *evt);
 	sf::Vector2f getPosition() const;
 	sf::Vector2f getSize() const;
+	int getLives() const;
+	void setLives(int value);
+	bool getBomb() const;
+	void setBomb(bool value);
 	vector<Projectile> getProjList() const;
 	void setPosition(sf::Vector2f pos);
 	sf::RectangleShape getBoundingBox() const;
@@ -54,6 +60,7 @@ public:
 	void update(sf::Time deltaTime);
 	void render(sf::RenderWindow &renderer);
 	void renderRadar(sf::RenderWindow & renderer);
+	void setLaserAlive(bool value, int index);
 	void render(sf::RenderWindow &renderer, float scale);
 };
 

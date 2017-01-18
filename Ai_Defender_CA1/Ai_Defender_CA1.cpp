@@ -12,8 +12,12 @@ int main()
 
 	while (!m_game.isGameRunning())
 	{
-		m_game.update();
-		m_game.render(m_window);
+		if (m_game.update())
+		{
+			m_game.render(m_window);
+		}
+		else
+			m_window.close();
 	}
 
 	return 0;

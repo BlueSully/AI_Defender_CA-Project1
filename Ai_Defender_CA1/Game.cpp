@@ -4,8 +4,7 @@ Game::Game() : m_isGameRunning(true), m_numOfScreens(5)
 {
 
 }
-
-Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
+Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9),m_score(0)
 {
 	srand(static_cast<unsigned int>(time(NULL)));
 
@@ -171,8 +170,15 @@ void Game::manageMutants(sf::Time elapsedTime)
 {
 	for (size_t i = 0; i < m_mutants.size(); i++)
 	{
-		m_mutants[i]->update(elapsedTime, m_playerShip.getPosition());
-		m_mutants[i]->swarm(m_mutants);
+		if (m_mutants[i]->isAlive())
+		{
+			m_mutants[i]->update(elapsedTime, m_playerShip.getPosition());
+			m_mutants[i]->swarm(m_mutants);
+		}
+		else if (!m_mutants[i]->isAlive())
+		{
+			m_mutants.erase(m_mutants.begin() + i);
+		}
 	}
 }
 
@@ -180,7 +186,14 @@ void Game::manageNests(sf::Time elapsedTime)
 {
 	for (size_t i = 0; i < m_nests.size(); i++)
 	{
-		m_nests[i]->update(elapsedTime, m_playerShip.getBoundingBox());
+		if (m_nests[i]->isAlive())
+		{
+			m_nests[i]->update(elapsedTime, m_playerShip.getBoundingBox());
+		}
+		else if (!m_nests[i]->isAlive())
+		{
+			m_nests.erase(m_nests.begin() + i);
+		}
 	}
 }
 
@@ -253,6 +266,10 @@ void Game::manageAbductors(sf::Time elapsedTime)
 
 			m_abductors[i]->update(elapsedTime, m_playerShip.getBoundingBox());
 		}
+	/*	else if (!m_abductors[i]->isAlive())
+		{
+			m_abductors.erase(m_abductors.begin() + i);
+		}*/
 	}
 }
 
@@ -260,38 +277,131 @@ bool Game::collisionChecker()
 {
 	for (size_t i = 0; i < m_playerShip.getProjList().size(); i++)
 	{
-		Projectile * playerLaser = &m_playerShip.getProjList()[i];
 		sf::Vector2f playerLaserPosition = m_playerShip.getProjList()[i].getPosition();
 		sf::Vector2f playerLaserSize = m_playerShip.getProjList()[i].getSize();
+
 
 		for (size_t j = 0; j < m_abductors.size(); j++)
 		{
 			if (CollisionHelper::RectangleCollision(playerLaserPosition, playerLaserSize, m_abductors[j]->getPosition(), m_abductors[j]->getSize())) 
 			{
+				m_playerShip.setLaserAlive(false, i);
+				m_abductors[j]->setAlive(false);
+				m_score += 50;
 				return true;
 			}
-				
 		}
 		for (size_t k = 0; k < m_nests.size(); k++)
 		{
 			if (CollisionHelper::RectangleCollision(playerLaserPosition, playerLaserSize, m_nests[k]->getPosition(), m_nests[k]->getSize()))
+			{
+				m_playerShip.setLaserAlive(false, i);
+				m_nests[k]->setAlive(false);
+				m_score += 100;
 				return true;
+			}
 		}
-		for (size_t l = 0; l < m_mutants.size(); l++)
+		for (size_t h = 0; h < m_mutants.size(); h++)
 		{
-			if (CollisionHelper::RectangleCollision(playerLaserPosition, playerLaserSize, m_mutants[l]->getPosition(), m_mutants[l]->getSize()))
+			if (CollisionHelper::RectangleCollision(playerLaserPosition, playerLaserSize, m_mutants[h]->getPosition(), m_mutants[h]->getSize()))
+			{
+				m_playerShip.setLaserAlive(false, i);
+				if (m_mutants[h]->getLives() <= 0) {
+					m_mutants[h]->setAlive(false);
+					m_score += 200;
+				}
+				else if (m_mutants[h]->getLives() > 0)
+				{
+					m_mutants[h]->setLives(m_mutants[h]->getLives() - 1);
+				}
 				return true;
+			}
 		}
 	}
 
 	return false;
 }
 
-void Game::update()
+void Game::killAllPowerUp()
+{
+	if (m_playerShip.getBomb() == true)
+	{
+		//kill all
+		for (size_t h = 0; h < m_mutants.size() / 2; h++)
+		{
+			m_mutants[h]->setAlive(false);
+		}
+		for (size_t h = 0; h < m_nests.size() / 2; h++)
+		{
+			m_nests[h]->setAlive(false);
+		}
+		for (size_t h = 0; h < m_abductors.size() / 2; h++)
+		{
+			m_abductors[h]->setAlive(false);
+		}
+
+		m_playerShip.setBomb(false);
+	}
+}
+
+
+bool Game::playerHit()
+{
+
+	for (size_t j = 0; j < m_abductors.size(); j++)
+	{
+		for (size_t i = 0; i < m_abductors[j]->getProjList().size(); i++)
+		{
+
+			sf::Vector2f m_abductorsLaserPosition = m_abductors[j]->getProjList()[i].getPosition();
+			sf::Vector2f m_abductorsLaserSize = m_abductors[j]->getProjList()[i].getSize();
+			if (CollisionHelper::RectangleCollision(m_abductorsLaserPosition, m_abductorsLaserSize, m_playerShip.getPosition(), m_playerShip.getSize()))
+			{
+				m_playerShip.setLives(m_playerShip.getLives() - 1);
+				return true;
+			}
+
+		}
+	}
+	for (size_t k = 0; k < m_nests.size(); k++)
+	{
+		for (size_t i = 0; i < m_nests[k]->getProjList().size(); i++)
+		{
+
+			sf::Vector2f m_nestsLaserPosition = m_nests[k]->getProjList()[i].getPosition();
+			sf::Vector2f m_nestsLaserSize = m_nests[k]->getProjList()[i].getSize();
+			if (CollisionHelper::RectangleCollision(m_nestsLaserPosition, m_nestsLaserSize, m_playerShip.getPosition(), m_playerShip.getSize()))
+			{
+				m_playerShip.setLives(m_playerShip.getLives() - 1);
+				return true;
+			}
+
+		}
+	}
+	for (size_t h = 0; h < m_mutants.size(); h++)
+	{
+		for (size_t i = 0; i < m_mutants[h]->getProjList().size(); i++)
+		{
+
+			sf::Vector2f m_mutantsLaserPosition = m_mutants[h]->getProjList()[i].getPosition();
+			sf::Vector2f m_mutantsLaserSize = m_mutants[h]->getProjList()[i].getSize();
+			if (CollisionHelper::RectangleCollision(m_mutantsLaserPosition, m_mutantsLaserSize, m_playerShip.getPosition(), m_playerShip.getSize()))
+			{
+				m_playerShip.setLives(m_playerShip.getLives() - 1);
+				return true;
+			}
+
+		}
+	}
+
+
+	return false;
+
+}
+bool Game::update()
 {
 	sf::Time elapsedTime = m_clock.restart();
 	getInput();
-	
 	cameraWorldWrapping();
 	m_camera->Update(m_worldSize);
 
@@ -302,13 +412,28 @@ void Game::update()
 	manageMutants(elapsedTime);
 	manageHumans(elapsedTime);
 	manageNests(elapsedTime);
-
+	killAllPowerUp();
 	if (collisionChecker())
 	{
-		std::cout << "expense" << std::endl;
+		std::cout << "Score :" << m_score << std::endl;
 	}
 
-	warpingEntities();
+
+	if (playerHit())
+	{
+
+		std::cout << "lives :" << m_playerShip.getLives() << std::endl;
+	}
+
+
+	if (m_playerShip.getLives() <= 0)
+	{
+
+		return false;
+
+	}
+	return true;
+
 }
 
 //Used to create a seamless transition from side to side as the player travels on screen
