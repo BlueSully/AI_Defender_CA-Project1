@@ -56,6 +56,8 @@ public:
 
 	bool collisionChecker();
 
+	bool playerHit();
+
 	//Methods
 	void update();
 	void cameraWorldWrapping();

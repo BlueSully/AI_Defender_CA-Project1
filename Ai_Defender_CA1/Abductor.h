@@ -48,6 +48,7 @@ public:
 
 	sf::Vector2f getSize() const;
 	sf::Vector2f & getPosition();
+	std::vector<Projectile> getProjList() const;
 	sf::RectangleShape getBoundingBox() const;
 	AiState getState() const;
 	sf::Vector2f getVelocity() const;

@@ -46,10 +46,9 @@ Projectile::Projectile(sf::RectangleShape playerPos, sf::Vector2f nestPos, int t
 Projectile::~Projectile()
 {
 }
-bool Projectile::Update(sf::Time deltaTime,sf::RectangleShape playerBox) //laser
+bool Projectile::Update(sf::Time deltaTime) //laser
 {
 	m_timer += deltaTime.asSeconds();
-	m_playerBox = playerBox;
 	if (m_timer >= m_ttl)
 	{
 		m_timer = 0;
@@ -66,7 +65,7 @@ bool Projectile::Update(sf::Time deltaTime,sf::RectangleShape playerBox) //laser
 
 	sf::Vector2f pos = (m_projectileBoundBox.getPosition() + m_velocity);
 	m_projectileBoundBox.setPosition(pos);
-	collisionCheck();
+	/*collisionCheck();*/
 	}
 	return m_alive;
 }
@@ -166,16 +165,17 @@ bool Projectile::isAlive() const
 	return m_alive;
 }
 
-void Projectile::collisionCheck()
-{
-	if (m_isEnemyBullet)
-	{
-		if (CollisionHelper::RectangleCollision(m_projectileBoundBox.getPosition(), m_projectileBoundBox.getSize(), m_playerBox.getPosition(), m_playerBox.getSize()))
-		{
-			m_alive = false;
-		}
-	}
-}
+//void Projectile::collisionCheck()
+//{
+//	if (m_isEnemyBullet)
+//	{
+//		if (CollisionHelper::RectangleCollision(m_projectileBoundBox.getPosition(), m_projectileBoundBox.getSize(), m_playerBox.getPosition(), m_playerBox.getSize()))
+//		{
+//			m_alive = false;
+//
+//		}
+//	}
+//}
 
 
 

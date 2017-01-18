@@ -157,6 +157,7 @@ void Nest::setState(std::string str)
 		state = AiState::FLEE;
 	}	
 }
+
 void Nest::fleeCollisionCheck(sf::RectangleShape value, sf::Time elapsedTime)
 {
 	sf::Vector2f temp = sf::Vector2f(value.getPosition().x, value.getPosition().y);
@@ -233,6 +234,10 @@ void Nest::boundaryResponse()
 		m_velocity.y = 0;
 	}
 
+}
+std::vector<Projectile> Nest::getProjList() const
+{
+	return projMan.getProjList();
 }
 
 void Nest::render(sf::RenderWindow & renderer)

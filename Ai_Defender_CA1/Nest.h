@@ -73,6 +73,8 @@ public:
 	void fireMissiles(sf::RectangleShape value, sf::Time elapsedTime);
 	void boundaryResponse();
 
+	std::vector<Projectile> getProjList() const;
+
 	void render(sf::RenderWindow & renderer);
 	void renderRadar(sf::RenderWindow & renderer);
 };

@@ -2,6 +2,7 @@
 
 #include "MathFunction.h"
 #include "AiStates.h"
+#include "ProjectileManager.h"
 
 class Mutant
 {
@@ -9,10 +10,11 @@ private:
 	sf::RectangleShape m_boundingBox;//Bounding Box for Mutant
 	sf::Vector2f m_velocity;
 	sf::Vector2f m_acceleration;
+	int m_lives;
 
 	const float MAX_VELOCITY = 192;
 	bool m_alive;
-
+	ProjectileManager projMan;
 	AiState m_state;
 
 public:
@@ -22,8 +24,14 @@ public:
 	
 	sf::Vector2f getSize() const;
 
+	std::vector<Projectile> getProjList() const;
+
 	sf::Vector2f getVelocity() const;
 	void setVelocity(sf::Vector2f value);
+
+	int getLives() const;
+
+	void setLives(int value);
 
 	sf::Vector2f getPosition() const;
 	void setPosition(sf::Vector2f value);
@@ -37,5 +45,6 @@ public:
 	void update(sf::Time deltaTime, sf::Vector2f playerPostion);
 
 	void render(sf::RenderWindow & renderer);
+	void renderRadar(sf::RenderWindow & renderer);
 };
 

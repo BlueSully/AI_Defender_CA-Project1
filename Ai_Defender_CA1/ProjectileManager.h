@@ -9,7 +9,7 @@ private:
 public:
 	ProjectileManager();
 	~ProjectileManager();
-	void Update(sf::Time deltaTime, sf::RectangleShape);
+	void Update(sf::Time deltaTime);
 	void UpdateMissile(sf::Time deltaTime, sf::RectangleShape playerBox);
 	void addLaser(bool isLeft, sf::Vector2f playerPos, float playerXVelocity, int ttl, bool isEnemyBullet);
 	float getProjNumber();

@@ -6,7 +6,7 @@ Player::Player()
   m_size(sf::Vector2f(50, 30)),
   m_speed(sf::Vector2f(0, 0)),
   m_MAXHORIZONTALACCLERATION(1000),
-  m_MAXVERTICALACCLERATION(500)
+  m_MAXVERTICALACCLERATION(500),m_lives(3)
 {
 	m_boundingBox.setFillColor(sf::Color::Green);
 	m_boundingBox.setPosition(sf::Vector2f(375, 285));
@@ -106,6 +106,15 @@ sf::Vector2f Player::getPosition() const
 sf::Vector2f Player::getSize() const
 {
 	return m_boundingBox.getSize();
+}
+
+int Player::getLives() const
+{
+	return m_lives;
+}
+void Player::setLives(int value) 
+{
+	m_lives = value;
 }
 std::vector<Projectile> Player::getProjList() const
 {
@@ -208,7 +217,7 @@ void Player::update(sf::Time deltaTime)
 		}
 	}
 	
-	projMan.Update(deltaTime, m_boundingBox);
+	projMan.Update(deltaTime);
 	m_velocity = VectorHelper::truncate(m_velocity, m_MAXHORIZONTALACCLERATION);
 
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
