@@ -107,7 +107,7 @@ sf::Vector2f Player::getSize() const
 {
 	return m_boundingBox.getSize();
 }
-std::vector<Projectile> & Player::getProjList() 
+std::vector<Projectile> Player::getProjList() const
 {
 	return projMan.getProjList();
 }

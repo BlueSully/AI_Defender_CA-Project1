@@ -14,6 +14,6 @@ public:
 	void addLaser(bool isLeft, sf::Vector2f playerPos, float playerXVelocity, int ttl, bool isEnemyBullet);
 	float getProjNumber();
 	void Render(sf::RenderWindow & renderer);
-	std::vector<Projectile>& getProjList();
+	std::vector<Projectile> getProjList() const;
 	void addMissile(sf::RectangleShape playerPos, sf::Vector2f nestPos, int ttl);
 };

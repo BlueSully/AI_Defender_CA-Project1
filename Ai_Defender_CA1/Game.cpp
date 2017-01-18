@@ -252,7 +252,7 @@ void Game::update()
 	manageNests(elapsedTime);
 
 
-	if (collisionChecker)
+	if (collisionChecker())
 	{
 		std::cout << "expense" << std::endl;
 	}

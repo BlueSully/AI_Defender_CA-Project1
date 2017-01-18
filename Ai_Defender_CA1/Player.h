@@ -35,7 +35,7 @@ public:
 	void processInputs(sf::Event *evt);
 	sf::Vector2f getPosition() const;
 	sf::Vector2f getSize() const;
-	std::vector<Projectile>& getProjList();
+	vector<Projectile> getProjList() const;
 	void setPosition(sf::Vector2f pos);
 	sf::RectangleShape getBoundingBox() const;
 

@@ -55,7 +55,7 @@ void ProjectileManager::Render(sf::RenderWindow & renderer)
 }
 
 
-std::vector<Projectile> & ProjectileManager::getProjList() 
+std::vector<Projectile> ProjectileManager::getProjList() const
 {
 	return m_projectiles;
 }
