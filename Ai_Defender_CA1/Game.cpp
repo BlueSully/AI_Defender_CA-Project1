@@ -357,7 +357,9 @@ bool Game::playerHit()
 			sf::Vector2f m_abductorsLaserSize = m_abductors[j]->getProjList()[i].getSize();
 			if (CollisionHelper::RectangleCollision(m_abductorsLaserPosition, m_abductorsLaserSize, m_playerShip.getPosition(), m_playerShip.getSize()))
 			{
+				m_abductors[j]->setLaserAlive(false, i);
 				m_playerShip.setLives(m_playerShip.getLives() - 1);
+
 				return true;
 			}
 
@@ -372,6 +374,7 @@ bool Game::playerHit()
 			sf::Vector2f m_nestsLaserSize = m_nests[k]->getProjList()[i].getSize();
 			if (CollisionHelper::RectangleCollision(m_nestsLaserPosition, m_nestsLaserSize, m_playerShip.getPosition(), m_playerShip.getSize()))
 			{
+				m_nests[k]->setLaserAlive(false, i);
 				m_playerShip.setLives(m_playerShip.getLives() - 1);
 				return true;
 			}
@@ -387,6 +390,7 @@ bool Game::playerHit()
 			sf::Vector2f m_mutantsLaserSize = m_mutants[h]->getProjList()[i].getSize();
 			if (CollisionHelper::RectangleCollision(m_mutantsLaserPosition, m_mutantsLaserSize, m_playerShip.getPosition(), m_playerShip.getSize()))
 			{
+				m_mutants[h]->setLaserAlive(false, i);
 				m_playerShip.setLives(m_playerShip.getLives() - 1);
 				return true;
 			}

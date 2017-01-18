@@ -476,7 +476,10 @@ void Abductor::render(sf::RenderWindow & renderer)
 
 void Abductor::renderRadar(sf::RenderWindow & renderer)
 {
-
 		renderer.draw(m_boundingBox);
 		projMan.Render(renderer);
+}
+void Abductor::setLaserAlive(bool value, int index)
+{
+	projMan.setAlive(value, index);
 }

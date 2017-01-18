@@ -257,3 +257,7 @@ void Nest::renderRadar(sf::RenderWindow & renderer)
 	projMan.Render(renderer);
 
 }
+void Nest::setLaserAlive(bool value, int index)
+{
+	projMan.setAlive(value, index);
+}

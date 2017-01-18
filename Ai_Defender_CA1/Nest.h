@@ -77,5 +77,6 @@ public:
 
 	void render(sf::RenderWindow & renderer);
 	void renderRadar(sf::RenderWindow & renderer);
+	void setLaserAlive(bool value, int index);
 };
 

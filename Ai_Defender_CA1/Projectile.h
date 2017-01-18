@@ -58,7 +58,7 @@ public:
 	bool getAlive() const;
 	sf::Vector2f getPosition() const;
 	sf::Vector2f getSize() const;
-	void setAlive(bool value);
+
 	bool isAlive() const;
 	//void collisionCheck();
 
