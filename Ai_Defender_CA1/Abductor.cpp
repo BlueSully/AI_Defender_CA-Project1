@@ -476,7 +476,6 @@ void Abductor::render(sf::RenderWindow & renderer)
 
 void Abductor::renderRadar(sf::RenderWindow & renderer)
 {
-
 		renderer.draw(m_boundingBox);
 		projMan.Render(renderer);
 }
