@@ -227,6 +227,10 @@ void Player::renderRadar(sf::RenderWindow & renderer)
 	projMan.Render(renderer);
 }
 
+void Player::setLaserAlive(bool value, int index)
+{
+	projMan.setAlive(value, index);
+}
 void Player::render(sf::RenderWindow &renderer, float scale)
 {
 	sf::RectangleShape drawRect = m_boundingBox;

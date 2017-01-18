@@ -13,7 +13,7 @@ void ProjectileManager::Update(sf::Time deltaTime, sf::RectangleShape playerBox)
 	for (int i = 0; i < m_projectiles.size(); i++) 
 	{
 		if (m_projectiles.at(i).Update(deltaTime, playerBox));
-		else if(!m_projectiles.at(i).Update(deltaTime, playerBox))
+		else if(!m_projectiles.at(i).Update(deltaTime, playerBox) || m_projectiles[i].isAlive() == false)
 		{
 			m_projectiles.erase(m_projectiles.begin() + i);
 		}
@@ -25,7 +25,7 @@ void ProjectileManager::UpdateMissile(sf::Time deltaTime, sf::RectangleShape pla
 	for (int i = 0; i < m_projectiles.size(); i++)
 	{
 		if (m_projectiles.at(i).UpdateMissile(deltaTime, playerBox));
-		else if (!m_projectiles.at(i).UpdateMissile(deltaTime, playerBox))
+		else if (!m_projectiles.at(i).UpdateMissile(deltaTime, playerBox) )
 		{
 			m_projectiles.erase(m_projectiles.begin() + i);
 		}
@@ -40,6 +40,11 @@ void ProjectileManager::addLaser(bool isLeft, sf::Vector2f playerPos, float play
 void ProjectileManager::addMissile(sf::RectangleShape playerPos, sf::Vector2f nestPos, int ttl)
 {
 	m_projectiles.push_back(Projectile(playerPos, nestPos, ttl));
+}
+
+void ProjectileManager::setAlive(bool value,int index)
+{
+	m_projectiles[index].setAlive(value);
 }
 
 float ProjectileManager::getProjNumber()

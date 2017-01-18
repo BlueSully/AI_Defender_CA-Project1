@@ -467,14 +467,13 @@ void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 
 void Abductor::render(sf::RenderWindow & renderer)
 {
-	//renderer.draw(m_boundingBox);
-	//renderer.draw(m_attackRangeBox);
-	renderer.draw(m_abductorSprite);
-	projMan.Render(renderer);
+		renderer.draw(m_abductorSprite);
+		projMan.Render(renderer);
 }
 
 void Abductor::renderRadar(sf::RenderWindow & renderer)
 {
-	renderer.draw(m_boundingBox);
-	projMan.Render(renderer);
+
+		renderer.draw(m_boundingBox);
+		projMan.Render(renderer);
 }

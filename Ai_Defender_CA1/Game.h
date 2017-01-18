@@ -31,7 +31,7 @@ private:
 	bool m_isGameRunning;
 	int m_numOfScreens;
 	int m_screenWidth;
-
+	int m_score;
 	sf::Clock m_clock;
 	sf::Time m_deltatime;
 	sf::View *viewport;
