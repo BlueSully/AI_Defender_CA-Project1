@@ -10,7 +10,7 @@ private:
 	sf::Vector2f m_velocity;
 	sf::Vector2f m_acceleration;
 
-	const float MAX_VELOCITY = 128;
+	const float MAX_VELOCITY = 192;
 	bool m_alive;
 
 	AiState m_state;

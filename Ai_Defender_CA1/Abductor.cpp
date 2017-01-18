@@ -45,7 +45,7 @@ Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize, int id, float
 
 	int dir = 0;
 
-	if (id > 1) 
+	if (id < 3) 
 	{
 		dir = 1;
 	}
@@ -359,7 +359,6 @@ void Abductor::boundaryResponse()
 		{
 			m_spawnMutant = true;
 		}
-		
 	}
 	else if (getPosition().y + getSize().y > vect.y)
 	{

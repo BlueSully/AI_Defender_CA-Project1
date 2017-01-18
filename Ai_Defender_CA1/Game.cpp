@@ -62,10 +62,10 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 		m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
 	}
 	
-	//for (size_t i = 0; i < 5; i++)
-	//{
-	//	m_mutants.push_back(new Mutant(sf::Vector2f(250 * i, 200 + i * 100), sf::Vector2f(20, 0)));
-	//}
+	for (size_t i = 0; i < 5; i++)
+	{
+		m_mutants.push_back(new Mutant(sf::Vector2f(250 * i, 200 + i * 100), sf::Vector2f(20, 0)));
+	}
 }
 
 Game::~Game()
@@ -190,27 +190,38 @@ void Game::manageAbductors(sf::Time elapsedTime)
 		{
 			std::map<int, float> humanDist;//humanDist : Get all distances to nearest humans
 
-			if (m_abductors[i]->getState() != ABDUCTING)
+			for (int j = 0; j < m_astronauts.size(); j++)//Look for nearest unmarked human
 			{
-				for (int j = 0; j < m_astronauts.size(); j++)//Look for nearest unmarked human
-				{
-					float distance = VectorHelper::distanceBetweenTwoVectors(m_abductors[i]->getPosition(), m_astronauts[j]->getPosition());
+				float distance = VectorHelper::distanceBetweenTwoVectors(m_abductors[i]->getPosition(), m_astronauts[j]->getPosition());
 
-					if (m_astronauts[j]->getBeingAbducted() == false)
-						humanDist[j] = distance;
-				}
+				if (m_astronauts[j]->getBeingAbducted() == false)
+					humanDist[j] = distance;
 			}
 
 			if (humanDist.size() >= 1 && m_abductors[i]->getState() != ABDUCTING)
 			{
 				std::pair<int, float> min = *min_element(humanDist.begin(), humanDist.end(), compareValues());
+				bool canMarkHuman = true;
 
-				if (min.second < 500 && !(m_astronauts[min.first]->getBeingAbducted()))//Marking unmarked human as targeted
+				for (int j = 0; j < m_abductors.size(); j++)
+				{
+					if (min.first == m_abductors[j]->getAbucteeId())
+					{
+						canMarkHuman = false;
+						break;
+					}
+				}
+				if (canMarkHuman && min.second < 500 && !(m_astronauts[min.first]->getBeingAbducted()))//Marking unmarked human as targeted
 				{
 					m_abductors[i]->setState(ABDUCTING);
 					m_abductors[i]->setAbducteeId(min.first);
 					m_astronauts[min.first]->setBeingAbducted(true);
 					m_astronauts[min.first]->setAbductorId(i);
+				}
+				else
+				{
+					m_abductors[i]->setState(PATROL);
+					m_abductors[i]->setAbducteeId(-1);
 				}
 			}
 

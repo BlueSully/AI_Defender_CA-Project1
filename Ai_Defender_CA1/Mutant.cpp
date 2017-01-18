@@ -105,7 +105,7 @@ void Mutant::update(sf::Time deltaTime, sf::Vector2f playerPostion)
 	switch (m_state)
 	{
 	case SEEK:
-		m_acceleration += seek(playerPostion) * 0.005f;
+		m_acceleration += seek(playerPostion) *0.05f;
 		break;
 	default:
 		break;
