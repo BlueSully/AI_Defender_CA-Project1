@@ -4,7 +4,7 @@ Game::Game() : m_isGameRunning(true), m_numOfScreens(5)
 {
 
 }
-Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9),m_score(0)
+Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9), m_score(0)
 {
 	srand(static_cast<unsigned int>(time(NULL)));
 
@@ -352,7 +352,6 @@ bool Game::playerHit()
 	{
 		for (size_t i = 0; i < m_abductors[j]->getProjList().size(); i++)
 		{
-
 			sf::Vector2f m_abductorsLaserPosition = m_abductors[j]->getProjList()[i].getPosition();
 			sf::Vector2f m_abductorsLaserSize = m_abductors[j]->getProjList()[i].getSize();
 			if (CollisionHelper::RectangleCollision(m_abductorsLaserPosition, m_abductorsLaserSize, m_playerShip.getPosition(), m_playerShip.getSize()))
@@ -360,7 +359,6 @@ bool Game::playerHit()
 				m_playerShip.setLives(m_playerShip.getLives() - 1);
 				return true;
 			}
-
 		}
 	}
 	for (size_t k = 0; k < m_nests.size(); k++)
@@ -382,7 +380,6 @@ bool Game::playerHit()
 	{
 		for (size_t i = 0; i < m_mutants[h]->getProjList().size(); i++)
 		{
-
 			sf::Vector2f m_mutantsLaserPosition = m_mutants[h]->getProjList()[i].getPosition();
 			sf::Vector2f m_mutantsLaserSize = m_mutants[h]->getProjList()[i].getSize();
 			if (CollisionHelper::RectangleCollision(m_mutantsLaserPosition, m_mutantsLaserSize, m_playerShip.getPosition(), m_playerShip.getSize()))
@@ -390,10 +387,8 @@ bool Game::playerHit()
 				m_playerShip.setLives(m_playerShip.getLives() - 1);
 				return true;
 			}
-
 		}
 	}
-
 
 	return false;
 
@@ -413,6 +408,7 @@ bool Game::update()
 	manageHumans(elapsedTime);
 	manageNests(elapsedTime);
 	killAllPowerUp();
+
 	if (collisionChecker())
 	{
 		std::cout << "Score :" << m_score << std::endl;

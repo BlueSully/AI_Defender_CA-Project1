@@ -27,7 +27,6 @@ private:
 	sf::Texture m_mutantTex;
 	sf::Sprite m_mutantSprite;
 
-
 public:
 	Mutant();
 	Mutant(sf::Vector2f position, sf::Vector2f velocity);

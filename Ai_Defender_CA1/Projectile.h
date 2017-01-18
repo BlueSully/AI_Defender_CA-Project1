@@ -4,8 +4,13 @@
 #include <iostream>
 #include "MathFunction.h"
 
+//! Projectile Class.
+/*!
+This is either a Laser or Missile. 
+Lasers are fired straight out the left or right of either the player or an AI at a set speed. 
+The Nest AI fires the missile, it tracks to the players location.
 
-
+*/
 class Projectile
 {
 private:
@@ -58,15 +63,6 @@ public:
 	bool getAlive() const;
 	sf::Vector2f getPosition() const;
 	sf::Vector2f getSize() const;
-	void setAlive(bool value);
-	bool isAlive() const;
-	//void collisionCheck();
-
-	
-
-
-
-
 };
 
 

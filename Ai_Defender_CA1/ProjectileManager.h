@@ -1,6 +1,12 @@
 #pragma once
 #include "Projectile.h"
 
+//! ProjectileManager Class.
+/*!
+	A manager class that handles the list of projectiles for each of the users of projectiles.
+
+*/
+
 class ProjectileManager
 {
 private:

@@ -56,7 +56,6 @@ Projectile::~Projectile()
 bool Projectile::Update(sf::Time deltaTime) //laser
 {
 	m_timer += deltaTime.asSeconds();
-	m_playerBox = playerBox;
 
 	if (m_timer >= m_ttl)
 	{
@@ -76,7 +75,7 @@ bool Projectile::Update(sf::Time deltaTime) //laser
 
 		sf::Vector2f pos = (m_projectileBoundBox.getPosition() + m_velocity);
 		m_projectileBoundBox.setPosition(pos);
-		collisionCheck();
+		//collisionCheck();
 	}
 	return m_alive;
 }
@@ -184,14 +183,6 @@ sf::Vector2f Projectile::getSize() const
 {
 	return m_projectileBoundBox.getSize();
 }
-void Projectile::setAlive(bool value)
-{
-	m_alive = value;
-}
-bool Projectile::isAlive() const
-{
-	return m_alive;
-}
 
 //void Projectile::collisionCheck()
 //{
@@ -204,7 +195,3 @@ bool Projectile::isAlive() const
 //		}
 //	}
 //}
-
-
-
-

@@ -150,17 +150,11 @@ void Mutant::update(sf::Time deltaTime, sf::Vector2f playerPostion)
 void Mutant::render(sf::RenderWindow & renderer)
 {
 	renderer.draw(m_mutantSprite);
-	//projMan.Render(renderer);
-}
-
-void Mutant::renderRadar(sf::RenderWindow & renderer)
-{
-	renderer.draw(m_boundingBox);
 	projMan.Render(renderer);
 }
+
 void Mutant::renderRadar(sf::RenderWindow & renderer)
 {
-
 	renderer.draw(m_boundingBox);
 	projMan.Render(renderer);
 }
