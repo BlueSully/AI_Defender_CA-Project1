@@ -13,6 +13,7 @@ Projectile::Projectile(bool isLeft, sf::Vector2f playerPos, float playerXVelocit
 	m_projectileBoundBox.setSize(m_size);
 	m_projectileBoundBox.setPosition(sf::Vector2f(playerPos.x, playerPos.y + offset));
 	m_isEnemyBullet = isEnemyBullet;
+
 	if (isLeft == true)
 	{
 		m_velocity = sf::Vector2f(-m_speed, 0);
@@ -22,6 +23,7 @@ Projectile::Projectile(bool isLeft, sf::Vector2f playerPos, float playerXVelocit
 		m_velocity = sf::Vector2f(m_speed, 0);
 	}
 }
+
 Projectile::Projectile(sf::RectangleShape playerPos, sf::Vector2f nestPos, int ttl)
 	:m_size(sf::Vector2f(20, 12)),
 	m_alive(true),
@@ -36,40 +38,50 @@ Projectile::Projectile(sf::RectangleShape playerPos, sf::Vector2f nestPos, int t
 	m_projectileBoundBox.setSize(m_size);
 	m_projectileBoundBox.setPosition(nestPos);
 	m_playerBox= playerPos;
+
 	if (!m_missileText.loadFromFile("Resources/Missile.png"))
 	{
 		std::cout << "File failed to load. Check folder location is correct" << std::endl;
 	}
+
 	m_missileSprite.setTexture(m_missileText);
 	m_missileSprite.setTextureRect(sf::IntRect(0, 0, 24, 12));
 }
+
 Projectile::~Projectile()
 {
+
 }
+
 bool Projectile::Update(sf::Time deltaTime) //laser
 {
 	m_timer += deltaTime.asSeconds();
+	m_playerBox = playerBox;
+
 	if (m_timer >= m_ttl)
 	{
 		m_timer = 0;
 		m_alive = false;
 	}
-	if (m_isLaser) 
+
+	if (m_isLaser)
 	{
 		m_colourCount++;
 		m_projectileBoundBox.setFillColor(sf::Color(1 * m_colourCount, 1.5f * m_colourCount, 2.0f * m_colourCount));
+
 		if (m_colourCount > 170)
 		{
 			m_colourCount = 0;
 		}
 
-	sf::Vector2f pos = (m_projectileBoundBox.getPosition() + m_velocity);
-	m_projectileBoundBox.setPosition(pos);
-	/*collisionCheck();*/
+		sf::Vector2f pos = (m_projectileBoundBox.getPosition() + m_velocity);
+		m_projectileBoundBox.setPosition(pos);
+		collisionCheck();
 	}
 	return m_alive;
 }
-bool Projectile::UpdateMissile(sf::Time deltaTime,sf::RectangleShape playerBox)//missile
+
+bool Projectile::UpdateMissile(sf::Time deltaTime, sf::RectangleShape playerBox)//missile
 {
 	m_playerBox = playerBox;
 	m_timer += deltaTime.asSeconds();
@@ -85,14 +97,21 @@ bool Projectile::UpdateMissile(sf::Time deltaTime,sf::RectangleShape playerBox)/
 		m_timer = 0;
 		m_alive = false;
 	}
-		if (trackPlayer())
-		{ }
-		else if (!trackPlayer() && m_alive == true)
-		{
-			m_alive = false;
-		}
+
+	if (m_alive == false) 
+	{
+		m_timer = 0;
+	}
+
+	if (trackPlayer());
+	else if (!trackPlayer() && m_alive == true)
+	{
+		m_alive = false;
+	}
+
 	return m_alive;
 }
+
 void Projectile::Render(sf::RenderWindow &renderer)
 {
 	if (m_alive) 
@@ -105,10 +124,9 @@ void Projectile::Render(sf::RenderWindow &renderer)
 		{
 			renderer.draw(m_missileSprite);
 		}
-
 	}
-
 }
+
 bool Projectile::trackPlayer()
 {
 	m_velocity = sf::Vector2f(0,0);
@@ -146,6 +164,17 @@ sf::CircleShape Projectile::getRadius()
 {
 	return m_damageRadius;
 }
+
+void Projectile::setAlive(bool value)
+{
+	m_alive = value;
+}
+
+bool Projectile::getAlive() const
+{
+	return m_alive;
+}
+
 sf::Vector2f Projectile::getPosition()const
 {
 	return m_projectileBoundBox.getPosition();

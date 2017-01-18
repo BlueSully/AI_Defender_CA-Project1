@@ -4,13 +4,13 @@
 #include <iostream>
 #include "MathFunction.h"
 
+
+
 class Projectile
 {
 private:
 
 	sf::Vector2f m_velocity;
-
-
 
 	sf::RectangleShape m_playerBox;
 	sf::Vector2f m_size;
@@ -54,6 +54,8 @@ public:
 	void explosionAnimation();
 
 	sf::CircleShape getRadius();
+	void setAlive(bool value);
+	bool getAlive() const;
 	sf::Vector2f getPosition() const;
 	sf::Vector2f getSize() const;
 	void setAlive(bool value);

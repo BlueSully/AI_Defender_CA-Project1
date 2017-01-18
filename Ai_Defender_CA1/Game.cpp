@@ -45,31 +45,24 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 	for (int i = 0; i < 5; i++)
 	{
-		//float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
-		float locationX = (float)300 * i;
-		sf::Vector2f positon = sf::Vector2f(m_worldBackground[0].getPosition().x + 100 * i, (float)m_windowScreen->getSize().y);
+		float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
+		sf::Vector2f positon = sf::Vector2f(locationX, (float)m_windowScreen->getSize().y);
 		m_astronauts.push_back(new Astronaut(positon, sf::Vector2f(0, 0)));
 	}
 
 	for (int i = 0; i < 4; i++)
 	{
-		m_nests.push_back(new Nest(sf::Vector2f(300 * i, m_windowScreen->getSize().y / 2), sf::Vector2f(50, 40)));
+		float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
+		m_nests.push_back(new Nest(sf::Vector2f(locationX, m_windowScreen->getSize().y / 2), sf::Vector2f(50, 40)));
 		m_nests[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
 	}
 
-	//for (size_t i = 0; i < 5; i++)
-	//{
-	//	//float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
-	//	float locationX = 100 * i;
-	//	m_abductors.push_back(new Abductor(sf::Vector2f(locationX, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i, 64));
-	//	m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
-	//}
-
-	//for (size_t i = 0; i < 5; i++)
-	//{
-	//	//float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
-	//	m_mutants.push_back(new Mutant(sf::Vector2f(250 * i, 200 + i * 100), sf::Vector2f(20, 0)));
-	//}
+	for (size_t i = 0; i < 5; i++)
+	{
+		float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
+		m_abductors.push_back(new Abductor(sf::Vector2f(locationX, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i, 64));
+		m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
+	}
 }
 
 Game::~Game()
@@ -168,6 +161,7 @@ void Game::manageHumans(sf::Time elapsedTime)
 
 			}
 			m_astronauts[i]->update(elapsedTime);
+
 		}
 	}
 }
@@ -286,9 +280,10 @@ bool Game::collisionChecker()
 		sf::Vector2f playerLaserPosition = m_playerShip.getProjList()[i].getPosition();
 		sf::Vector2f playerLaserSize = m_playerShip.getProjList()[i].getSize();
 
+
 		for (size_t j = 0; j < m_abductors.size(); j++)
 		{
-			if (CollisionHelper::RectangleCollision(playerLaserPosition, playerLaserSize, m_abductors[j]->getPosition(), m_abductors[j]->getSize()))
+			if (CollisionHelper::RectangleCollision(playerLaserPosition, playerLaserSize, m_abductors[j]->getPosition(), m_abductors[j]->getSize())) 
 			{
 				m_playerShip.setLaserAlive(false, i);
 				m_abductors[j]->setAlive(false);
@@ -323,7 +318,6 @@ bool Game::collisionChecker()
 			}
 		}
 	}
-
 
 	return false;
 }
@@ -446,9 +440,6 @@ bool Game::update()
 void Game::cameraWorldWrapping()
 {
 	sf::Vector2f cameraPos = sf::Vector2f(m_camera->getView().getCenter().x - m_camera->getView().getSize().x / 2, m_camera->getView().getCenter().y - m_camera->getView().getSize().y / 2);
-	screenRect.setPosition(cameraPos);
-	screenRect.setSize(m_camera->getView().getSize());
-	screenRect.setFillColor(sf::Color(0, 100, 0, 100));
 
 	float leftSideWorldX = m_worldBackground.front().getPosition().x + m_worldBackground.front().getSize().x / 2;
 	float rightSideWorldX = m_worldBackground.back().getPosition().x + m_worldBackground.back().getSize().x / 2;
@@ -466,18 +457,136 @@ void Game::cameraWorldWrapping()
 				m_astronauts[i]->setPosition(sf::Vector2f(m_worldBackground.back().getPosition().x + screenPostion, m_astronauts[i]->getPosition().y));
 			}
 		}
+
+		for (size_t i = 0; i < m_nests.size(); i++)
+		{
+			float screenPostion = m_nests[i]->getPosition().x - m_worldBackground.front().getPosition().x;
+
+			if (CollisionHelper::RectangleCollision(cameraPos, m_camera->getView().getSize(), m_nests[i]->getPosition(), m_nests[i]->getSize()))
+			{
+				m_nests[i]->setPosition(sf::Vector2f(m_worldBackground.back().getPosition().x + screenPostion, m_nests[i]->getPosition().y));
+			}
+		}
+
+		for (size_t i = 0; i < m_abductors.size(); i++)
+		{
+			float screenPostion = m_abductors[i]->getPosition().x - m_worldBackground.front().getPosition().x;
+
+			if (CollisionHelper::RectangleCollision(cameraPos, m_camera->getView().getSize(), m_abductors[i]->getPosition(), m_abductors[i]->getSize()))
+			{
+				m_abductors[i]->setPosition(sf::Vector2f(m_worldBackground.back().getPosition().x + screenPostion, m_abductors[i]->getPosition().y));
+			}
+		}
+		for (size_t i = 0; i < m_mutants.size(); i++)
+		{
+			float screenPostion = m_mutants[i]->getPosition().x - m_worldBackground.front().getPosition().x;
+
+			if (CollisionHelper::RectangleCollision(cameraPos, m_camera->getView().getSize(), m_mutants[i]->getPosition(), m_mutants[i]->getSize()))
+			{
+				m_mutants[i]->setPosition(sf::Vector2f(m_worldBackground.back().getPosition().x + screenPostion, m_mutants[i]->getPosition().y));
+			}
+		}
 	}
 	else if ((m_camera->getView().getCenter().x + m_camera->getView().getSize().x / 2) >(m_worldBackground.back().getPosition().x + m_worldBackground.back().getSize().x)) // if camera can't move more right warp everything on screen to left side of world
 	{
 		m_playerShip.setPosition(sf::Vector2f(leftSideWorldX, m_playerShip.getPosition().y));
+
 		for (size_t i = 0; i < m_astronauts.size(); i++)
 		{
 			float screenPostion = m_astronauts[i]->getPosition().x - m_worldBackground.back().getPosition().x;
 
 			if (CollisionHelper::RectangleCollision(cameraPos, m_camera->getView().getSize(), m_astronauts[i]->getPosition(), m_astronauts[i]->getSize()))
 			{
-				m_astronauts[i]->setPosition(sf::Vector2f(leftSideWorldX + screenPostion, m_astronauts[i]->getPosition().y));
+				m_astronauts[i]->setPosition(sf::Vector2f(m_worldBackground.front().getPosition().x + screenPostion, m_astronauts[i]->getPosition().y));
 			}
+		}
+
+		for (size_t i = 0; i < m_nests.size(); i++)
+		{
+			float screenPostion = m_nests[i]->getPosition().x - m_worldBackground.back().getPosition().x;
+
+			if (CollisionHelper::RectangleCollision(cameraPos, m_camera->getView().getSize(), m_nests[i]->getPosition(), m_nests[i]->getSize()))
+			{
+				m_nests[i]->setPosition(sf::Vector2f(m_worldBackground.front().getPosition().x + screenPostion, m_nests[i]->getPosition().y));
+			}
+		}
+
+		for (size_t i = 0; i < m_abductors.size(); i++)
+		{
+			float screenPostion = m_abductors[i]->getPosition().x - m_worldBackground.back().getPosition().x;
+
+			if (CollisionHelper::RectangleCollision(cameraPos, m_camera->getView().getSize(), m_abductors[i]->getPosition(), m_abductors[i]->getSize()))
+			{
+				m_abductors[i]->setPosition(sf::Vector2f(m_worldBackground.front().getPosition().x + screenPostion, m_abductors[i]->getPosition().y));
+			}
+		}
+
+		for (size_t i = 0; i < m_mutants.size(); i++)
+		{
+			float screenPostion = m_mutants[i]->getPosition().x - m_worldBackground.back().getPosition().x;
+
+			if (CollisionHelper::RectangleCollision(cameraPos, m_camera->getView().getSize(), m_mutants[i]->getPosition(), m_mutants[i]->getSize()))
+			{
+				m_mutants[i]->setPosition(sf::Vector2f(m_worldBackground.front().getPosition().x + screenPostion, m_mutants[i]->getPosition().y));
+			}
+		}
+	}
+}
+
+void Game::warpingEntities()
+{
+	std::pair<float, float> worldData = make_pair(m_worldBackground[0].getPosition().x, m_worldBackground[m_numOfScreens - 1].getPosition().x + m_worldBackground.back().getSize().x);
+	for (size_t i = 0; i < m_astronauts.size(); i++)
+	{
+		if (m_astronauts[i]->isAlive()) 
+		{
+			if (m_astronauts[i]->getPosition().x < worldData.first)
+			{
+				m_astronauts[i]->setPosition(sf::Vector2f(worldData.second - m_astronauts[i]->getSize().x, m_astronauts[i]->getPosition().y));
+			}
+			else if (m_astronauts[i]->getPosition().x + m_astronauts[i]->getSize().x > worldData.second)
+			{
+				m_astronauts[i]->setPosition(sf::Vector2f(worldData.first + m_astronauts[i]->getSize().x, m_astronauts[i]->getPosition().y));
+			}
+		}
+	}
+
+	for (size_t i = 0; i < m_abductors.size(); i++)
+	{
+		if (m_abductors[i]->isAlive())
+		{
+			if (m_abductors[i]->getPosition().x < worldData.first)
+			{
+				m_abductors[i]->setPosition(sf::Vector2f(worldData.second - m_abductors[i]->getSize().x, m_abductors[i]->getPosition().y));
+			}
+			else if (m_abductors[i]->getPosition().x + m_abductors[i]->getSize().x > worldData.second)
+			{
+				m_abductors[i]->setPosition(sf::Vector2f(worldData.first + m_abductors[i]->getSize().x, m_abductors[i]->getPosition().y));
+			}
+		}
+	}
+
+	for (size_t i = 0; i < m_mutants.size(); i++)
+	{
+		if (m_mutants[i]->getPosition().x < worldData.first)
+		{
+			m_mutants[i]->setPosition(sf::Vector2f(worldData.second - m_mutants[i]->getSize().x, m_mutants[i]->getPosition().y));
+		}
+		else if (m_mutants[i]->getPosition().x + m_mutants[i]->getSize().x > worldData.second)
+		{
+			m_mutants[i]->setPosition(sf::Vector2f(worldData.first + m_mutants[i]->getSize().x, m_mutants[i]->getPosition().y));
+		}
+	}
+
+	for (size_t i = 0; i < m_nests.size(); i++)
+	{
+		if (m_nests[i]->getPosition().x < worldData.first)
+		{
+			m_nests[i]->setPosition(sf::Vector2f(worldData.second - m_nests[i]->getSize().x, m_nests[i]->getPosition().y));
+		}
+		else if (m_nests[i]->getPosition().x + m_nests[i]->getSize().x > worldData.second)
+		{
+			m_nests[i]->setPosition(sf::Vector2f(worldData.first + m_nests[i]->getSize().x, m_nests[i]->getPosition().y));
 		}
 	}
 }
@@ -493,8 +602,6 @@ void Game::render(sf::RenderWindow &renderer)
 	{
 		renderer.draw(m_worldBackground[i]);
 	}
-	//Debug screen rect
-	//renderer.draw(screenRect);
 
 	m_playerShip.render(renderer);
 
@@ -523,9 +630,6 @@ void Game::render(sf::RenderWindow &renderer)
 	//Render mini-map
 	renderer.setView(m_camera->getRadar());
 
-	//Debug screen rect
-	//renderer.draw(screenRect);
-
 	for (size_t i = 0; i < m_worldBackground.size(); i++)
 	{
 		renderer.draw(m_worldBackground[i]);
@@ -548,7 +652,7 @@ void Game::render(sf::RenderWindow &renderer)
 	for (size_t i = 0; i < m_mutants.size(); i++)
 	{
 		if (m_mutants[i]->isAlive())
-			m_mutants[i]->render(renderer);
+			m_mutants[i]->renderRadar(renderer);
 	}
 
 	for (size_t i = 0; i < m_nests.size(); i++)

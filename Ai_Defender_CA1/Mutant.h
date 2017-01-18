@@ -4,6 +4,13 @@
 #include "AiStates.h"
 #include "ProjectileManager.h"
 
+
+//! Mutant Class.
+/*!
+	This is a very aggressive alien as it will once spawned actively search for the player and won't stop till it is destroyed.
+	It will swarm with nearby mutants as it seeks for the player.
+*/
+
 class Mutant
 {
 private:
@@ -16,6 +23,10 @@ private:
 	bool m_alive;
 	ProjectileManager projMan;
 	AiState m_state;
+
+	sf::Texture m_mutantTex;
+	sf::Sprite m_mutantSprite;
+
 
 public:
 	Mutant();

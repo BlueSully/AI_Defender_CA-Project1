@@ -1,5 +1,12 @@
 #pragma once
 #include "Player.h"
+
+//! Camera Class.
+/*!
+	The Camera is used to follow the Player character across the world.
+	It is also used to draw the radar.
+*/
+
 class Camera
 {
 private:

@@ -12,6 +12,15 @@ Mutant::Mutant(sf::Vector2f position, sf::Vector2f velocity) : m_state(SEEK), m_
 	m_boundingBox.setFillColor(sf::Color::Magenta);
 
 	m_acceleration = sf::Vector2f(0, 0);
+
+	if (!m_mutantTex.loadFromFile("Resources/Mutant.png"))
+	{
+		std::cout << "File failed to load. Check folder location is correct" << std::endl;
+	}
+
+	m_mutantSprite.setTexture(m_mutantTex);
+	m_mutantSprite.setTextureRect(sf::IntRect(0, 0, 36, 32));
+
 }
 
 Mutant::~Mutant()
@@ -134,11 +143,17 @@ void Mutant::update(sf::Time deltaTime, sf::Vector2f playerPostion)
 	m_velocity = VectorHelper::truncate(m_velocity + steering, MAX_VELOCITY);
 
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
-
+	m_mutantSprite.setPosition(m_boundingBox.getPosition());
 	m_acceleration = sf::Vector2f(0, 0);
 }
 
 void Mutant::render(sf::RenderWindow & renderer)
+{
+	renderer.draw(m_mutantSprite);
+	//projMan.Render(renderer);
+}
+
+void Mutant::renderRadar(sf::RenderWindow & renderer)
 {
 	renderer.draw(m_boundingBox);
 	projMan.Render(renderer);
