@@ -15,6 +15,10 @@ private:
 
 	AiState m_state;
 
+	sf::Texture m_mutantTex;
+	sf::Sprite m_mutantSprite;
+
+
 public:
 	Mutant();
 	Mutant(sf::Vector2f position, sf::Vector2f velocity);
@@ -37,5 +41,6 @@ public:
 	void update(sf::Time deltaTime, sf::Vector2f playerPostion);
 
 	void render(sf::RenderWindow & renderer);
+	void renderRadar(sf::RenderWindow & renderer);
 };
 

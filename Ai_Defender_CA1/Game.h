@@ -8,7 +8,6 @@
 #include <vector>
 #include "MathFunction.h"
 
-
 using namespace std;
 
 class Game
@@ -22,7 +21,6 @@ private:
 
 	sf::RenderWindow * m_windowScreen;
 
-	sf::RectangleShape screenRect;
 	Camera * m_camera;
 	sf::View m_minimapView;
 
@@ -59,6 +57,7 @@ public:
 	//Methods
 	void update();
 	void cameraWorldWrapping();
+	void warpingEntities();
 	void render(sf::RenderWindow &renderer);
 };
 

@@ -22,6 +22,7 @@ Abductor::Abductor()
 	m_position = m_boundingBox.getPosition();
 	m_velocity = getDirection();
 	m_acceleration = sf::Vector2f(0, 0);
+
 	if (!m_abductorText.loadFromFile("Resources/Abductor.png"))
 	{
 		std::cout << "File failed to load. Check folder location is correct" << std::endl;
@@ -379,7 +380,6 @@ void Abductor::animate(sf::Time elapsedTime)
 		m_timer = 0;
 		m_abductorSprite.setTextureRect(sf::IntRect(0, 0, 36, 32));
 	}
-
 }
 
 void Abductor::boundaryResponse()

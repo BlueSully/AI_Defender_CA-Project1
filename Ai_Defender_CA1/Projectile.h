@@ -54,6 +54,8 @@ public:
 	void explosionAnimation();
 
 	sf::CircleShape getRadius();
+	void setAlive(bool value);
+	bool getAlive() const;
 	sf::Vector2f getPosition() const;
 	sf::Vector2f getSize() const;
 	void collisionCheck();
