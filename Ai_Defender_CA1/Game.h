@@ -59,7 +59,7 @@ public:
 
 	bool collisionChecker();//!<Will compare enemy lasers and missiles to see if any hit the player.
 
-	void update();/**< game update loop that runs the game*/
+	bool update();/**< game update loop that runs the game*/
 	void cameraWorldWrapping();/**< When player hits end of the world either side teleport to opposite side and anything on screen with him*/
 	void warpingEntities();/**< Teleports any entities that goes past the world bounds to the opposite side*/
 	void render(sf::RenderWindow &renderer);/**< renders entities also handles drawing the mini-map */

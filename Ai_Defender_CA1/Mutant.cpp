@@ -158,9 +158,7 @@ void Mutant::renderRadar(sf::RenderWindow & renderer)
 	renderer.draw(m_boundingBox);
 	projMan.Render(renderer);
 }
-void Mutant::renderRadar(sf::RenderWindow & renderer)
+void Mutant::setLaserAlive(bool value, int index)
 {
-
-	renderer.draw(m_boundingBox);
-	projMan.Render(renderer);
+	projMan.setAlive(value, index);
 }
