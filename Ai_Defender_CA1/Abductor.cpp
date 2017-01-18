@@ -10,7 +10,7 @@ Abductor::Abductor()
 	m_abducteeId(-1)
 {
 	m_boundingBox.setPosition(sf::Vector2f(0, 300));
-	m_boundingBox.setSize(sf::Vector2f(32, 32));
+	m_boundingBox.setSize(sf::Vector2f(36, 32));
 	m_boundingBox.setFillColor(sf::Color::Red);
 
 	m_attackRangeBox.setFillColor(sf::Color(125, 50, 0, 175));
@@ -19,6 +19,13 @@ Abductor::Abductor()
 	m_position = m_boundingBox.getPosition();
 	m_velocity = getDirection();
 	m_acceleration = sf::Vector2f(0, 0);
+	if (!m_abductorText.loadFromFile("Resources/Abductor.png"))
+	{
+		std::cout << "File failed to load. Check folder location is correct" << std::endl;
+	}
+
+	m_abductorSprite.setTexture(m_abductorText);
+	m_abductorSprite.setTextureRect(sf::IntRect(0, 0, 36, 32));
 }
 
 Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize, int id, float speed)
@@ -31,7 +38,7 @@ Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize, int id, float
 	m_abducteeId(-1)
 {
 	m_boundingBox.setPosition(position);
-	m_boundingBox.setSize(sf::Vector2f(32, 32));
+	m_boundingBox.setSize(sf::Vector2f(36, 32));
 	m_boundingBox.setFillColor(sf::Color::Red);
 	
 	m_attackRangeBox.setFillColor(sf::Color(125, 50, 0, 175));
@@ -49,6 +56,15 @@ Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize, int id, float
 	m_velocity = getDirection();
 	m_acceleration = sf::Vector2f(0, 0);
 	m_position = m_boundingBox.getPosition();
+
+	if (!m_abductorText.loadFromFile("Resources/Abductor.png"))
+	{
+		std::cout << "File failed to load. Check folder location is correct" << std::endl;
+	}
+
+	m_abductorSprite.setTexture(m_abductorText);
+	m_abductorSprite.setTextureRect(sf::IntRect(0, 0, 36, 32));
+
 }
 
 Abductor::~Abductor()
@@ -325,7 +341,27 @@ void Abductor::patrol(sf::Time deltaTime)
 
 void Abductor::attack(sf::RectangleShape target)
 {
-	//std::cout << "In Range " << std::endl;
+	if (target.getPosition().x < m_boundingBox.getPosition().x)
+	{
+		projMan.addLaser(true, m_boundingBox.getPosition(), m_velocity.x, 3, true);
+	}
+	else
+	{
+		projMan.addLaser(false, m_boundingBox.getPosition(), m_velocity.x, 3, true);
+	}
+}
+
+
+
+void Abductor::animate(sf::Time elapsedTime)
+{
+	m_timer += elapsedTime.asSeconds();
+	if (m_timer >= 1)
+	{
+		m_timer = 0;
+		m_abductorSprite.setTextureRect(sf::IntRect(0, 0, 36, 32));
+	}
+
 }
 
 void Abductor::boundaryResponse()
@@ -346,6 +382,7 @@ void Abductor::boundaryResponse()
 
 void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 {
+	
 	switch (m_state)
 	{
 	case ABDUCTING:
@@ -375,7 +412,9 @@ void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 
 	//Move Radius with Abductor as the abductor moves
 	m_attackRangeBox.setPosition(m_boundingBox.getPosition() - sf::Vector2f(static_cast<float>(32 * (m_attackRange / 2)), static_cast<float>(32 * (m_attackRange / 2))));
-
+	//Sprite and Animation 
+	m_abductorSprite.setPosition(m_boundingBox.getPosition());
+	animate(deltaTime);
 	//Can Abductor Attack
 	if (m_canAttack == false)
 	{
@@ -383,6 +422,7 @@ void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 		if (m_timeTillNextAttack > 2.0f)
 		{
 			m_canAttack = true;
+			m_timeTillNextAttack = 0;
 		}
 	}
 	else if (m_canAttack == true)
@@ -396,6 +436,7 @@ void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 	}
 
 	boundaryResponse();
+	projMan.Update(deltaTime, playerBoundingBox);
 
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
 	m_position = m_boundingBox.getPosition();
@@ -403,6 +444,13 @@ void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 
 void Abductor::render(sf::RenderWindow & renderer)
 {
-	renderer.draw(m_boundingBox);
+	//renderer.draw(m_boundingBox);
 	//renderer.draw(m_attackRangeBox);
+	renderer.draw(m_abductorSprite);
+	projMan.Render(renderer);
+}
+void Abductor::renderRadar(sf::RenderWindow & renderer)
+{
+	renderer.draw(m_boundingBox);
+	projMan.Render(renderer);
 }

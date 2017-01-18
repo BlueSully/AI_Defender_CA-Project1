@@ -8,33 +8,33 @@ ProjectileManager::~ProjectileManager()
 {
 }
 
-void ProjectileManager::Update(sf::Time deltaTime)
+void ProjectileManager::Update(sf::Time deltaTime, sf::RectangleShape playerBox)
 {
 	for (int i = 0; i < m_projectiles.size(); i++) 
 	{
-		if (m_projectiles.at(i).Update(deltaTime));
-		else if(!m_projectiles.at(i).Update(deltaTime))
+		if (m_projectiles.at(i).Update(deltaTime, playerBox));
+		else if(!m_projectiles.at(i).Update(deltaTime, playerBox))
 		{
 			m_projectiles.erase(m_projectiles.begin() + i);
 		}
 	}
 }
 
-void ProjectileManager::Update(sf::Time deltaTime, sf::RectangleShape playerBox)
+void ProjectileManager::UpdateMissile(sf::Time deltaTime, sf::RectangleShape playerBox)
 {
 	for (int i = 0; i < m_projectiles.size(); i++)
 	{
-		if (m_projectiles.at(i).Update(deltaTime, playerBox));
-		else if (!m_projectiles.at(i).Update(deltaTime, playerBox))
+		if (m_projectiles.at(i).UpdateMissile(deltaTime, playerBox));
+		else if (!m_projectiles.at(i).UpdateMissile(deltaTime, playerBox))
 		{
 			m_projectiles.erase(m_projectiles.begin() + i);
 		}
 	}
 }
 
-void ProjectileManager::addLaser(bool isLeft, sf::Vector2f playerPos, float playerXVelocity, int ttl)
+void ProjectileManager::addLaser(bool isLeft, sf::Vector2f playerPos, float playerXVelocity, int ttl,bool isEnemyBullet)
 {
-	m_projectiles.push_back(Projectile(isLeft, playerPos, playerXVelocity, ttl)); 
+	m_projectiles.push_back(Projectile(isLeft, playerPos, playerXVelocity, ttl, isEnemyBullet));
 }
 
 void ProjectileManager::addMissile(sf::RectangleShape playerPos, sf::Vector2f nestPos, int ttl)
@@ -42,12 +42,22 @@ void ProjectileManager::addMissile(sf::RectangleShape playerPos, sf::Vector2f ne
 	m_projectiles.push_back(Projectile(playerPos, nestPos, ttl));
 }
 
+float ProjectileManager::getProjNumber()
+{
+	return m_projectiles.size();
+}
 void ProjectileManager::Render(sf::RenderWindow & renderer)
 {
 	for (int i = 0; i < m_projectiles.size(); i++)
 	{
 		m_projectiles.at(i).Render(renderer);
 	}
+}
+
+
+std::vector<Projectile> ProjectileManager::getProjList() const
+{
+	return m_projectiles;
 }
 
 

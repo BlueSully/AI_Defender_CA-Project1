@@ -3,6 +3,7 @@
 #include "Astronaut.h"
 #include "Camera.h"
 #include "Abductor.h"
+#include "Nest.h"
 #include <vector>
 #include "MathFunction.h"
 
@@ -15,6 +16,7 @@ private:
 	Player m_playerShip;
 	vector<Astronaut *> m_astronauts;
 	vector<Abductor *> m_abductors;
+	vector<Nest *> m_nests;
 
 	sf::RenderWindow * m_windowScreen;
 	Camera * m_camera;
@@ -41,7 +43,10 @@ public:
 	bool isGameRunning() const;
 	void getInput();
 	void manageHumans(sf::Time elapsedTime);
+	void manageNests(sf::Time elapsedTime);
 	void manageAbductors(sf::Time elapsedTime);
+
+	bool collisionChecker();
 
 	//Methods
 	void update();

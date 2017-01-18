@@ -19,19 +19,23 @@ private:
 	bool m_jumpReady;
 	int m_smartBombNum;
 	int m_resetTime;
-	float timer;
+	float m_timer;
 	bool m_isLeft;
 
 	float m_orientation;
 	sf::RectangleShape m_boundingBox;
 	PlayerStates m_playerState;
 	ProjectileManager projMan;
+	sf::Texture m_playerText;
+	sf::Sprite m_playerSprite;
 public:
 	Player();
 	~Player();
 
 	void processInputs(sf::Event *evt);
 	sf::Vector2f getPosition() const;
+	sf::Vector2f getSize() const;
+	vector<Projectile> getProjList() const;
 	void setPosition(sf::Vector2f pos);
 	sf::RectangleShape getBoundingBox() const;
 
@@ -40,6 +44,7 @@ public:
 	void activateSmartBomb();
 	void update(sf::Time deltaTime);
 	void render(sf::RenderWindow &renderer);
+	void renderRadar(sf::RenderWindow & renderer);
 	void render(sf::RenderWindow &renderer, float scale);
 };
 

@@ -4,7 +4,6 @@ Game::Game() : m_isGameRunning(true), m_numOfScreens(5)
 {
 
 }
-
 Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 {
 	srand(static_cast<unsigned int>(time(NULL)));
@@ -41,8 +40,8 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 	m_camera->setTargetPlayer(&m_playerShip);
 
-	const int minPosition = m_worldBackground[0].getPosition().x;
-	const int maxPosition = m_worldBackground[m_numOfScreens - 1].getPosition().x;
+	const int minPosition = static_cast<const int>(m_worldBackground[0].getPosition().x);
+	const int maxPosition = static_cast<const int>(m_worldBackground[m_numOfScreens - 1].getPosition().x);
 
 	for (int i = 0; i < 5; i++)
 	{
@@ -53,15 +52,19 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 		m_astronauts.push_back(new Astronaut(positon, sf::Vector2f(0, 0)));
 	}
 
-	for (size_t i = 0; i < 5; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		int locationX = minPosition + (rand() * (int)(maxPosition - minPosition) / RAND_MAX);
 
 		m_abductors.push_back(new Abductor(sf::Vector2f(locationX, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i, 32));
 		m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
-		m_abductors[i]->setColour(sf::Color(0, rand() % 235 + 10, rand() % 235 + 10));
 	}
 	
+	for (int i = 0; i < 4; i++)
+	{
+		m_nests.push_back(new Nest(sf::Vector2f(300 * i, m_windowScreen->getSize().y/2), sf::Vector2f(50,40)));
+		m_nests[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
+	}
 }
 
 Game::~Game()
@@ -151,6 +154,14 @@ void Game::manageHumans(sf::Time elapsedTime)
 	}
 }
 
+void Game::manageNests(sf::Time elapsedTime)
+{
+	for (size_t i = 0; i < m_nests.size(); i++)
+	{
+		m_nests[i]->update(elapsedTime, m_playerShip.getBoundingBox());
+	}
+}
+
 //Function to Manage abductors within gameworld
 void Game::manageAbductors(sf::Time elapsedTime)
 {
@@ -204,7 +215,26 @@ void Game::manageAbductors(sf::Time elapsedTime)
 		m_abductors[i]->update(elapsedTime, m_playerShip.getBoundingBox());
 	}
 }
+bool Game::collisionChecker()
+{
+	for (size_t i = 0; i < m_playerShip.getProjList().size(); i++)
+	{
+		for (size_t j = 0; j < m_abductors.size(); j++)
+		{
 
+			if (CollisionHelper::RectangleCollision(m_playerShip.getProjList()[i].getPosition(), m_playerShip.getProjList()[i].getSize(), m_abductors[j]->getPosition(), m_abductors[j]->getSize()))
+				return true;
+		}
+		for (size_t k = 0; k < m_nests.size(); k++)
+		{
+
+			if (CollisionHelper::RectangleCollision(m_playerShip.getProjList()[i].getPosition(), m_playerShip.getProjList()[i].getSize(), m_nests[k]->getPosition(), m_nests[k]->getSize()))
+				return true;
+		}
+	}
+	return false;
+
+}
 void Game::update()
 {
 	sf::Time elapsedTime = m_clock.restart();
@@ -217,11 +247,16 @@ void Game::update()
 	m_playerShip.update(elapsedTime);
 
 	manageAbductors(elapsedTime);
+
 	manageHumans(elapsedTime);
-	cout << "0: " << m_abductors[0]->getAbucteeId()
-		 << " 1: " << m_abductors[1]->getAbucteeId()
-		 << " 2: " << m_abductors[2]->getAbucteeId()
-		 << " 3: " << m_abductors[3]->getAbucteeId() << endl;
+	manageNests(elapsedTime);
+
+
+	if (collisionChecker())
+	{
+		std::cout << "expense" << std::endl;
+	}
+	
 }
 
 //used to create a seamless transition from side to side as the player travels
@@ -241,6 +276,7 @@ void Game::cameraWorldWrapping()
 
 void Game::warpingOtherEntities()
 {
+
 }
 
 void Game::render(sf::RenderWindow &renderer)
@@ -266,6 +302,10 @@ void Game::render(sf::RenderWindow &renderer)
 	{
 		m_abductors[i]->render(renderer);
 	}
+	for (size_t i = 0; i < m_nests.size(); i++)
+	{
+		m_nests[i]->render(renderer);
+	}
 
 	//Render mini-map
 	renderer.setView(m_camera->getRadar());
@@ -275,17 +315,21 @@ void Game::render(sf::RenderWindow &renderer)
 		renderer.draw(m_worldBackground[i]);
 	}
 
-	m_playerShip.render(renderer);
+	m_playerShip.renderRadar(renderer);
 
 	for (size_t i = 0; i < m_astronauts.size(); i++)
 	{
-		m_astronauts[i]->render(renderer);
+		m_astronauts[i]->renderRadar(renderer);
 	}
 
 	for (size_t i = 0; i < m_abductors.size(); i++)
 	{
-		m_abductors[i]->render(renderer);
+		m_abductors[i]->renderRadar(renderer);
 	}
+	//for (size_t i = 0; i < m_nests.size(); i++)
+	//{
+	//	m_nests[i]->renderRadar(renderer);
+	//}
 
 	renderer.display();
 }

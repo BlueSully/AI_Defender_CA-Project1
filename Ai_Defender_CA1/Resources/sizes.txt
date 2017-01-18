@@ -1,0 +1,9 @@
+Player- 60x24
+Missile-24x12
+Astronaut-12x32
+Nest-44x16
+Abductor-36x32
+Mutant-36x32
+Explosion- 32x32
+PickUp-20x16
+Laser-36x5
