@@ -25,7 +25,10 @@ private:
 	const float MAX_VELOCITY = 10;
 	const float CIRCLEDISTANCE = 6;
 	const float CIRCLE_RADIUS = 8;
-	const float ANGLECHANGE = 1;
+	const float ANGLECHANGE = 1000;
+
+	sf::Texture m_astroText;
+	sf::Sprite m_astroSprite;
 
 	AiState m_state;
 	bool m_beingAbducted;
@@ -60,5 +63,6 @@ public:
 	void boundaryResponse(sf::Vector2f worldSize);
 	void update(sf::Time elapsedTime);
 	void render(sf::RenderWindow & renderer);
+	void renderRadar(sf::RenderWindow & renderer);
 };
 

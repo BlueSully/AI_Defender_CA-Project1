@@ -5,23 +5,37 @@ Astronaut::Astronaut() : m_beingAbducted(false), m_abductorId(-1), m_alive(true)
 
 	//Gets Called when player is Created
 	m_boundingBox.setFillColor(sf::Color::White);
-	m_boundingBox.setSize(sf::Vector2f(16, 32));
+	m_boundingBox.setSize(sf::Vector2f(12, 32));
 	m_velocity = sf::Vector2f(0, 0);
 	m_state = AiState::WANDER;
 	m_wanderAngle = 0;
+	if (!m_astroText.loadFromFile("Resources/Astronaut.png"))
+	{
+		std::cout << "File failed to load. Check folder location is correct" << std::endl;
+	}
+
+	m_astroSprite.setTexture(m_astroText);
+	m_astroSprite.setTextureRect(sf::IntRect(0, 0, 12, 32));
 }
 
 Astronaut::Astronaut(sf::Vector2f position, sf::Vector2f veclocity) : m_beingAbducted(false), m_abductorId(-1), m_alive(true)
 {
 	//Gets Called when player is Created
 	m_boundingBox.setFillColor(sf::Color::White);
-	m_boundingBox.setSize(sf::Vector2f(16, 32));
+	m_boundingBox.setSize(sf::Vector2f(12, 32));
 	m_velocity = sf::Vector2f(0, 0);
 	m_state = AiState::WANDER;
 	m_wanderAngle = 0;
 
 	m_boundingBox.setPosition(sf::Vector2f(position.x, (position.y - m_boundingBox.getSize().y) - 10));
 	m_velocity = veclocity;
+	if (!m_astroText.loadFromFile("Resources/Astronaut.png"))
+	{
+		std::cout << "File failed to load. Check folder location is correct" << std::endl;
+	}
+
+	m_astroSprite.setTexture(m_astroText);
+	m_astroSprite.setTextureRect(sf::IntRect(0, 0, 12, 32));
 }
 
 Astronaut::~Astronaut()
@@ -161,7 +175,7 @@ void Astronaut::update(sf::Time elapsedTime)
 	default:
 		break;
 	}
-
+	m_astroSprite.setPosition(m_boundingBox.getPosition());
 	if (m_state != GRABBED) 
 	{
 		m_velocity = VectorHelper::truncate(m_velocity + m_steering, MAX_VELOCITY);
@@ -188,5 +202,11 @@ void Astronaut::boundaryResponse(sf::Vector2f worldSize)
 
 void Astronaut::render(sf::RenderWindow & renderer)
 {
+	//renderer.draw(m_boundingBox);
+	renderer.draw(m_astroSprite);
+}
+void Astronaut::renderRadar(sf::RenderWindow & renderer)
+{
 	renderer.draw(m_boundingBox);
+	
 }

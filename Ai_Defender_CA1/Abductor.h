@@ -3,6 +3,7 @@
 #include "MathFunction.h"
 #include <vector>
 #include "AiStates.h"
+#include "ProjectileManager.h"
 
 using namespace std;
 
@@ -15,6 +16,8 @@ private:
 	sf::RectangleShape m_worldBounds;//World data
 	sf::RectangleShape m_screenBounds;//ScreenData
 
+	ProjectileManager projMan;
+
 	sf::Vector2f m_position;
 	sf::Vector2f m_velocity;
 	sf::Vector2f m_acceleration;
@@ -23,8 +26,12 @@ private:
 
 	sf::Vertex patrolLine[2];
 
+	sf::Texture m_abductorText;
+	sf::Sprite m_abductorSprite;
+
 	float m_speed;
 	float m_timeTillNextAttack;
+	float m_timer;
 	int m_attackRange;
 	int m_abducteeId;
 
@@ -77,8 +84,11 @@ public:
 
 	void attack(sf::RectangleShape target);
 
+	void animate(sf::Time elapsedTime);
+
 	void boundaryResponse();
 
 	void render(sf::RenderWindow & renderer);
+	void renderRadar(sf::RenderWindow & renderer);
 };
 

@@ -45,6 +45,9 @@
     <ClCompile Include="Mutant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Nest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -72,6 +75,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AiStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Nest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MathFunction.h">

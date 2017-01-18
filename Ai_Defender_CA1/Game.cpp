@@ -4,7 +4,6 @@ Game::Game() : m_isGameRunning(true), m_numOfScreens(5)
 {
 
 }
-
 Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 {
 	srand(static_cast<unsigned int>(time(NULL)));
@@ -52,18 +51,13 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 		m_astronauts.push_back(new Astronaut(positon, sf::Vector2f(0, 0)));
 	}
 
+	for (int i = 0; i < 4; i++)
+	{
+		m_nests.push_back(new Nest(sf::Vector2f(300 * i, m_windowScreen->getSize().y/2), sf::Vector2f(50,40)));
+	
 	//for (size_t i = 0; i < 5; i++)
 	//{
 	//	//float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
-
-	//	float locationX = 100 * i;
-
-	//	m_abductors.push_back(new Abductor(sf::Vector2f(locationX, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i, 64));
-	//	m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
-	//}
-	//
-	//for (size_t i = 0; i < 5; i++)
-	//{
 	//	m_mutants.push_back(new Mutant(sf::Vector2f(250 * i, 200 + i * 100), sf::Vector2f(20, 0)));
 	//}
 }
@@ -177,6 +171,14 @@ void Game::manageMutants(sf::Time elapsedTime)
 	}
 }
 
+void Game::manageNests(sf::Time elapsedTime)
+{
+	for (size_t i = 0; i < m_nests.size(); i++)
+	{
+		m_nests[i]->update(elapsedTime, m_playerShip.getBoundingBox());
+	}
+}
+
 //Function to Manage abductors within gameworld
 void Game::manageAbductors(sf::Time elapsedTime)
 {
@@ -247,8 +249,26 @@ void Game::manageAbductors(sf::Time elapsedTime)
 			m_abductors[i]->update(elapsedTime, m_playerShip.getBoundingBox());
 		}
 	}
-}
+bool Game::collisionChecker()
+{
+	for (size_t i = 0; i < m_playerShip.getProjList().size(); i++)
+	{
+		for (size_t j = 0; j < m_abductors.size(); j++)
+		{
 
+			if (CollisionHelper::RectangleCollision(m_playerShip.getProjList()[i].getPosition(), m_playerShip.getProjList()[i].getSize(), m_abductors[j]->getPosition(), m_abductors[j]->getSize()))
+				return true;
+		}
+		for (size_t k = 0; k < m_nests.size(); k++)
+		{
+
+			if (CollisionHelper::RectangleCollision(m_playerShip.getProjList()[i].getPosition(), m_playerShip.getProjList()[i].getSize(), m_nests[k]->getPosition(), m_nests[k]->getSize()))
+				return true;
+		}
+	}
+	return false;
+
+}
 void Game::update()
 {
 	sf::Time elapsedTime = m_clock.restart();
@@ -263,6 +283,14 @@ void Game::update()
 	//manageAbductors(elapsedTime);
 	//manageMutants(elapsedTime);
 	manageHumans(elapsedTime);
+	manageNests(elapsedTime);
+
+
+	if (collisionChecker())
+	{
+		std::cout << "expense" << std::endl;
+	}
+	
 }
 
 //Used to create a seamless transition from side to side as the player travels on screen
@@ -331,6 +359,10 @@ void Game::render(sf::RenderWindow &renderer)
 		if (m_abductors[i]->isAlive())
 			m_abductors[i]->render(renderer);
 	}
+	for (size_t i = 0; i < m_nests.size(); i++)
+	{
+		m_nests[i]->render(renderer);
+	}
 
 	for (size_t i = 0; i < m_mutants.size(); i++)
 	{
@@ -347,19 +379,19 @@ void Game::render(sf::RenderWindow &renderer)
 	}
 
 	renderer.draw(screenRect);
+	m_playerShip.renderRadar(renderer);
 
-	m_playerShip.render(renderer);
 
 	for (size_t i = 0; i < m_astronauts.size(); i++)
 	{
 		if (m_astronauts[i]->isAlive())
-			m_astronauts[i]->render(renderer);
+		m_astronauts[i]->renderRadar(renderer);
 	}
 
 	for (size_t i = 0; i < m_abductors.size(); i++)
 	{
 		if (m_abductors[i]->isAlive())
-			m_abductors[i]->render(renderer);
+		m_abductors[i]->renderRadar(renderer);
 	}
 
 	for (size_t i = 0; i < m_mutants.size(); i++)
@@ -367,6 +399,10 @@ void Game::render(sf::RenderWindow &renderer)
 		if (m_mutants[i]->isAlive())
 			m_mutants[i]->render(renderer);
 	}
+	//for (size_t i = 0; i < m_nests.size(); i++)
+	//{
+	//	m_nests[i]->renderRadar(renderer);
+	//}
 
 	renderer.display();
 }
