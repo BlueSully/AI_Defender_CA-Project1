@@ -39,7 +39,7 @@ public:
 	~Projectile();
 
 
-	bool Update(sf::Time deltaTime, sf::RectangleShape);
+	bool Update(sf::Time deltaTime);
 
 	bool UpdateMissile(sf::Time deltaTime, sf::RectangleShape playerBox);
 
@@ -58,7 +58,7 @@ public:
 	sf::Vector2f getSize() const;
 	void setAlive(bool value);
 	bool isAlive() const;
-	void collisionCheck();
+	//void collisionCheck();
 
 	
 

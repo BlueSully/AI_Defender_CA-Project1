@@ -86,7 +86,10 @@ sf::Vector2f & Abductor::getPosition()
 {
 	return m_position;
 }
-
+std::vector<Projectile> Abductor::getProjList() const
+{
+	return projMan.getProjList();
+}
 sf::RectangleShape Abductor::getBoundingBox() const
 {
 	return m_boundingBox;
@@ -459,7 +462,7 @@ void Abductor::update(sf::Time deltaTime, sf::RectangleShape playerBoundingBox)
 	}
 
 	boundaryResponse();
-	projMan.Update(deltaTime, playerBoundingBox);
+	projMan.Update(deltaTime);
 
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
 	m_position = m_boundingBox.getPosition();
