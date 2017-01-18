@@ -3,6 +3,13 @@
 #include "MathFunction.h"
 #include "AiStates.h"
 
+
+//! Mutant Class.
+/*!
+	This is a very aggressive alien as it will once spawned actively search for the player and won't stop till it is destroyed.
+	It will swarm with nearby mutants as it seeks for the player.
+*/
+
 class Mutant
 {
 private:

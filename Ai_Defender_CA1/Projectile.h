@@ -4,13 +4,13 @@
 #include <iostream>
 #include "MathFunction.h"
 
+
+
 class Projectile
 {
 private:
 
 	sf::Vector2f m_velocity;
-
-
 
 	sf::RectangleShape m_playerBox;
 	sf::Vector2f m_size;

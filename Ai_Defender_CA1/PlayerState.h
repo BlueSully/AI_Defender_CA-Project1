@@ -1,4 +1,9 @@
 #pragma once
+
+//! PlayerStates Class.
+/*!
+	An enum class that will hold the actions that the player can do within the game
+*/
 enum PlayerStates 
 {
 	IDLE,

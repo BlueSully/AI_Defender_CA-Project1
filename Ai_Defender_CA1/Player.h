@@ -5,6 +5,14 @@
 #include "MathFunction.h"
 #include "ProjectileManager.h"
 
+//! Player Class.
+/*!
+	Users will have control of this entity with the WASD keys which they can use to move around the world with.
+	The player has special abilities like Hyperjump and Smartbombs.
+	Which hyperjump the player will teleport to a random location
+	and smartbomb will kill everything on the screen.
+*/
+
 class Player
 {
 private:
@@ -28,6 +36,7 @@ private:
 	ProjectileManager projMan;
 	sf::Texture m_playerText;
 	sf::Sprite m_playerSprite;
+
 public:
 	Player();
 	~Player();

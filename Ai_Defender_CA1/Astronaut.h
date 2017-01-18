@@ -5,6 +5,11 @@
 
 using namespace std;
 
+//! Astronaut Class.
+/*!
+	This is a Human entity that will aimlessly wander the bottom of the screen and must be protected by the player.
+	They will flee from abductors but are not fast enough to get away from them.
+*/
 class Astronaut
 {
 private:

@@ -5,6 +5,11 @@
 #include "AiStates.h"
 #include "ProjectileManager.h"
 
+//! Abductor Class.
+/*!
+This is an alien entity that will actively patrol the world until it gets in range of a astronaut which it will then start abducting them.
+Once a successful abduction is made the abductor will become a mutant.
+*/
 using namespace std;
 
 class Abductor
