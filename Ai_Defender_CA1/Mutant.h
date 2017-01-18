@@ -11,6 +11,7 @@ private:
 	sf::Vector2f m_acceleration;
 
 	const float MAX_VELOCITY = 128;
+	bool m_alive;
 
 	AiState m_state;
 
@@ -24,6 +25,9 @@ public:
 
 	sf::Vector2f getPosition() const;
 	void setPosition(sf::Vector2f value);
+
+	bool isAlive() const;
+	void setAlive(bool value);
 
 	sf::Vector2f seek(sf::Vector2f playerPostion);
 	void swarm(vector<Mutant *> mutantsList);

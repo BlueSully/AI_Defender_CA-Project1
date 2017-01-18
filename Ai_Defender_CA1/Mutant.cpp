@@ -39,6 +39,16 @@ void Mutant::setPosition(sf::Vector2f value)
 	m_boundingBox.setPosition(value);
 }
 
+bool Mutant::isAlive() const
+{
+	return m_alive;
+}
+
+void Mutant::setAlive(bool value)
+{
+	m_alive = value;
+}
+
 sf::Vector2f Mutant::seek(sf::Vector2f playerPostion)
 {
 	// Calculate the desired velocity

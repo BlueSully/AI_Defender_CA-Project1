@@ -28,6 +28,8 @@ private:
 	int m_attackRange;
 	int m_abducteeId;
 
+	bool m_spawnMutant;
+	bool m_alive;
 	bool m_canAttack;
 	bool m_grabbedAstronaut;
 
@@ -47,6 +49,9 @@ public:
 	void setAbducteeId(int astronnautId);
 	bool getGrabbedAstronaut() const;
 	void setGrabbedAstronaut(bool value);
+	bool canSpawnMutant() const;
+	bool isAlive() const;
+	void setAlive(bool value);
 
 	void setWorldRectangle(sf::Vector2f postion, sf::Vector2f size);
 	void setPosition(sf::Vector2f value);

@@ -1,6 +1,6 @@
 #include "Astronaut.h"
 
-Astronaut::Astronaut() : m_beingAbducted(false), m_abductorId(-1)
+Astronaut::Astronaut() : m_beingAbducted(false), m_abductorId(-1), m_alive(true)
 {
 
 	//Gets Called when player is Created
@@ -11,7 +11,7 @@ Astronaut::Astronaut() : m_beingAbducted(false), m_abductorId(-1)
 	m_wanderAngle = 0;
 }
 
-Astronaut::Astronaut(sf::Vector2f position, sf::Vector2f veclocity) : m_beingAbducted(false), m_abductorId(-1)
+Astronaut::Astronaut(sf::Vector2f position, sf::Vector2f veclocity) : m_beingAbducted(false), m_abductorId(-1), m_alive(true)
 {
 	//Gets Called when player is Created
 	m_boundingBox.setFillColor(sf::Color::White);
@@ -88,6 +88,16 @@ void Astronaut::setFollowTarget(sf::Vector2f & value, sf::Vector2f size)
 {
 	m_followTarget = &value;
 	m_followSize = size;
+}
+
+bool Astronaut::isAlive() const
+{
+	return m_alive;
+}
+
+void Astronaut::setAlive(bool value)
+{
+	m_alive = value;
 }
 
 sf::Vector2f Astronaut::wander()

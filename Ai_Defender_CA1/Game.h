@@ -42,6 +42,9 @@ public:
 	//Get Methods and Set methods
 	bool isGameRunning() const;
 	void getInput();
+
+	void createMutant(Abductor* abductor);
+
 	void manageHumans(sf::Time elapsedTime);
 	void manageMutants(sf::Time elapsedTime);
 	void manageAbductors(sf::Time elapsedTime);

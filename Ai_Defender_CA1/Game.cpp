@@ -46,26 +46,26 @@ Game::Game(sf::RenderWindow & window) : m_isGameRunning(true), m_numOfScreens(9)
 
 	for (int i = 0; i < 5; i++)
 	{
-		//Getting a random value between each side of the world
-		float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
-
+		//float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
+		float locationX = 300 * i;
 		sf::Vector2f positon = sf::Vector2f(locationX, (float)m_windowScreen->getSize().y);
 		m_astronauts.push_back(new Astronaut(positon, sf::Vector2f(0, 0)));
 	}
 
 	for (size_t i = 0; i < 5; i++)
 	{
-		float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
+		//float locationX = minPosition + (rand() * (float)(maxPosition - minPosition) / RAND_MAX);
 
-		m_abductors.push_back(new Abductor(sf::Vector2f(locationX, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i, 32));
+		float locationX = 100 * i;
+
+		m_abductors.push_back(new Abductor(sf::Vector2f(locationX, 300), sf::Vector2f(m_windowScreen->getSize()), (int)i, 64));
 		m_abductors[i]->setWorldRectangle(m_worldBackground[0].getPosition(), m_worldSize);
-		m_abductors[i]->setColour(sf::Color(0, rand() % 235 + 10, rand() % 235 + 10));
 	}
 	
-	for (size_t i = 0; i < 5; i++)
-	{
-		m_mutants.push_back(new Mutant(sf::Vector2f(250 * i, 200 + i * 100), sf::Vector2f(20, 0)));
-	}
+	//for (size_t i = 0; i < 5; i++)
+	//{
+	//	m_mutants.push_back(new Mutant(sf::Vector2f(250 * i, 200 + i * 100), sf::Vector2f(20, 0)));
+	//}
 }
 
 Game::~Game()
@@ -98,60 +98,73 @@ void Game::getInput()
 	}
 }
 
+void Game::createMutant(Abductor * abductor)
+{
+	if (abductor->getGrabbedAstronaut() && abductor->canSpawnMutant())
+	{
+		m_astronauts[abductor->getAbucteeId()]->setAlive(false);
+		abductor->setAlive(false);
+		m_mutants.push_back(new Mutant(abductor->getPosition(), sf::Vector2f(20, 0)));
+	}
+}
+
 //Function to Manage astronauts within gameworld
 void Game::manageHumans(sf::Time elapsedTime)
 {
 	float fleeingDistance = 300;
 	for (int i = 0; i < m_astronauts.size(); i++)
 	{
-		bool canWander = false;
-		std::map<int, float> alienDist;//humanDist : Get all distances to nearest humans
-		if (m_astronauts[i]->getState() != GRABBED)
+		if (m_astronauts[i]->isAlive())
 		{
-			m_astronauts[i]->boundaryResponse(m_worldSize);
-
-			for (int j = 0; j < m_abductors.size(); j++)
+			bool canWander = false;
+			std::map<int, float> alienDist;//humanDist : Get all distances to nearest humans
+			if (m_astronauts[i]->getState() != GRABBED)
 			{
-				float distance = VectorHelper::distanceBetweenTwoVectors(m_abductors[j]->getPosition(), m_astronauts[i]->getPosition());
+				m_astronauts[i]->boundaryResponse(m_worldSize);
 
-				alienDist[j] = distance;
-			}
-
-			if (alienDist.size() > 1)
-			{
-				std::pair<int, float> min = *min_element(alienDist.begin(), alienDist.end(), compareValues());
-
-				if (min.second < fleeingDistance)
+				for (int j = 0; j < m_abductors.size(); j++)
 				{
-					m_astronauts[i]->setState(FLEE);
-					m_astronauts[i]->setFleeTarget(&m_abductors[min.first]->getPosition());
-				}
-			}
+					float distance = VectorHelper::distanceBetweenTwoVectors(m_abductors[j]->getPosition(), m_astronauts[i]->getPosition());
 
-			//Check distances from aliens if any are within range don't go back to wandering
-			for (int i = 0; i < alienDist.size(); i++)
-			{
-				if (alienDist[i] > fleeingDistance)
+					alienDist[j] = distance;
+				}
+
+				if (alienDist.size() > 1)
 				{
-					canWander = true;
+					std::pair<int, float> min = *min_element(alienDist.begin(), alienDist.end(), compareValues());
+
+					if (min.second < fleeingDistance)
+					{
+						m_astronauts[i]->setState(FLEE);
+						m_astronauts[i]->setFleeTarget(&m_abductors[min.first]->getPosition());
+					}
 				}
-				else
+
+				//Check distances from aliens if any are within range don't go back to wandering
+				for (int i = 0; i < alienDist.size(); i++)
 				{
-					canWander = false;
-					break;
+					if (alienDist[i] > fleeingDistance)
+					{
+						canWander = true;
+					}
+					else
+					{
+						canWander = false;
+						break;
+					}
 				}
-			}
 
-			//if distance from pursuer is greater that the fleeing distance go back wandering
-			if (canWander)
-			{
-				m_astronauts[i]->setAbductorId(-1);
-				m_astronauts[i]->setBeingAbducted(false);
-				m_astronauts[i]->setState(WANDER);
-			}
+				//if distance from pursuer is greater that the fleeing distance go back wandering
+				if (canWander)
+				{
+					m_astronauts[i]->setAbductorId(-1);
+					m_astronauts[i]->setBeingAbducted(false);
+					m_astronauts[i]->setState(WANDER);
+				}
 
+			}
+			m_astronauts[i]->update(elapsedTime);
 		}
-		m_astronauts[i]->update(elapsedTime);
 	}
 }
 
@@ -162,8 +175,6 @@ void Game::manageMutants(sf::Time elapsedTime)
 		m_mutants[i]->update(elapsedTime, m_playerShip.getPosition());
 		m_mutants[i]->swarm(m_mutants);
 	}
-
-	cout << "MutV: " << m_mutants[0]->getVelocity().x << ' ' << m_mutants[0]->getVelocity().y << endl;
 }
 
 //Function to Manage abductors within gameworld
@@ -171,52 +182,59 @@ void Game::manageAbductors(sf::Time elapsedTime)
 {
 	for (int i = 0; i < m_abductors.size(); i++)
 	{
-		std::map<int, float> humanDist;//humanDist : Get all distances to nearest humans
-
-		if (m_abductors[i]->getState() != ABDUCTING) 
+		if (m_abductors[i]->canSpawnMutant() && m_abductors[i]->isAlive())
 		{
-			for (int j = 0; j < m_astronauts.size(); j++)//Look for nearest unmarked human
-			{
-				float distance = VectorHelper::distanceBetweenTwoVectors(m_abductors[i]->getPosition(), m_astronauts[j]->getPosition());
-
-				if (m_astronauts[j]->getBeingAbducted() == false)
-					humanDist[j] = distance;
-			}
+			createMutant(m_abductors[i]);
 		}
-
-		if (humanDist.size() >= 1 && m_abductors[i]->getState() != ABDUCTING)
+		else if (m_abductors[i]->isAlive())
 		{
-			std::pair<int, float> min = *min_element(humanDist.begin(), humanDist.end(), compareValues());
+			std::map<int, float> humanDist;//humanDist : Get all distances to nearest humans
 
-			if (min.second < 500 && !(m_astronauts[min.first]->getBeingAbducted()))//Marking unmarked human as targeted
+			if (m_abductors[i]->getState() != ABDUCTING)
 			{
-				m_abductors[i]->setState(ABDUCTING);
-				m_abductors[i]->setAbducteeId(min.first);
-				m_astronauts[min.first]->setBeingAbducted(true);
-				m_astronauts[min.first]->setAbductorId(i);
-			}
-		}
-
-		if (m_abductors[i]->getState() != ABDUCTING)
-		{
-			m_abductors[i]->flock(&m_abductors);//flock if not grabbing human
-		}
-		else if (m_abductors[i]->getState() == ABDUCTING)
-		{
-			if (m_abductors[i]->getAbucteeId() >= 0 && m_abductors[i]->getAbucteeId() < m_astronauts.size()) //Making sure the id isn't a junk value or out of bounds
-			{
-				int id = m_abductors[i]->getAbucteeId();
-				m_abductors[i]->abduct(elapsedTime, &m_astronauts[id]->getPosition());
-				if (CollisionHelper::RectangleCollision(m_abductors[i]->getPosition(), m_abductors[i]->getSize(), m_astronauts[id]->getPosition(), m_astronauts[id]->getSize()))
+				for (int j = 0; j < m_astronauts.size(); j++)//Look for nearest unmarked human
 				{
-					m_abductors[i]->setGrabbedAstronaut(true);
-					m_astronauts[id]->setFollowTarget((m_abductors[i]->getPosition()), m_abductors[i]->getSize());
-					m_astronauts[id]->setState(GRABBED);
+					float distance = VectorHelper::distanceBetweenTwoVectors(m_abductors[i]->getPosition(), m_astronauts[j]->getPosition());
+
+					if (m_astronauts[j]->getBeingAbducted() == false)
+						humanDist[j] = distance;
 				}
 			}
-		}
 
-		m_abductors[i]->update(elapsedTime, m_playerShip.getBoundingBox());
+			if (humanDist.size() >= 1 && m_abductors[i]->getState() != ABDUCTING)
+			{
+				std::pair<int, float> min = *min_element(humanDist.begin(), humanDist.end(), compareValues());
+
+				if (min.second < 500 && !(m_astronauts[min.first]->getBeingAbducted()))//Marking unmarked human as targeted
+				{
+					m_abductors[i]->setState(ABDUCTING);
+					m_abductors[i]->setAbducteeId(min.first);
+					m_astronauts[min.first]->setBeingAbducted(true);
+					m_astronauts[min.first]->setAbductorId(i);
+				}
+			}
+
+			if (m_abductors[i]->getState() != ABDUCTING)
+			{
+				m_abductors[i]->flock(&m_abductors);//flock if not grabbing human
+			}
+			else if (m_abductors[i]->getState() == ABDUCTING)
+			{
+				if (m_abductors[i]->getAbucteeId() >= 0 && m_abductors[i]->getAbucteeId() < m_astronauts.size()) //Making sure the id isn't a junk value or out of bounds
+				{
+					int id = m_abductors[i]->getAbucteeId();
+					m_abductors[i]->abduct(elapsedTime, &m_astronauts[id]->getPosition());
+					if (CollisionHelper::RectangleCollision(m_abductors[i]->getPosition(), m_abductors[i]->getSize(), m_astronauts[id]->getPosition(), m_astronauts[id]->getSize()))
+					{
+						m_abductors[i]->setGrabbedAstronaut(true);
+						m_astronauts[id]->setFollowTarget((m_abductors[i]->getPosition()), m_abductors[i]->getSize());
+						m_astronauts[id]->setState(GRABBED);
+					}
+				}
+			}
+
+			m_abductors[i]->update(elapsedTime, m_playerShip.getBoundingBox());
+		}
 	}
 }
 
@@ -231,9 +249,9 @@ void Game::update()
 	m_playerShip.boundaryResponse(m_worldSize);
 	m_playerShip.update(elapsedTime);
 
-	//manageAbductors(elapsedTime);
+	manageAbductors(elapsedTime);
 	manageMutants(elapsedTime);
-	//manageHumans(elapsedTime);
+	manageHumans(elapsedTime);
 }
 
 //used to create a seamless transition from side to side as the player travels
@@ -241,12 +259,10 @@ void Game::cameraWorldWrapping()
 {
 	if ((m_camera->getView().getCenter().x - m_camera->getView().getSize().x / 2) < (m_worldBackground.front().getPosition().x)) // if camera can't move more left warp everything on screen to right side of world
 	{
-		//std::cout << "Warp to Right" << std::endl;
 		m_playerShip.setPosition(sf::Vector2f(m_worldBackground.back().getPosition().x + m_worldBackground.back().getSize().x - m_camera->getView().getSize().x / 2, m_playerShip.getPosition().y));//Move player to center of screen on right side of the world
 	}
 	else if ((m_camera->getView().getCenter().x + m_camera->getView().getSize().x / 2) > (m_worldBackground.back().getPosition().x + m_worldBackground.back().getSize().x)) // if camera can't move more right warp everything on screen to left side of world
 	{
-		//std::cout << "Warp to Left" << std::endl;
 		m_playerShip.setPosition(sf::Vector2f((m_worldBackground.front().getPosition().x + m_camera->getView().getSize().x / 2), m_playerShip.getPosition().y));
 	}
 }
@@ -270,19 +286,22 @@ void Game::render(sf::RenderWindow &renderer)
 
 	m_playerShip.render(renderer);
 
-	//for (size_t i = 0; i < m_astronauts.size(); i++)
-	//{
-	//	m_astronauts[i]->render(renderer);
-	//}
+	for (size_t i = 0; i < m_astronauts.size(); i++)
+	{
+		if(m_astronauts[i]->isAlive())
+			m_astronauts[i]->render(renderer);
+	}
 
-	//for (size_t i = 0; i < m_abductors.size(); i++)
-	//{
-	//	m_abductors[i]->render(renderer);
-	//}
+	for (size_t i = 0; i < m_abductors.size(); i++)
+	{
+		if (m_abductors[i]->isAlive())
+			m_abductors[i]->render(renderer);
+	}
 
 	for (size_t i = 0; i < m_mutants.size(); i++)
 	{
-		m_mutants[i]->render(renderer);
+		if (m_mutants[i]->isAlive())
+			m_mutants[i]->render(renderer);
 	}
 
 	//Render mini-map
@@ -295,19 +314,22 @@ void Game::render(sf::RenderWindow &renderer)
 
 	m_playerShip.render(renderer);
 
-	//for (size_t i = 0; i < m_astronauts.size(); i++)
-	//{
-	//	m_astronauts[i]->render(renderer);
-	//}
+	for (size_t i = 0; i < m_astronauts.size(); i++)
+	{
+		if (m_astronauts[i]->isAlive())
+			m_astronauts[i]->render(renderer);
+	}
 
-	//for (size_t i = 0; i < m_abductors.size(); i++)
-	//{
-	//	m_abductors[i]->render(renderer);
-	//}
+	for (size_t i = 0; i < m_abductors.size(); i++)
+	{
+		if (m_abductors[i]->isAlive())
+			m_abductors[i]->render(renderer);
+	}
 
 	for (size_t i = 0; i < m_mutants.size(); i++)
 	{
-		m_mutants[i]->render(renderer);
+		if (m_mutants[i]->isAlive())
+			m_mutants[i]->render(renderer);
 	}
 
 	renderer.display();
