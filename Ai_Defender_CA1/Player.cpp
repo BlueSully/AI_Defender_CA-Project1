@@ -103,10 +103,20 @@ sf::Vector2f Player::getPosition() const
 {
 	return m_boundingBox.getPosition();
 }
+sf::Vector2f Player::getSize() const
+{
+	return m_boundingBox.getSize();
+}
+std::vector<Projectile> & Player::getProjList() 
+{
+	return projMan.getProjList();
+}
+
 void Player::setPosition(sf::Vector2f pos)
 {
 	m_boundingBox.setPosition(pos);
 }
+
 sf::RectangleShape Player::getBoundingBox() const
 {
 	return m_boundingBox;

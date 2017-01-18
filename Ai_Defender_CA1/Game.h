@@ -46,6 +46,8 @@ public:
 	void manageNests(sf::Time elapsedTime);
 	void manageAbductors(sf::Time elapsedTime);
 
+	bool collisionChecker();
+
 	//Methods
 	void update();
 	void cameraWorldWrapping();

@@ -215,7 +215,26 @@ void Game::manageAbductors(sf::Time elapsedTime)
 		m_abductors[i]->update(elapsedTime, m_playerShip.getBoundingBox());
 	}
 }
+bool Game::collisionChecker()
+{
+	for (size_t i = 0; i < m_playerShip.getProjList().size(); i++)
+	{
+		for (size_t j = 0; j < m_abductors.size(); j++)
+		{
 
+			if (CollisionHelper::RectangleCollision(m_playerShip.getProjList()[i].getPosition(), m_playerShip.getProjList()[i].getSize(), m_abductors[j]->getPosition(), m_abductors[j]->getSize()))
+				return true;
+		}
+		for (size_t k = 0; k < m_nests.size(); k++)
+		{
+
+			if (CollisionHelper::RectangleCollision(m_playerShip.getProjList()[i].getPosition(), m_playerShip.getProjList()[i].getSize(), m_nests[k]->getPosition(), m_nests[k]->getSize()))
+				return true;
+		}
+	}
+	return false;
+
+}
 void Game::update()
 {
 	sf::Time elapsedTime = m_clock.restart();
@@ -231,6 +250,12 @@ void Game::update()
 
 	manageHumans(elapsedTime);
 	manageNests(elapsedTime);
+
+
+	if (collisionChecker)
+	{
+		std::cout << "expense" << std::endl;
+	}
 	
 }
 

@@ -101,7 +101,6 @@ void Projectile::Render(sf::RenderWindow &renderer)
 		if (m_isLaser)
 		{
 			renderer.draw(m_projectileBoundBox);
-			renderer.draw(m_playerBox);
 		}
 		else
 		{
@@ -149,6 +148,15 @@ sf::CircleShape Projectile::getRadius()
 {
 	return m_damageRadius;
 }
+sf::Vector2f Projectile::getPosition()const
+{
+	return m_projectileBoundBox.getPosition();
+}
+
+sf::Vector2f Projectile::getSize() const
+{
+	return m_projectileBoundBox.getSize();
+}
 void Projectile::collisionCheck()
 {
 	if (m_isEnemyBullet)
@@ -157,15 +165,6 @@ void Projectile::collisionCheck()
 		{
 			m_alive = false;
 		}
-
-	}
-	else
-	{
-		/*if (CollisionHelper::RectangleCollision(m_projectileBoundBox.getPosition(), m_projectileBoundBox.getSize(), m_playerBox.getPosition(), m_playerBox.getSize()))
-		{
-			m_alive = false;
-		}*/
-		
 	}
 }
 
