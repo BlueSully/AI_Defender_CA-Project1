@@ -6,16 +6,19 @@ Abductor::Abductor()
 	m_state(PATROL),
 	m_canAttack(true),
 	m_grabbedAstronaut(false),
+	m_spawnMutant(false),
+	m_alive(true),
 	m_timeTillNextAttack(0),
 	m_abducteeId(-1)
 {
 	m_boundingBox.setPosition(sf::Vector2f(0, 300));
 	m_boundingBox.setSize(sf::Vector2f(36, 32));
-	m_boundingBox.setFillColor(sf::Color::Red);
+	m_boundingBox.setFillColor(sf::Color::Cyan);
 
 	m_attackRangeBox.setFillColor(sf::Color(125, 50, 0, 175));
 	m_attackRangeBox.setSize(sf::Vector2f(static_cast<float>(32 * m_attackRange), static_cast<float>(32 * m_attackRange)));
 	m_attackRangeBox.setPosition(m_boundingBox.getPosition() - sf::Vector2f(static_cast<float>(32 * (m_attackRange / 2)), static_cast<float>(32 * (m_attackRange / 2))));
+	
 	m_position = m_boundingBox.getPosition();
 	m_velocity = getDirection();
 	m_acceleration = sf::Vector2f(0, 0);
@@ -34,12 +37,14 @@ Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize, int id, float
 	m_state(PATROL),
 	m_canAttack(true),
 	m_grabbedAstronaut(false),
+	m_spawnMutant(false),
+	m_alive(true),
 	m_timeTillNextAttack(0),
 	m_abducteeId(-1)
 {
 	m_boundingBox.setPosition(position);
 	m_boundingBox.setSize(sf::Vector2f(36, 32));
-	m_boundingBox.setFillColor(sf::Color::Red);
+	m_boundingBox.setFillColor(sf::Color::Cyan);
 	
 	m_attackRangeBox.setFillColor(sf::Color(125, 50, 0, 175));
 	m_attackRangeBox.setSize(sf::Vector2f(static_cast<float>(32 * m_attackRange), static_cast<float>(32 * m_attackRange)));
@@ -47,7 +52,7 @@ Abductor::Abductor(sf::Vector2f position, sf::Vector2f windowSize, int id, float
 
 	int dir = 0;
 
-	if (id > 1) 
+	if (id < 3) 
 	{
 		dir = 1;
 	}
@@ -120,6 +125,21 @@ bool Abductor::getGrabbedAstronaut() const
 void Abductor::setGrabbedAstronaut(bool value)
 {
 	m_grabbedAstronaut = value;
+}
+
+bool Abductor::canSpawnMutant() const
+{
+	return m_spawnMutant;
+}
+
+bool Abductor::isAlive() const
+{
+	return m_alive;
+}
+
+void Abductor::setAlive(bool value)
+{
+	m_alive = value;
 }
 
 void Abductor::setWorldRectangle(sf::Vector2f postion, sf::Vector2f size)
@@ -321,14 +341,12 @@ void Abductor::abduct(sf::Time deltaTime, sf::Vector2f * pos)
 void Abductor::patrol(sf::Time deltaTime)
 {
 	int patrolHeight = rand() % 300 + 100;
-	patrolLine[0].position = sf::Vector2f(m_worldBounds.getPosition().x, patrolHeight);
-	patrolLine[1].position = sf::Vector2f(m_worldBounds.getPosition().x + m_worldBounds.getSize().x, patrolHeight);
-	
-	if (static_cast<int>(m_boundingBox.getPosition().y + m_boundingBox.getSize().y / 2) < static_cast<int>(patrolLine[0].position.y))
+
+	if (static_cast<int>(m_boundingBox.getPosition().y + m_boundingBox.getSize().y / 2) < static_cast<int>(patrolHeight))
 	{
 		m_velocity.y = m_speed;
 	}
-	else if (static_cast<int>(m_boundingBox.getPosition().y + m_boundingBox.getSize().y / 2) > static_cast<int>(patrolLine[0].position.y))
+	else if (static_cast<int>(m_boundingBox.getPosition().y + m_boundingBox.getSize().y / 2) > static_cast<int>(patrolHeight))
 	{
 		m_velocity.y = -m_speed;
 	}
@@ -368,10 +386,15 @@ void Abductor::boundaryResponse()
 {
 	sf::Vector2f vect = m_worldBounds.getSize();
 
-	if (getPosition().y + getSize().y < getSize().y)
+	if (getPosition().y + getSize().y < getSize().y )
 	{
 		setPosition(sf::Vector2f(getPosition().x, 0));
 		m_velocity.y = 0;
+
+		if (m_grabbedAstronaut) 
+		{
+			m_spawnMutant = true;
+		}
 	}
 	else if (getPosition().y + getSize().y > vect.y)
 	{
@@ -449,6 +472,7 @@ void Abductor::render(sf::RenderWindow & renderer)
 	renderer.draw(m_abductorSprite);
 	projMan.Render(renderer);
 }
+
 void Abductor::renderRadar(sf::RenderWindow & renderer)
 {
 	renderer.draw(m_boundingBox);

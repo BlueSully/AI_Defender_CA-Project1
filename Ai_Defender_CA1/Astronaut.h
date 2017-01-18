@@ -33,6 +33,7 @@ private:
 	AiState m_state;
 	bool m_beingAbducted;
 	bool m_falling;
+	bool m_alive;
 public:
 	Astronaut();
 	Astronaut(sf::Vector2f position, sf::Vector2f veclocity);
@@ -51,6 +52,9 @@ public:
 	int getAbuctorId() const;
 	void setAbductorId(int value);
 	void setFollowTarget(sf::Vector2f & value, sf::Vector2f size);
+
+	bool isAlive() const;
+	void setAlive(bool value);
 
 	//Methods
 	sf::Vector2f wander();

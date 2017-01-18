@@ -209,6 +209,8 @@ void Player::update(sf::Time deltaTime)
 	}
 	
 	projMan.Update(deltaTime, m_boundingBox);
+	m_velocity = VectorHelper::truncate(m_velocity, m_MAXHORIZONTALACCLERATION);
+
 	m_boundingBox.move(m_velocity * deltaTime.asSeconds());
 }
 void Player::render(sf::RenderWindow & renderer)
@@ -223,10 +225,7 @@ void Player::renderRadar(sf::RenderWindow & renderer)
 {
 	renderer.draw(m_boundingBox);
 	projMan.Render(renderer);
-
 }
-
-
 
 void Player::render(sf::RenderWindow &renderer, float scale)
 {

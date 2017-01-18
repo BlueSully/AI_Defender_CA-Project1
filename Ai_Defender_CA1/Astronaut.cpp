@@ -1,6 +1,6 @@
 #include "Astronaut.h"
 
-Astronaut::Astronaut() : m_beingAbducted(false), m_abductorId(-1)
+Astronaut::Astronaut() : m_beingAbducted(false), m_abductorId(-1), m_alive(true)
 {
 
 	//Gets Called when player is Created
@@ -18,7 +18,7 @@ Astronaut::Astronaut() : m_beingAbducted(false), m_abductorId(-1)
 	m_astroSprite.setTextureRect(sf::IntRect(0, 0, 12, 32));
 }
 
-Astronaut::Astronaut(sf::Vector2f position, sf::Vector2f veclocity) : m_beingAbducted(false), m_abductorId(-1)
+Astronaut::Astronaut(sf::Vector2f position, sf::Vector2f veclocity) : m_beingAbducted(false), m_abductorId(-1), m_alive(true)
 {
 	//Gets Called when player is Created
 	m_boundingBox.setFillColor(sf::Color::White);
@@ -104,6 +104,16 @@ void Astronaut::setFollowTarget(sf::Vector2f & value, sf::Vector2f size)
 	m_followSize = size;
 }
 
+bool Astronaut::isAlive() const
+{
+	return m_alive;
+}
+
+void Astronaut::setAlive(bool value)
+{
+	m_alive = value;
+}
+
 sf::Vector2f Astronaut::wander()
 {	
 	sf::Vector2f wanderForce, circleCenter, displacement;
@@ -115,10 +125,10 @@ sf::Vector2f Astronaut::wander()
 		circleCenter = VectorHelper::normalise(circleCenter);
 	}
 
-	circleCenter = VectorHelper::scaleBy(circleCenter, CIRCLEDISTANCE);
+	circleCenter = VectorHelper::MultiplyByScalar(circleCenter, CIRCLEDISTANCE);
 
 	displacement = sf::Vector2f(0, -1);
-	displacement = VectorHelper::scaleBy(displacement, CIRCLE_RADIUS);
+	displacement = VectorHelper::MultiplyByScalar(displacement, CIRCLE_RADIUS);
 	displacement = VectorHelper::setVectorByAngle(displacement, m_wanderAngle);
 
 	float randomF = static_cast <float> (rand()) / static_cast <float> (RAND_MAX + 1);

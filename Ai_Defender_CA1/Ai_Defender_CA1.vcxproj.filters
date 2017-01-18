@@ -42,6 +42,9 @@
     <ClCompile Include="Abductor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mutant.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Nest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -78,6 +81,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MathFunction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Mutant.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
