@@ -255,6 +255,7 @@ void Game::manageAbductors(sf::Time elapsedTime)
 				{
 					int id = m_abductors[i]->getAbucteeId();
 					m_abductors[i]->abduct(elapsedTime, &m_astronauts[id]->getPosition());
+
 					if (CollisionHelper::RectangleCollision(m_abductors[i]->getPosition(), m_abductors[i]->getSize(), m_astronauts[id]->getPosition(), m_astronauts[id]->getSize()))
 					{
 						m_abductors[i]->setGrabbedAstronaut(true);
@@ -306,7 +307,8 @@ bool Game::collisionChecker()
 			if (CollisionHelper::RectangleCollision(playerLaserPosition, playerLaserSize, m_mutants[h]->getPosition(), m_mutants[h]->getSize()))
 			{
 				m_playerShip.setLaserAlive(false, i);
-				if (m_mutants[h]->getLives() <= 0) {
+				if (m_mutants[h]->getLives() <= 0)
+				{
 					m_mutants[h]->setAlive(false);
 					m_score += 200;
 				}
@@ -343,7 +345,6 @@ void Game::killAllPowerUp()
 		m_playerShip.setBomb(false);
 	}
 }
-
 
 bool Game::playerHit()
 {
@@ -402,6 +403,7 @@ bool Game::playerHit()
 	return false;
 
 }
+
 bool Game::update()
 {
 	sf::Time elapsedTime = m_clock.restart();

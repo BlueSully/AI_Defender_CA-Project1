@@ -5,7 +5,7 @@ Mutant::Mutant()
 
 }
 
-Mutant::Mutant(sf::Vector2f position, sf::Vector2f velocity) : m_state(SEEK), m_velocity(velocity),m_lives(2)
+Mutant::Mutant(sf::Vector2f position, sf::Vector2f velocity) : m_state(SEEK), m_velocity(velocity), m_lives(2), m_alive(true)
 {
 	m_boundingBox.setPosition(position);
 	m_boundingBox.setSize(sf::Vector2f(32, 32));
